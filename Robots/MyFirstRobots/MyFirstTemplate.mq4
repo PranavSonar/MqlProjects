@@ -5,10 +5,10 @@
 
 #property description "First program made, used to check some MQL4 functions" 
 
-#include "../Libs/VerboseInfo/VerboseInfo.mq4"
-#include "../Libs/DecisionMaking/DecisionDoubleBB.mq4"
-#include "../Libs/DecisionMaking/DecisionMA.mq4"
-#include "../Libs/DecisionMaking/DecisionRSI.mq4"
+#include "../MyLibs/VerboseInfo/VerboseInfo.mq4"
+#include "../MyLibs/DecisionMaking/DecisionDoubleBB.mq4"
+#include "../MyLibs/DecisionMaking/DecisionMA.mq4"
+#include "../MyLibs/DecisionMaking/DecisionRSI.mq4"
 
 
 VerboseInfo vi;
