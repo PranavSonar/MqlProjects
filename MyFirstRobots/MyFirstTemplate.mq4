@@ -5,9 +5,10 @@
 
 #property description "First program made, used to check some MQL4 functions" 
 
-#include "VerboseInfo/VerboseInfo.mq4"
-
-
+#include "../Libs/VerboseInfo/VerboseInfo.mq4"
+#include "../Libs/DecisionMaking/DecisionDoubleBB.mq4"
+#include "../Libs/DecisionMaking/DecisionMA.mq4"
+#include "../Libs/DecisionMaking/DecisionRSI.mq4"
 
 
 VerboseInfo vi;
@@ -49,10 +50,14 @@ void OnDeinit(const int reason)
 
 double CalculateDecision(double stopLoss = 0.0, double takeProfit = 0.0)
 {
+	DecisionDoubleBB doubleBB;
+	DecisionMA ma;
+	DecisionRSI rsi;
+	
 	double finalResult = 
-		GetDecisionUsingRSI() +
-		GetDecisionUsingMA() +
-		GetDecisionUsingDoubleBB(stopLoss, takeProfit);
+		rsi.GetDecision() +
+		ma.GetDecision() +
+		doubleBB.GetDecision(stopLoss, takeProfit);
 	
 	printf("Final decision: %f\n Stop loss: %f\n Take profit: %f",
 		finalResult, stopLoss, takeProfit);
