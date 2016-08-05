@@ -78,8 +78,6 @@ void SumCompute()
    double SumLots;
    double SumOrders;
    double AveragePrice;
-   int Ticket;
-  
    TargetTP = 0.00;
    TargetSL = 0.00;
   
@@ -87,11 +85,9 @@ void SumCompute()
    SumOrders = 0.00;
    AveragePrice = 0.00;
    OrderIsBuy = -1;
-  
-   int total = OrdersTotal();
-   for(int i=total-1;i>=0;i--)
+   
+   for(int i= OrdersTotal()-1;i>=0;OrderSelect(--i, SELECT_BY_POS))
    {
-      Ticket = OrderSelect(i, SELECT_BY_POS);
       if (OrderSymbol() == Symbol())
       {
          SumLots = SumLots + OrderLots();
@@ -103,21 +99,22 @@ void SumCompute()
          CurrentOpenOrders = CurrentOpenOrders + 1;
       }
    }  
-   if (SumLots > 0.00)
-   {
-      AveragePrice = SumOrders / SumLots;
-   }  
-   if (OrderIsBuy == 1)
-   {
-      TargetTP = AveragePrice + TpLimitPips*Point*10 + (ComputeSpread);
-      TargetSL = AveragePrice - SlLimitPips*Point*10 - (ComputeSpread);
-   }
-   else
-      if (OrderIsBuy == 0)
-      { 
-         TargetTP = AveragePrice - TpLimitPips*Point*10 - (ComputeSpread);
-         TargetSL = AveragePrice + SlLimitPips*Point*10 + (ComputeSpread);
-      }  
+	
+	if (SumLots > 0.00)
+	{
+		AveragePrice = SumOrders / SumLots;
+	}
+	  
+	if (OrderIsBuy == 1)
+	{
+		TargetTP = AveragePrice + TpLimitPips*Point*10 + (ComputeSpread);
+		TargetSL = AveragePrice - SlLimitPips*Point*10 - (ComputeSpread);
+	}
+	else if (OrderIsBuy == 0)
+	{ 
+		TargetTP = AveragePrice - TpLimitPips*Point*10 - (ComputeSpread);
+		TargetSL = AveragePrice + SlLimitPips*Point*10 + (ComputeSpread);
+	}  
 }
  
 void ModifyOrders()
