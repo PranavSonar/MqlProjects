@@ -60,7 +60,8 @@ void OnTick()
 	{
 		tran.TestCloseProfit();
 	}
-	CurentValue();
+	
+	scrn.CurrentValue(GetOrdersProfit());
 }
  
 void LotsDividerCompute()
@@ -293,16 +294,4 @@ void Initialisation()
    	//The latest known buyer's price (offer price, bid price) of the current symbol.
 }
  
-void CurentValue()
-{
-	double CV = tran.GetOrdersProfit();
-	color text_color = clrNONE;
-	
-	if (CV <= 0.00)
-		text_color = Red;
-	else
-		text_color = Lime;
-	
-	scrn.DeleteAllObjectsTextAndLabel();
-	scrn.ShowTextValue("current value","CurrentValue = "+DoubleToString(CV,2));
-}
+

@@ -30,4 +30,17 @@ class ScreenInfo
 			ObjectSet(objectName, OBJPROP_YDISTANCE, y);
 			ObjectSetText(objectName, value, size, font, textColor); //The function changes the object description.
 		}
+		
+		virtual void CurrentValue(double cv = 0.0)
+		{
+			if (cv < 0.00)
+				text_color = Red;
+			else if (cv == 0.0)
+				text_color = Grey;
+			else
+				text_color = Lime;
+			
+			DeleteAllObjectsTextAndLabel();
+			ShowTextValue("CV", "CurrentValue: " + DoubleToString(cv,2));
+		}
 };
