@@ -8,8 +8,8 @@
 #include "VerboseInfo/VerboseInfo.mq4"
 
 
-const double InvalidValue = 0.0;
-const int ShiftValue = 1;
+
+
 VerboseInfo vi;
 
 int OnInit()
