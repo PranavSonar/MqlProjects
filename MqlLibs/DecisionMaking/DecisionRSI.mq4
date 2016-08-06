@@ -11,7 +11,7 @@
 
 #include "DecisionIndicator.mq4"
 
-class DecisionRSI : DecisionIndicator
+class DecisionRSI : public DecisionIndicator
 {
 	public:
 		DecisionRSI() : DecisionIndicator(false) {}

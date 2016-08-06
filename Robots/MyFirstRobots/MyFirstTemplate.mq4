@@ -9,7 +9,7 @@
 #include "../../MqlLibs/DecisionMaking/DecisionDoubleBB.mq4"
 #include "../../MqlLibs/DecisionMaking/DecisionMA.mq4"
 #include "../../MqlLibs/DecisionMaking/DecisionRSI.mq4"
-
+#include "../../MqlLibs/StupidLibs/TestLib.mq4"
 
 VerboseInfo vi;
 

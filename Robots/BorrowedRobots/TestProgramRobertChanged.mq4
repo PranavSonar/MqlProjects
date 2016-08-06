@@ -1,6 +1,6 @@
 //+------------------------------------------------------------------+
-//|                                            TestRobertProgram.mq4 |
-//|                                        Copyright Robert Costache |
+//|                                     TestRobertProgramChanged.mq4 |
+//|               Copyright Robert Costache & co (Alexandru Chirita) |
 //|                                             https://www.mql5.com |
 //+------------------------------------------------------------------+
 #property copyright "Robert Costache & co (Alexandru Chirita)"
@@ -8,10 +8,12 @@
 #property version   "1.00"
 #property strict
 
-#include "../../MqlLibs/TransactionManagement/BaseTransactionManagement.mq4"
+#include "../../MqlLibs/TransactionManagement/CrappyTranManagement.mq4"
+#include "../../MqlLibs/MoneyManagement/BaseMoneyManagement.mq4"
 #include "../../MqlLibs/VerboseInfo/ScreenInfo.mq4"
 
-BaseTransactionManagement tran;
+BaseMoneyManagement money;
+CrappyTranManagement tran;
 ScreenInfo scrn;
 
 
@@ -43,7 +45,7 @@ void OnDeinit(const int reason)
 }
  
 void OnTick()
-{ 
+{
 	CurrentOpenOrders = 0;
 	SumCompute();   
 	tran.ModifyOrders(TargetTP, TargetSL);
@@ -75,153 +77,63 @@ void LotsDividerCompute()
 }
  
 void SumCompute()
-{ 
-   double SumLots;
-   double SumOrders;
-   double AveragePrice;
-   TargetTP = 0.00;
-   TargetSL = 0.00;
-  
-   SumLots = 0.00;
-   SumOrders = 0.00;
-   AveragePrice = 0.00;
-   OrderIsBuy = -1;
-   
-   for(int i= OrdersTotal()-1;i>=0;OrderSelect(--i, SELECT_BY_POS))
-   {
-      if (OrderSymbol() == Symbol())
-      {
-         SumLots = SumLots + OrderLots();
-         SumOrders = SumOrders + (OrderLots()*OrderOpenPrice());
-         if (OrderType() == OP_BUY) //Returns order operation type of the currently selected order.
-            OrderIsBuy = 1;
-         else
-            OrderIsBuy = 0;
-         CurrentOpenOrders = CurrentOpenOrders + 1;
-      }
-   }  
+{
+	double AveragePrice = 0.00;
+	TargetTP = 0.00;
+	TargetSL = 0.00;
+	OrderIsBuy = -1;
 	
-	if (SumLots > 0.00)
+	tran.Get_OpenOrders_AvgPrice(CurrentOpenOrders, AveragePrice, OrderIsBuy);
+	money.CalculateTP_SL(TargetTP, TargetSL, OrderIsBuy, TpLimitPips, SlLimitPips, AveragePrice, ComputeSpread);
+}
+ 
+bool OpenNewOrder()
+{
+	bool statusOk = true;
+	Initialisation();
+	double RSIValue = iRSI(Symbol(), Period(), 14, 4, 0);
+	
+	if (ContinueRunning == 1)
 	{
-		AveragePrice = SumOrders / SumLots;
+		if (RSIValue < 50)
+			statusOk = statusOk & OrderSend(Symbol(),OP_SELL,ManagementLots,Bid,3,0,0,"iRSI Level = "+DoubleToStr(NormalizeDouble(RSIValue,2),2),0,0,clrRed); // The main function used to open market or place a pending order.
+		else
+			statusOk = statusOk & OrderSend(Symbol(),OP_BUY,ManagementLots,Ask,3,0,0,"iRSI Level = "+DoubleToStr(NormalizeDouble(RSIValue,2),2),0,0,clrGreen); // The main function used to open market or place a pending order.
 	}
-	  
+	ComputeSpread = Ask-Bid;
+	
+	return statusOk;
+}
+ 
+bool TestNewOrder()
+{
+	bool statusOk = true;
+	double NextLotNumber = ManagementLots*MathPow(2,CurrentOpenOrders);
+	double RSIValue = iRSI(Symbol(), PERIOD_H1, 14, 4, 0);
+	string PrintValue = "Cont"+IntegerToString(CurrentOpenOrders+1)+" iRSI = "+DoubleToStr(NormalizeDouble(RSIValue,2),2);
+	
 	if (OrderIsBuy == 1)
 	{
-		TargetTP = AveragePrice + TpLimitPips*Point*10 + (ComputeSpread);
-		TargetSL = AveragePrice - SlLimitPips*Point*10 - (ComputeSpread);
+		if ((Ask - TargetSL)/Point/10 < 2*SlLimitPips/3)
+			statusOk = statusOk & OrderSend(Symbol(),OP_BUY,NextLotNumber,Ask,3,0,0,PrintValue,0,0,clrGreen); //The main function used to open market or place a pending order.
 	}
 	else if (OrderIsBuy == 0)
-	{ 
-		TargetTP = AveragePrice - TpLimitPips*Point*10 - (ComputeSpread);
-		TargetSL = AveragePrice + SlLimitPips*Point*10 + (ComputeSpread);
-	}  
-}
- 
-void OpenNewOrder()
-{ 
-   double RSIValue;
-   int Ticket;
-   Initialisation();
-   RSIValue = iRSI(Symbol(), PERIOD_H1, 14, 4, 0); // Calculates the Relative Strength Index indicator and returns its value.
-   	//Returns the name of a symbol of the current chart.
-
-   if (ContinueRunning == 1)
-   {
-      if (RSIValue < 50)
-      {
-         Ticket = OrderSend(Symbol(),OP_SELL,ManagementLots,Bid,3,0,0,"iRSI Level = "+DoubleToStr(NormalizeDouble(RSIValue,2),2),0,0,clrRed); // The main function used to open market or place a pending order.
-      }
-      else
-      {
-         Ticket = OrderSend(Symbol(),OP_BUY,ManagementLots,Ask,3,0,0,"iRSI Level = "+DoubleToStr(NormalizeDouble(RSIValue,2),2),0,0,clrGreen); // The main function used to open market or place a pending order.
-      }  
-   }
-   ComputeSpread = Ask-Bid;  
-}
- 
-void TestNewOrder()
-{  
-   int Ticket;
-   double NextLotNumber;
-   double RSIValue;
-   string PrintValue;
-   RSIValue = iRSI(Symbol(), PERIOD_H1, 14, 4, 0); //Calculates the Relative Strength Index indicator and returns its value.
-  	// Returns the name of a symbol of the current chart.
-
-   NextLotNumber = ManagementLots*MathPow(2,CurrentOpenOrders); //The function raises a base to a specified power.
-   PrintValue = "Cont"+IntegerToString(CurrentOpenOrders+1)+" iRSI = "+DoubleToStr(NormalizeDouble(RSIValue,2),2); //This function converts value of integer type into a string of a specified length and returns the obtained string.
-	   //Returns text string with the specified numerical value converted into a specified precision format.
-	   // Rounding floating point number to a specified accuracy.
-  
-   if (OrderIsBuy == 1)
-   {
-      if ((Ask - TargetSL)/Point/10 < 2*SlLimitPips/3)
-         Ticket = OrderSend(Symbol(),OP_BUY,NextLotNumber,Ask,3,0,0,PrintValue,0,0,clrGreen); //The main function used to open market or place a pending order.
-   }
-   else
-      if (OrderIsBuy == 0)
-      {
-         if ((TargetSL - Bid)/Point/10 < 2*SlLimitPips/3)
-            Ticket = OrderSend(Symbol(),OP_SELL,NextLotNumber,Bid,3,0,0,PrintValue,0,0,clrRed); //The main function used to open market or place a pending order.      
-      }
+	{
+		if ((TargetSL - Bid)/Point/10 < 2*SlLimitPips/3)
+			statusOk = statusOk & OrderSend(Symbol(),OP_SELL,NextLotNumber,Bid,3,0,0,PrintValue,0,0,clrRed); //The main function used to open market or place a pending order.      
+	}
+	
+	return statusOk;
 }
  
 void Initialisation()
 {
-   string CurrentCurrency, BaseCurrency, SecondCurrency;
-   double TotalAmount, TotalLot, ComputePrice;
-   ComputePrice = 0;
-  
-   LotsDividerCompute();
-     
-   ObjectsDeleteAll(0, OBJ_TEXT); //Removes all objects from the specified chart, specified chart subwindow, of the specified type.
-   ObjectsDeleteAll(0, OBJ_LABEL);
-  
-   CurrentCurrency = StringSubstr(Symbol(),0,6); //Extracts a substring from a text string starting from the specified position.
-   	//Returns the name of a symbol of the current chart.
-   BaseCurrency = StringSubstr(CurrentCurrency,0,3);
-   SecondCurrency = StringSubstr(CurrentCurrency,3,3);
-   TotalAmount = AccountBalance()+AccountCredit(); //Returns balance value of the current account.
-   	//Returns credit value of the current account.
-  
-   if (BaseCurrency == "AUD")
-   {
-      ComputePrice = MarketInfo("AUDUSD",MODE_BID); //Returns various data about securities listed in the "Market Watch" window.
-   }
-   if (BaseCurrency == "CAD")
-   {
-      ComputePrice = 1/MarketInfo("USDCAD",MODE_BID);
-   }
-   if (BaseCurrency == "CHF")
-   {
-      ComputePrice = 1/MarketInfo("USDCHF",MODE_BID);
-   }
-   if (BaseCurrency == "EUR")
-   {
-      ComputePrice = MarketInfo("EURUSD",MODE_BID);
-   }
-   if (BaseCurrency == "GBP")
-   {
-      ComputePrice = MarketInfo("GBPUSD",MODE_BID);
-   }
-   if (BaseCurrency == "NZD")
-   {
-      ComputePrice = MarketInfo("NZDUSD",MODE_BID);
-   }
-   if (BaseCurrency == "SGD")
-   {
-      ComputePrice = 1/MarketInfo("USDSGD",MODE_BID);
-   }
-   if (BaseCurrency == "USD")
-   {
-      ComputePrice = 1.00;
-   }
-   
-   TotalLot = NormalizeDouble(TotalAmount/ComputePrice/10.00,2); // Rounding floating point number to a specified accuracy.
-   ManagementLots = NormalizeDouble(TotalLot / 100.00*UsagePercentage/Lotsdivider,2); // Rounding floating point number to a specified accuracy.
-   ComputeSpread = Ask-Bid; //The latest known seller's price (ask price) for the current symbol. 
-   	//The latest known buyer's price (offer price, bid price) of the current symbol.
+	double TotalAmount = money.GetTotalAmount();
+	double ComputePrice = money.CalculatePriceForUSD();
+	double TotalLot = NormalizeDouble(TotalAmount/ComputePrice/10.00,2);
+	
+	LotsDividerCompute();
+	ComputeSpread = Ask-Bid;
+	
+	ManagementLots = NormalizeDouble(TotalLot / 100.00*UsagePercentage/Lotsdivider,2);
 }
- 
-

@@ -1,5 +1,5 @@
 //+------------------------------------------------------------------+
-//|                                            DecisionIndicator.mq4 |
+//|                                                      TestLib.mq4 |
 //|                                Copyright 2016, Chirita Alexandru |
 //|                                             https://www.mql5.com |
 //+------------------------------------------------------------------+
@@ -9,23 +9,13 @@
 #property version   "1.00"
 #property strict
 
-#include "BaseDecision.mq4"
-
-
-const double InvalidValue = 0.0;
-
-class DecisionIndicator : public BaseDecision
+class TestLib
 {
-	protected:
-		bool Verbose;
-		int ShiftValue;
-		
 	public:
-		DecisionIndicator(bool verbose = true, int shiftValue = 1)
+		TestLib() {}
+		
+		virtual void GetParamsFromFunction(int &testParam)
 		{
-			this.Verbose = verbose;
-			this.ShiftValue = shiftValue;
+			testParam = 1;
 		}
-	
-		~DecisionIndicator() {}
 };

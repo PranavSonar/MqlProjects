@@ -11,7 +11,7 @@
 
 #include "DecisionIndicator.mq4"
 
-class DecisionDoubleBB : DecisionIndicator
+class DecisionDoubleBB : public DecisionIndicator
 {
 	private:
 		double InternalSL;
