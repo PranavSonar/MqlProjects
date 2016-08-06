@@ -22,7 +22,7 @@ class ScreenInfo
 	 		
 		virtual void DeleteAllObjects(long chartId = 0) { ObjectsDeleteAll(chartId); }
 		
-		virtual void ShowTextValue(string objectName, string value, int x = 20, int y = 20, int corner = 1, int size = 14, string font = "Tahoma", color textColor = clrNONE)
+		virtual void ShowTextValue(string objectName, string value, color textColor = clrNONE, int x = 20, int y = 20, int corner = 1, int size = 14, string font = "Tahoma")
 		{
 			ObjectCreate(objectName, OBJ_LABEL, 0, 0, 0);
 			ObjectSet(objectName, OBJPROP_CORNER, corner);
@@ -33,14 +33,15 @@ class ScreenInfo
 		
 		virtual void CurrentValue(double cv = 0.0)
 		{
+			color textColor = clrNONE;
 			if (cv < 0.00)
-				text_color = Red;
+				textColor = Red;
 			else if (cv == 0.0)
-				text_color = Grey;
+				textColor = Gray;
 			else
-				text_color = Lime;
+				textColor = Lime;
 			
 			DeleteAllObjectsTextAndLabel();
-			ShowTextValue("CV", "CurrentValue: " + DoubleToString(cv,2));
+			ShowTextValue("CV", "CurrentValue: " + DoubleToString(cv,2), textColor);
 		}
 };

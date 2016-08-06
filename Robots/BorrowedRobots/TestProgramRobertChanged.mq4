@@ -46,7 +46,7 @@ void OnTick()
 { 
 	CurrentOpenOrders = 0;
 	SumCompute();   
-	ModifyOrders();
+	tran.ModifyOrders(TargetTP, TargetSL);
 	if (TargetSL == 0.00)
 	{
 		OpenNewOrder();
@@ -61,7 +61,7 @@ void OnTick()
 		tran.TestCloseProfit();
 	}
 	
-	scrn.CurrentValue(GetOrdersProfit());
+	scrn.CurrentValue(tran.GetOrdersProfit());
 }
  
 void LotsDividerCompute()
@@ -116,30 +116,6 @@ void SumCompute()
 		TargetTP = AveragePrice - TpLimitPips*Point*10 - (ComputeSpread);
 		TargetSL = AveragePrice + SlLimitPips*Point*10 + (ComputeSpread);
 	}  
-}
- 
-void ModifyOrders()
-{
-   int Ticket;
-   if ((TargetTP > 0) && (TargetSL>0))
-   {
-      int total = OrdersTotal(); //Returns the number of market and pending orders.
-      for(int i=total-1;i>=0;i--)
-      {
-         Ticket = OrderSelect(i, SELECT_BY_POS); //The function selects an order for further processing.
-         if (OrderSymbol() == Symbol())
-         {
-            if (OrderStopLoss() != TargetSL) //Returns stop loss value of the currently selected order.
-               if (TargetSL > 0)
-                  Ticket = OrderModify(OrderTicket(),OrderOpenPrice(),TargetSL,TargetTP,0,Blue);
-            if (OrderTakeProfit() != TargetTP) //Returns take profit value of the currently selected order.
-               if (TargetTP > 0)
-                  Ticket = OrderModify(OrderTicket(),OrderOpenPrice(),TargetSL,TargetTP,0,Blue); //Modification of characteristics of the previously opened or pending orders.
-				//Returns ticket number of the currently selected order.
-				//Returns open price of the currently selected order.
-         }
-      }
-   }
 }
  
 void OpenNewOrder()

@@ -14,21 +14,21 @@ class BaseTransactionManagement {
 		BaseTransactionManagement() {}
 	
 		
-		virtual double GetOrdersProfit(bool onlyCurrentChart = true)
+		virtual double GetOrdersProfit(bool allCharts = false)
 		{
 			double profitValue = 0.00;
 			for(int i=OrdersTotal()-1; i>=0; OrderSelect(--i, SELECT_BY_POS))
-				if (OrderSymbol() == Symbol() && onlyCurrentChart)
+				if (OrderSymbol() == Symbol() || allCharts)
 					profitValue = profitValue + OrderProfit();
 			return profitValue;
 		}
 		
-		virtual bool CloseOrders(bool onlyCurrentChart = true)
+		virtual bool CloseOrders(bool allCharts = false)
 		{
 			bool statusOk = true;
 			
 			for(int i=OrdersTotal()-1; i>=0; OrderSelect(--i, SELECT_BY_POS))
-				if (OrderSymbol() == Symbol() && onlyCurrentChart)
+				if (OrderSymbol() == Symbol() || allCharts)
 				{
 					if (OrderType() == OP_BUY)
 						statusOk = statusOk & OrderClose(OrderTicket(),OrderLots(),Bid,3,Yellow);
@@ -39,9 +39,32 @@ class BaseTransactionManagement {
 			return statusOk; // true if all orders closed, false if even one couldn't be closed
 		}
 		
-		virtual void TestCloseProfit(bool onlyCurrentChart = true)
+		virtual void TestCloseProfit(bool allCharts = true)
 		{
-			if (GetOrdersProfit(onlyCurrentChart) >= 0)
-				CloseOrders(onlyCurrentChart);
+			if (GetOrdersProfit(allCharts) >= 0)
+				CloseOrders(allCharts);
 		}
+		
+		virtual bool ModifyOrders(double targetTP, double targetSL, bool allCharts = false)
+		{
+			bool statusOk = true;
+			
+			if ((targetTP > 0) || (targetSL > 0))
+			{
+				for(int i=OrdersTotal()-1; i>=0; i--)
+				{
+					statusOk = statusOk & OrderSelect(i, SELECT_BY_POS);
+					if (OrderSymbol() == Symbol() || allCharts)
+					{
+						if ((OrderStopLoss() != targetSL)  && (targetSL != 0.0))
+							statusOk = statusOk & OrderModify(OrderTicket(),OrderOpenPrice(),targetSL,OrderTakeProfit(),0,Blue);
+						if ((OrderTakeProfit() != targetTP)  && (targetTP != 0.0))
+							statusOk = statusOk & OrderModify(OrderTicket(),OrderOpenPrice(),OrderStopLoss(),targetTP,0,Blue);
+					}
+				}
+			}
+			return statusOk;
+		} 
+		
+		
 };

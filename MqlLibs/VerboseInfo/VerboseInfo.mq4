@@ -66,7 +66,7 @@ public:
 	}
 	
 	//--- method for getting market information
-	void PrintMarketInfo()
+	virtual void PrintMarketInfo()
 	{
 		LineDelimiter();
 		printf(delimiter + " MarketInfo(ModeBid): %f", MarketInfo(Symbol(), MODE_BID));
@@ -76,5 +76,22 @@ public:
 		printf(delimiter + " MarketInfo(ModeSpread): %d", (int)MarketInfo(Symbol(), MODE_SPREAD));
 		printf(delimiter + " Calculated spread(Ask-Bid): %f", MarketInfo(Symbol(), MODE_ASK) - MarketInfo(Symbol(), MODE_BID));
 		LineDelimiter();
+	}
+	
+	virtual int ExpertValidationsTest()
+	{
+		if(!IsExpertEnabled())
+		{
+			Print("Expert is not enabled. Nothing to do here. Exiting.");
+			return (INIT_FAILED);
+		}
+		
+		if(!IsTradeAllowed())
+		{
+			Print("Trade is not allowed. Nothing to do here. Exiting.");
+			return (INIT_FAILED);
+		}
+		
+		return (INIT_SUCCEEDED);
 	}
 };

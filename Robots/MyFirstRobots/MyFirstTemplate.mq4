@@ -20,23 +20,11 @@ int OnInit()
 	vi.BalanceAccountInfo();
 	vi.PrintMarketInfo();
 	
-	// Validations
-	if(!IsExpertEnabled())
-	{
-		Print("Expert is not enabled. Nothing to do here. Exiting.");
-		return (INIT_FAILED);
-	}
-	
-	if(!IsTradeAllowed())
-	{
-		Print("Trade is not allowed. Nothing to do here. Exiting.");
-		return (INIT_FAILED);
-	}
-	
-	//--- create timer 
+	//--- create timer (seconds)
 	EventSetTimer(1);
-   
-	return (INIT_SUCCEEDED);
+	
+	// Validations
+	return vi.ExpertValidationsTest();
 }
 
 
@@ -77,7 +65,8 @@ void OnTimer()
 		if(decision > 0.0)
 		{
 		}
-		else {
+		else
+		{
 		
 		}
 	}
