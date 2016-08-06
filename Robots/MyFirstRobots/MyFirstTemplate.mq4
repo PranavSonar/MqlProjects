@@ -42,11 +42,8 @@ int OnInit()
 
 void OnDeinit(const int reason)
 {
+	printf("OnDeinit: reason = %f", reason);
 }
-
-
-
-
 
 double CalculateDecision(double stopLoss = 0.0, double takeProfit = 0.0)
 {
