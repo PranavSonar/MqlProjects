@@ -103,12 +103,12 @@ bool TestNewOrder()
 	
 	if (OrderIsBuy == 1)
 	{
-		if ((Ask - TargetSL)/pip < 2*SlLimitPips/3)
+		if ((Ask - TargetSL)/pip < SlLimitPips*0.66)
 			statusOk = statusOk & (OrderSend(Symbol(),OP_BUY,NextLotNumber,Ask,3,0,0,PrintValue,0,0,clrGreen) > 0);
 	}
-	else if (OrderIsBuy == 0)
+	else if (OrderIsBuy == 0) //sell order
 	{
-		if ((TargetSL - Bid)/pip < 2*SlLimitPips/3)
+		if ((TargetSL - Bid)/pip < SlLimitPips*0.66)
 			statusOk = statusOk & (OrderSend(Symbol(),OP_SELL,NextLotNumber,Bid,3,0,0,PrintValue,0,0,clrRed) > 0);    
 	}
 	
