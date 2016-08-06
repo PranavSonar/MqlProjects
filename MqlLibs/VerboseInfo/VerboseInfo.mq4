@@ -31,7 +31,7 @@ public:
 	string GetDelimiter() { return delimiter; }
 	
 	//--- method for getting client and terminal information
-	void ClientAndTerminalInfo()
+	virtual void ClientAndTerminalInfo()
 	{
 		LineDelimiter();
 		printf(delimiter + " IsDemo: %s", IsDemo()?"true":"false"); 
@@ -50,7 +50,7 @@ public:
 	}
 	
 	//--- method for getting balance account information
-	void BalanceAccountInfo()
+	virtual void BalanceAccountInfo()
 	{
 		LineDelimiter();
 		printf(delimiter + " AccountBalance: %G",AccountInfoDouble(ACCOUNT_BALANCE)); 

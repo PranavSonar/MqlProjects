@@ -27,7 +27,7 @@ input double FxPairs = 8.00;
 double ManagementLots;
 double Lotsdivider;
 double TargetTP, TargetSL, ComputeSpread;
-int MagicNo, CurrentOpenOrders;
+int CurrentOpenOrders;
 int OrderIsBuy;
 
 
@@ -130,11 +130,11 @@ void OpenNewOrder()
    {
       if (RSIValue < 50)
       {
-         Ticket = OrderSend(Symbol(),OP_SELL,ManagementLots,Bid,3,0,0,"iRSI Level = "+DoubleToStr(NormalizeDouble(RSIValue,2),2),MagicNo,0,clrRed); // The main function used to open market or place a pending order.
+         Ticket = OrderSend(Symbol(),OP_SELL,ManagementLots,Bid,3,0,0,"iRSI Level = "+DoubleToStr(NormalizeDouble(RSIValue,2),2),0,0,clrRed); // The main function used to open market or place a pending order.
       }
       else
       {
-         Ticket = OrderSend(Symbol(),OP_BUY,ManagementLots,Ask,3,0,0,"iRSI Level = "+DoubleToStr(NormalizeDouble(RSIValue,2),2),MagicNo,0,clrGreen); // The main function used to open market or place a pending order.
+         Ticket = OrderSend(Symbol(),OP_BUY,ManagementLots,Ask,3,0,0,"iRSI Level = "+DoubleToStr(NormalizeDouble(RSIValue,2),2),0,0,clrGreen); // The main function used to open market or place a pending order.
       }  
    }
    ComputeSpread = Ask-Bid;  
@@ -157,13 +157,13 @@ void TestNewOrder()
    if (OrderIsBuy == 1)
    {
       if ((Ask - TargetSL)/Point/10 < 2*SlLimitPips/3)
-         Ticket = OrderSend(Symbol(),OP_BUY,NextLotNumber,Ask,3,0,0,PrintValue,MagicNo,0,clrGreen); //The main function used to open market or place a pending order.
+         Ticket = OrderSend(Symbol(),OP_BUY,NextLotNumber,Ask,3,0,0,PrintValue,0,0,clrGreen); //The main function used to open market or place a pending order.
    }
    else
       if (OrderIsBuy == 0)
       {
          if ((TargetSL - Bid)/Point/10 < 2*SlLimitPips/3)
-            Ticket = OrderSend(Symbol(),OP_SELL,NextLotNumber,Bid,3,0,0,PrintValue,MagicNo,0,clrRed); //The main function used to open market or place a pending order.      
+            Ticket = OrderSend(Symbol(),OP_SELL,NextLotNumber,Bid,3,0,0,PrintValue,0,0,clrRed); //The main function used to open market or place a pending order.      
       }
 }
  
@@ -172,7 +172,6 @@ void Initialisation()
    string CurrentCurrency, BaseCurrency, SecondCurrency;
    double TotalAmount, TotalLot, ComputePrice;
    ComputePrice = 0;
-   MagicNo = 0;
   
    LotsDividerCompute();
      
@@ -189,79 +188,34 @@ void Initialisation()
    if (BaseCurrency == "AUD")
    {
       ComputePrice = MarketInfo("AUDUSD",MODE_BID); //Returns various data about securities listed in the "Market Watch" window.
-     MagicNo = 658568;
    }
    if (BaseCurrency == "CAD")
    {
       ComputePrice = 1/MarketInfo("USDCAD",MODE_BID);
-      MagicNo = 676568;
    }
    if (BaseCurrency == "CHF")
    {
       ComputePrice = 1/MarketInfo("USDCHF",MODE_BID);
-      MagicNo = 677270;
    }
    if (BaseCurrency == "EUR")
    {
       ComputePrice = MarketInfo("EURUSD",MODE_BID);
-      MagicNo = 698582;
    }
    if (BaseCurrency == "GBP")
    {
       ComputePrice = MarketInfo("GBPUSD",MODE_BID);
-      MagicNo = 716680;
    }
    if (BaseCurrency == "NZD")
    {
       ComputePrice = MarketInfo("NZDUSD",MODE_BID);
-      MagicNo = 789068;
    }
    if (BaseCurrency == "SGD")
    {
       ComputePrice = 1/MarketInfo("USDSGD",MODE_BID);
-      MagicNo = 837168;
    }
    if (BaseCurrency == "USD")
    {
       ComputePrice = 1.00;
-      MagicNo = 858368;
-   }
-     
-   if (SecondCurrency == "AUD")
-   {
-      MagicNo = MagicNo + 658568;
-   }
-   if (SecondCurrency == "CAD")
-   {
-      MagicNo = MagicNo + 676568;
-   }
-   if (SecondCurrency == "CHF")
-   {
-      MagicNo = MagicNo + 677270;
-   }
-   if (SecondCurrency == "EUR")
-   {
-      MagicNo = MagicNo + 698582;
-   }
-   if (SecondCurrency == "GBP")
-   {
-      MagicNo = MagicNo + 716680;
-   }
-   if (SecondCurrency == "NZD")
-   {
-      MagicNo = MagicNo + 789068;
-   }
-   if (SecondCurrency == "SGD")
-   {
-      MagicNo = MagicNo + 837168;
-   }
-   if (SecondCurrency == "USD")
-   {
-      MagicNo = MagicNo + 858368;
-   }  
-   if (MagicNo == 0)
-   {
-      MagicNo = 999999;
    }
    
    TotalLot = NormalizeDouble(TotalAmount/ComputePrice/10.00,2); // Rounding floating point number to a specified accuracy.

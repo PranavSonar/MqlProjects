@@ -12,7 +12,7 @@
 class BaseTransactionManagement {
 	public:
 		BaseTransactionManagement() {}
-	
+		
 		
 		virtual double GetOrdersProfit(bool allCharts = false)
 		{
