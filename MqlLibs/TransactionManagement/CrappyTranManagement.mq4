@@ -46,13 +46,13 @@ class CrappyTranManagement : public BaseTransactionManagement
 		
 		virtual bool OpenOrderBasedOnRSI50(double lots, int period = 14, int slippage = 3, ENUM_APPLIED_PRICE price = PRICE_MEDIAN, int shift = 0)
 		{
-			bool statusOk = true;
+			bool statusOk = RefreshRates(); // refresh Ask, Bid;
 			double RSIValue = iRSI(Symbol(), Period(), period, price, shift);
 			
 			if (RSIValue < 50)
-				statusOk = statusOk & OrderSend(Symbol(),OP_SELL,lots,Bid,slippage,0,0,"iRSI Level = "+DoubleToStr(NormalizeDouble(RSIValue,2),2),0,0,clrRed);
+				statusOk = statusOk & (OrderSend(Symbol(),OP_SELL,lots,Bid,slippage,0,0,"iRSI Level = "+DoubleToStr(NormalizeDouble(RSIValue,2),2),0,0,clrRed) > 0);
 			else
-				statusOk = statusOk & OrderSend(Symbol(),OP_BUY,lots,Ask,slippage,0,0,"iRSI Level = "+DoubleToStr(NormalizeDouble(RSIValue,2),2),0,0,clrGreen);
+				statusOk = statusOk & (OrderSend(Symbol(),OP_BUY,lots,Ask,slippage,0,0,"iRSI Level = "+DoubleToStr(NormalizeDouble(RSIValue,2),2),0,0,clrGreen) > 0);
 			
 			return statusOk;
 		}

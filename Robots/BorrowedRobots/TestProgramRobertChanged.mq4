@@ -38,7 +38,7 @@ int OnInit()
 	Initialisation();
 	return(INIT_SUCCEEDED);
 }
- 
+
 void OnDeinit(const int reason)
 {
 	printf("OnDeinit: %d", reason);
@@ -46,6 +46,8 @@ void OnDeinit(const int reason)
  
 void OnTick()
 {
+	RefreshRates(); // refresh Ask, Bid, etc
+	
 	CurrentOpenOrders = 0;
 	SumCompute();   
 	tran.ModifyOrders(TargetTP, TargetSL);
@@ -97,21 +99,22 @@ bool TestNewOrder()
 	double NextLotNumber = ManagementLots*MathPow(2,CurrentOpenOrders);
 	double RSIValue = iRSI(Symbol(), PERIOD_H1, 14, 4, 0);
 	string PrintValue = "Cont"+IntegerToString(CurrentOpenOrders+1)+" iRSI = "+DoubleToStr(NormalizeDouble(RSIValue,2),2);
+	double pip = Point/10.0;
 	
 	if (OrderIsBuy == 1)
 	{
-		if ((Ask - TargetSL)/Point/10 < 2*SlLimitPips/3)
-			statusOk = statusOk & OrderSend(Symbol(),OP_BUY,NextLotNumber,Ask,3,0,0,PrintValue,0,0,clrGreen); //The main function used to open market or place a pending order.
+		if ((Ask - TargetSL)/pip < 2*SlLimitPips/3)
+			statusOk = statusOk & (OrderSend(Symbol(),OP_BUY,NextLotNumber,Ask,3,0,0,PrintValue,0,0,clrGreen) > 0);
 	}
 	else if (OrderIsBuy == 0)
 	{
-		if ((TargetSL - Bid)/Point/10 < 2*SlLimitPips/3)
-			statusOk = statusOk & OrderSend(Symbol(),OP_SELL,NextLotNumber,Bid,3,0,0,PrintValue,0,0,clrRed); //The main function used to open market or place a pending order.      
+		if ((TargetSL - Bid)/pip < 2*SlLimitPips/3)
+			statusOk = statusOk & (OrderSend(Symbol(),OP_SELL,NextLotNumber,Bid,3,0,0,PrintValue,0,0,clrRed) > 0);    
 	}
 	
 	return statusOk;
 }
- 
+
 void Initialisation()
 {
 	double TotalAmount = money.GetTotalAmount();
