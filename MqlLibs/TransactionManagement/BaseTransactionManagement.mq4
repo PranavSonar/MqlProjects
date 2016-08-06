@@ -39,7 +39,7 @@ class BaseTransactionManagement {
 			return statusOk; // true if all orders closed, false if even one couldn't be closed
 		}
 		
-		virtual void TestCloseProfit(bool allCharts = true)
+		virtual void TestCloseProfit(bool allCharts = false)
 		{
 			if (GetOrdersProfit(allCharts) >= 0)
 				CloseOrders(allCharts);
