@@ -43,4 +43,17 @@ class CrappyTranManagement : public BaseTransactionManagement
 			Get_SumLotsOrders_OpenOrders_AvgPrice(dummyVar_SumLots,dummyVar_SumOrders,
 				currentOpenOrders,averagePrice,firstOrderIsBuy,allCharts);
 		}
+		
+		virtual bool OpenOrderBasedOnRSI50(double lots)
+		{
+			bool statusOk = true;
+			double RSIValue = iRSI(Symbol(), Period(), 14, 4, 0);
+			
+			if (RSIValue < 50)
+				statusOk = statusOk & OrderSend(Symbol(),OP_SELL,lots,Bid,3,0,0,"iRSI Level = "+DoubleToStr(NormalizeDouble(RSIValue,2),2),0,0,clrRed);
+			else
+				statusOk = statusOk & OrderSend(Symbol(),OP_BUY,lots,Ask,3,0,0,"iRSI Level = "+DoubleToStr(NormalizeDouble(RSIValue,2),2),0,0,clrGreen);
+			
+			return statusOk;
+		}
 };

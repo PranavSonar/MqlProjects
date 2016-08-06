@@ -91,17 +91,10 @@ bool OpenNewOrder()
 {
 	bool statusOk = true;
 	Initialisation();
-	double RSIValue = iRSI(Symbol(), Period(), 14, 4, 0);
-	
-	if (ContinueRunning == 1)
-	{
-		if (RSIValue < 50)
-			statusOk = statusOk & OrderSend(Symbol(),OP_SELL,ManagementLots,Bid,3,0,0,"iRSI Level = "+DoubleToStr(NormalizeDouble(RSIValue,2),2),0,0,clrRed); // The main function used to open market or place a pending order.
-		else
-			statusOk = statusOk & OrderSend(Symbol(),OP_BUY,ManagementLots,Ask,3,0,0,"iRSI Level = "+DoubleToStr(NormalizeDouble(RSIValue,2),2),0,0,clrGreen); // The main function used to open market or place a pending order.
-	}
 	ComputeSpread = Ask-Bid;
 	
+	if (ContinueRunning == 1)
+		statusOk = statusOk & tran.OpenOrderBasedOnRSI50(ManagementLots);
 	return statusOk;
 }
  
