@@ -49,19 +49,14 @@ void OnTick()
 	CurrentOpenOrders = 0;
 	SumCompute();   
 	tran.ModifyOrders(TargetTP, TargetSL);
+	
 	if (TargetSL == 0.00)
-	{
 		OpenNewOrder();
-	}
-	else
-	if (CurrentOpenOrders < MaxOrderOpen)
-	{ 
+	else if (CurrentOpenOrders < MaxOrderOpen)
 		TestNewOrder();
-	}
+	
 	if (CurrentOpenOrders > StartTestClose)
-	{
 		tran.TestCloseProfit();
-	}
 	
 	scrn.CurrentValue(tran.GetOrdersProfit());
 }
@@ -70,9 +65,7 @@ void LotsDividerCompute()
 {
 	Lotsdivider = 0;
 	for(int i=1;i<=MaxOrderOpen;i++)
-	{
 		Lotsdivider = Lotsdivider + MathPow(2,i-1);
-	}
 	Lotsdivider = Lotsdivider*(FxPairs/2);
 }
  
