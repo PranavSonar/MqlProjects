@@ -8,6 +8,8 @@
 #property version   "1.00"
 #property strict
 
+#include "../../MqlLibs/DecisionMaking/DecisionDoubleBB.mq4"
+
 int OnInit()
 {
 	EventSetTimer(4);	

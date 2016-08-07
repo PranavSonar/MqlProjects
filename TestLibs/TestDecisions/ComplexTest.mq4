@@ -8,6 +8,16 @@
 #property version   "1.00"
 #property strict
 
-void OnStart()
-{
+#include "../../MqlLibs/DecisionMaking/DecisionDoubleBB.mq4"
+#include "../../MqlLibs/DecisionMaking/DecisionMA.mq4"
+#include "../../MqlLibs/DecisionMaking/DecisionRSI.mq4"
+
+
+//+------------------------------------------------------------------+
+//| Expert initialization function (used for testing)                |
+//+------------------------------------------------------------------+
+int OnInit()
+{	
+	
+	return(INIT_SUCCEEDED);
 }
