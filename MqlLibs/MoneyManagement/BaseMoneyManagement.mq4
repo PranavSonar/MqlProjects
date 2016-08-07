@@ -9,24 +9,41 @@
 #property version   "1.00"
 #property strict
 
+#include "../SymbolsLib/BaseSymbol.mq4"
+
+
+#define OrderIsBuy 1
+#define OrderIsSell 0
+#define OrderIsIncert -1
+
 class BaseMoneyManagement
 {
+	private:
+		BaseSymbol symbol;
+		
 	public:
 		BaseMoneyManagement() {}
 		
 		virtual double GetTotalAmount() { return AccountBalance() + AccountCredit(); }
 		
-		virtual void CalculateTP_SL(double &tp, double &sl, int orderIsBuy, double tpLimitPips, double slLimitPips, double price, double spread)
+		virtual bool CheckPriceGoesOurWay()
+		{
+			bool statusOk = true;
+			
+			return statusOk;
+		}
+		
+		virtual void CalculateTP_SL(double &tp, double &sl, int orderType, double tpLimitPips, double slLimitPips, double price, double spread)
 		{
 			double pip = Point * 10;
-			
-			if (orderIsBuy == 1)
+					if (orderType == OrderIsBuy)
+	
 			{
 				tp = price + (tpLimitPips*pip) + (spread);
 				sl = price - (slLimitPips*pip) - (spread);
 			}
-			else if (orderIsBuy == 0)
-			{ 
+			else if (orderType == OrderIsSell)
+			{
 				tp = price - (tpLimitPips*pip) - (spread);
 				sl = price + (slLimitPips*pip) + (spread);
 			}
@@ -54,5 +71,29 @@ class BaseMoneyManagement
 				return 1.00;
 			else
 				return 0.0;
+		}
+		
+		virtual double CalculatePrice()
+		{
+			string accountCurrency = AccountCurrency();
+			if(accountCurrency == "")
+				return 0.0;
+			
+			string baseCurrency = StringSubstr(Symbol(),0,3);
+			
+			if(baseCurrency == accountCurrency)
+				return 1.0;
+			else
+			{
+				string testedSymbol = accountCurrency + baseCurrency;
+				if(symbol.SymbolExists(testedSymbol))
+					return MarketInfo(testedSymbol, MODE_BID);
+				
+				testedSymbol = baseCurrency + accountCurrency;
+				if(symbol.SymbolExists(testedSymbol))
+					return 1.0/MarketInfo(testedSymbol, MODE_BID);
+			}
+			
+			return 0.0;
 		}
 };

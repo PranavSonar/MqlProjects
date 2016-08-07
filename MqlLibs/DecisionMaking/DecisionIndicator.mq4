@@ -26,6 +26,6 @@ class DecisionIndicator : public BaseDecision
 			this.Verbose = verbose;
 			this.ShiftValue = shiftValue;
 		}
-	
+		
 		~DecisionIndicator() {}
 };
