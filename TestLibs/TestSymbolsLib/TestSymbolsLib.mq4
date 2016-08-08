@@ -16,6 +16,19 @@
 //+------------------------------------------------------------------+
 int OnInit()
 {	
-	
-	return(INIT_SUCCEEDED);
+   BaseSymbol symbol;
+   string symbolsList[], result = "";
+   
+   symbol.PrintAllSymbols();
+   Print("SymbolExists: EURRON: ", symbol.SymbolExists("EURRON"));
+   Print("SymbolPartExists: RON: ", symbol.SymbolPartExists("RON"));
+   Print("SymbolPartExists: RON: ", symbol.SymbolPartExists("RON", false));
+   symbol.SymbolsListWithSymbolPart("RON", symbolsList);
+   
+   for(int i=0;i<ArraySize(symbolsList);i++)
+      result += result + symbolsList[i] + " ";
+      
+   Print("SymbolsListWithSymbolPart: RON: " + result);
+   
+   return(INIT_SUCCEEDED);
 }
