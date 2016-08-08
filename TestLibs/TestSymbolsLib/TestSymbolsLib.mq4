@@ -15,7 +15,7 @@
 //| Expert initialization function (used for testing)                |
 //+------------------------------------------------------------------+
 int OnInit()
-{	
+{
    BaseSymbol symbol;
    string symbolsList[], result = "";
    
