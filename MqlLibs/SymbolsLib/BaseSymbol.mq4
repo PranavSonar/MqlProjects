@@ -40,7 +40,7 @@ class BaseSymbol
 		bool SymbolExists(string symbolName)
 		{
 			for(int i=0;i<ArraySize(SymbolsList);i++)
-				if(SymbolsList[i] == symbolName)
+				if(StringFind(SymbolsList[i], symbolName) != -1)
 					return true;
 			return false;
 		}
