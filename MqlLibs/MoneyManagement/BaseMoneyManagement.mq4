@@ -96,4 +96,9 @@ class BaseMoneyManagement
 			
 			return 0.0;
 		}
+		
+		virtual void DetectNumberOfBots()
+		{
+			
+		}
 };
