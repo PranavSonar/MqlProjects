@@ -16,7 +16,31 @@
 //| Expert initialization function (used for testing)                |
 //+------------------------------------------------------------------+
 int OnInit()
-{	
+{
+	if(!IsDemo())
+	{
+		int result = MessageBox("Warning. This is not a test platform (so it seems)! This program will open transactions almost randomly to test some imlpemented functions! Are you sure you want to continue?", "Beware. Are you sure you want to continue?", 4);
+		if(result == 7) // no has been pressed
+			return (INIT_FAILED);
+	}
+	
+	CrappyTranManagement tran;
+	
+	// open 1 transaction based on RSI; we need at least one transaction to test the rest!!
+	tran.OpenOrderBasedOnRSI50(0.1);
+	
+	// get average price
+	int nrOfOpenOrders, orderIsBuy; double averagePrice;
+	tran.Get_OpenOrders_AvgPrice(nrOfOpenOrders, averagePrice, orderIsBuy);
+	printf("AveragePrice = %f; NumberOfOpenOrders = %d; OrderIsBuy = %d.", averagePrice, nrOfOpenOrders, orderIsBuy);
+	
+	
+	double SL, TP;
+	FollowTrendTranMan followTrend;
+	
+	followTrend.FollowTrend_UpdateSL_TP(SL, TP);
+	printf("%f %f", SL, TP);
+	
 	
 	return(INIT_SUCCEEDED);
 }
