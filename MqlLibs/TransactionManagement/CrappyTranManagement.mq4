@@ -56,4 +56,18 @@ class CrappyTranManagement : public BaseTransactionManagement
 			
 			return statusOk;
 		}
+		
+		virtual bool SimulateOrderBasedOnRSI50(double lots, int period = 14, int slippage = 3, ENUM_APPLIED_PRICE price = PRICE_MEDIAN, int shift = 0)
+		{
+			bool statusOk = RefreshRates(); // refresh Ask, Bid;
+			double RSIValue = iRSI(Symbol(), Period(), period, price, shift);
+			
+			if (RSIValue < 50)
+				statusOk = statusOk & (SimulateOrderSend(Symbol(),OP_SELL,lots,Bid,slippage,0,0,"iRSI Level = "+DoubleToStr(NormalizeDouble(RSIValue,2),2),0,0,clrRed) > 0);
+			else
+				statusOk = statusOk & (SimulateOrderSend(Symbol(),OP_BUY,lots,Ask,slippage,0,0,"iRSI Level = "+DoubleToStr(NormalizeDouble(RSIValue,2),2),0,0,clrGreen) > 0);
+			
+			return statusOk;
+		}
+		
 };
