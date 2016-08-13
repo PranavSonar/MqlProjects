@@ -21,6 +21,4 @@ void OnDeinit(const int reason)
 	EventKillTimer();
 }
 
-void OnTick() {}
-
 void OnTimer() {}
