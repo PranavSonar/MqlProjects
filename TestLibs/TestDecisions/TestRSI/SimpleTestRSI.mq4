@@ -8,7 +8,7 @@
 #property version   "1.00"
 #property strict
 
-#include "../../MqlLibs/DecisionMaking/DecisionRSI.mq4"
+#include "../../../MqlLibs/DecisionMaking/DecisionRSI.mq4"
 
 int OnInit()
 {

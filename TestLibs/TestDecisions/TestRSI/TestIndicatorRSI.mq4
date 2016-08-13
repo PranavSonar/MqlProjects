@@ -23,7 +23,7 @@
 //+------------------------------------------------------------------+
 //| Indicator initialization function (used for testing)             |
 //+------------------------------------------------------------------+
-int init()
+int OnInit()
 {
 	// print some verbose info
 	VerboseInfo vi;

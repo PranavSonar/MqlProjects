@@ -14,7 +14,7 @@
 #property indicator_color1 Blue     // Color of the 1st line
 #property indicator_color2 Red      // Color of the 2nd line
 
-#include "../../../MqlLibs/DecisionMaking/DecisionMA.mq4"
+#include "../../../MqlLibs/DecisionMaking/Decision3MA.mq4"
 #include "../../../MqlLibs/TransactionManagement/BaseTransactionManagement.mq4"
 #include "../../../MqlLibs/VerboseInfo/ScreenInfo.mq4"
 #include "../../../MqlLibs/VerboseInfo/VerboseInfo.mq4"
@@ -35,9 +35,9 @@ int init()
 }
 
 
-int start()
+int OnInit()
 {
-	DecisionMA decision;
+	Decision3MA decision;
 	decision.SetVerboseLevel(1);
 	BaseTransactionManagement transaction;
 	transaction.SetVerboseLevel(1);

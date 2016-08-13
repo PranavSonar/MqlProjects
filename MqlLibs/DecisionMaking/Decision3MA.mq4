@@ -11,10 +11,10 @@
 
 #include "DecisionIndicator.mq4"
 
-class DecisionMA : public DecisionIndicator
+class Decision3MA : public DecisionIndicator
 {
 	public:
-		DecisionMA(bool verbose = false, int shiftValue = 1, int internalShift = 0) : DecisionIndicator(verbose, shiftValue, internalShift) {}
+		Decision3MA(bool verbose = false, int shiftValue = 1, int internalShift = 0) : DecisionIndicator(verbose, shiftValue, internalShift) {}
 		
 		double GetDecision(int internalShift = 0)
 		{
