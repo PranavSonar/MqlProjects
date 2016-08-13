@@ -16,7 +16,7 @@ int OnInit()
 	if(!IsDemo())
 	{
 		int result = MessageBox("Warning. This is not a test platform (so it seems)! This program will open transactions almost randomly to test some imlpemented functions! Are you sure you want to continue?", "Beware. Are you sure you want to continue?", 4);
-		if(result == 7) // no has been pressed
+		if(result == 7) // "No" has been pressed
 			return (INIT_FAILED);
 	}
 	
