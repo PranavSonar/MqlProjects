@@ -18,10 +18,8 @@ class DecisionDoubleBB : public DecisionIndicator
 		double InternalTP;
 		
 	public:
-		DecisionDoubleBB() : DecisionIndicator(false) { InternalSL = 0.0; InternalTP = 0.0; }
-		DecisionDoubleBB(bool verbose) : DecisionIndicator(verbose) { InternalSL = 0.0; InternalTP = 0.0; }
-		DecisionDoubleBB(bool verbose, int shift) : DecisionIndicator(verbose,shift) { InternalSL = 0.0; InternalTP = 0.0; }
-		DecisionDoubleBB(bool verbose, int shift, double sl, double tp) : DecisionIndicator(verbose,shift) { InternalSL = sl; InternalTP = tp; }
+		DecisionDoubleBB(bool verbose = false, int shiftValue = 1, int internalShift = 0) : DecisionIndicator(verbose,shiftValue,internalShift) { InternalSL = 0.0; InternalTP = 0.0; }
+		DecisionDoubleBB(double sl, double tp, bool verbose = false, int shiftValue = 1, int internalShift = 0) : DecisionIndicator(verbose,shiftValue,internalShift) { InternalSL = sl; InternalTP = tp; }
 		
 		virtual double GetDecision()
 		{
@@ -33,23 +31,23 @@ class DecisionDoubleBB : public DecisionIndicator
 			return GetDecision(InternalSL, InternalTP, internalBandsDeviation);
 		}
 		
-		virtual double GetDecision(double &stopLoss, double &takeProfit, double internalBandsDeviation = 1.0)
+		virtual double GetDecision(double &stopLoss, double &takeProfit, double internalBandsDeviation = 1.0, int shift = 0)
 		{
 			// Calculate decisions based on Bollinger Bands
-			double BBs2 = iBands(Symbol(), PERIOD_CURRENT, Period(), 2, 0, PRICE_CLOSE, MODE_UPPER, 0);
+			double BBs2 = iBands(Symbol(), PERIOD_CURRENT, Period(), 2, 0, PRICE_CLOSE, MODE_UPPER, shift);
 			//double BBs2Shifted = iBands(Symbol(), PERIOD_CURRENT, Period(), 2, 0, PRICE_CLOSE, MODE_UPPER, ShiftValue);
 			double BBs1 = iBands(Symbol(), PERIOD_CURRENT, Period(), internalBandsDeviation, 0, PRICE_CLOSE, MODE_UPPER, 0);
 			//double BBs1Shifted = iBands(Symbol(), PERIOD_CURRENT, Period(), 1, 0, PRICE_CLOSE, MODE_UPPER, ShiftValue);
-			double BBm  = iBands(Symbol(), PERIOD_CURRENT, Period(), 2, 0, MODE_MAIN,   MODE_BASE,  0);
+			double BBm  = iBands(Symbol(), PERIOD_CURRENT, Period(), 2, 0, MODE_MAIN,   MODE_BASE, shift);
 			//double BBmShifted  = iBands(Symbol(), PERIOD_CURRENT, Period(), 2, 0, MODE_MAIN,   MODE_BASE,  ShiftValue);
-			double BBd1 = iBands(Symbol(), PERIOD_CURRENT, Period(), internalBandsDeviation, 0, PRICE_CLOSE, MODE_LOWER, 0);
+			double BBd1 = iBands(Symbol(), PERIOD_CURRENT, Period(), internalBandsDeviation, 0, PRICE_CLOSE, MODE_LOWER, shift);
 			//double BBd1Shifted = iBands(Symbol(), PERIOD_CURRENT, Period(), 1, 0, PRICE_CLOSE, MODE_LOWER, ShiftValue);
-			double BBd2 = iBands(Symbol(), PERIOD_CURRENT, Period(), 2, 0, PRICE_CLOSE, MODE_LOWER, 0);
+			double BBd2 = iBands(Symbol(), PERIOD_CURRENT, Period(), 2, 0, PRICE_CLOSE, MODE_LOWER, shift);
 			//double BBd2Shifted = iBands(Symbol(), PERIOD_CURRENT, Period(), 2, 0, PRICE_CLOSE, MODE_LOWER, ShiftValue);
 			
 			
-			double closeLevel = iClose(Symbol(), Period(), 0);
-			double closeLevelShift = iClose(Symbol(), Period(), ShiftValue);
+			double closeLevel = iClose(Symbol(), Period(), shift);
+			double closeLevelShift = iClose(Symbol(), Period(), shift + ShiftValue);
 			
 			double result = InvalidValue;
 			if(closeLevel >= BBd2 && closeLevel <= BBd1 && closeLevelShift > closeLevel)

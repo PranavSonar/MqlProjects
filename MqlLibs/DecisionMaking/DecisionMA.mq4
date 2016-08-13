@@ -14,9 +14,7 @@
 class DecisionMA : public DecisionIndicator
 {
 	public:
-		DecisionMA() : DecisionIndicator(false) {}
-		DecisionMA(bool verbose) : DecisionIndicator(verbose) {}
-		DecisionMA(bool verbose, int shift) : DecisionIndicator(verbose, shift) {}
+		DecisionMA(bool verbose = false, int shiftValue = 1, int internalShift = 0) : DecisionIndicator(verbose, shiftValue, internalShift) {}
 		
 		double GetDecision()
 		{
