@@ -23,8 +23,8 @@ int OnInit()
 	EventSetTimer(4);	
 	CrappyTranManagement tran;
 	
-	// open 1 transaction based on RSI; we need at least one transaction to test the rest!!
-	tran.OpenOrderBasedOnRSI50(0.1);
+	// open 1 fake transaction based on RSI; we need at least one transaction to test the rest!!
+	tran.SimulateOrderBasedOnRSI50(0.1);
 	
 	// get average price
 	int nrOfOpenOrders, orderIsBuy; double averagePrice;
