@@ -9,10 +9,12 @@
 #property version   "1.00"
 #property strict
 
+#include "BaseTransactionManagement.mq4"
+
 class FollowTrendTranMan : public BaseTransactionManagement
 {
 	public:
-		void FollowTrend_UpdateSL_TP(double targetSL, double targetTP, bool allCharts = false)
+		bool FollowTrend_UpdateSL_TP(double targetSL, double targetTP, bool allCharts = false)
 		{
 			bool statusOk = RefreshRates();
 			
