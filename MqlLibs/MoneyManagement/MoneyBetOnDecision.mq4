@@ -22,7 +22,8 @@ class MoneyBetOnDecision : public BaseMoneyManagement
 	public:
 		MoneyBetOnDecision()
 		{
-			MoneyBetOnDecision(IncertitudeDecision, IncertitudeDecision);
+			this.MaxDecision = IncertitudeDecision;
+			this.CurrentDecision = IncertitudeDecision;
 		}
 		
 		MoneyBetOnDecision(int maxDecision, int currentDecision)
@@ -33,19 +34,23 @@ class MoneyBetOnDecision : public BaseMoneyManagement
 		
 		MoneyBetOnDecision(int maxDecision, int currentDecision, int numberOfBots)
 		{
-			MoneyBetOnDecision(maxDecision, currentDecision);
+			this.MaxDecision = maxDecision;
+			this.CurrentDecision = currentDecision;
 			this.NumberOfBots = numberOfBots;
 		}
 		
-		void ChangeCurrentDecision(int currentDecision)
+		virtual void ChangeCurrentDecision(int currentDecision)
 		{
 			this.CurrentDecision = currentDecision;
 		}
 		
-		void ChangeMaxDecision(int maxDecision)
+		virtual void ChangeMaxDecision(int maxDecision)
 		{
 			this.MaxDecision = maxDecision;
 		}
 		
-		
+		virtual double GetPriceBasedOnDecision()
+		{
+			return (Point()*10.0)*pow(2.0,currentDecision/maxDecision); // to do: check & fix
+		}
 };
