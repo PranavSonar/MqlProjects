@@ -9,7 +9,9 @@
 #property version   "1.00"
 #property strict
 
-class BaseTransactionManagement {
+#include "BaseOrder.mq4"
+
+class BaseTransactionManagement : protected BaseOrder {
 	public:
 		BaseTransactionManagement() {}
 		
