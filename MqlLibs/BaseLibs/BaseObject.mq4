@@ -42,6 +42,11 @@ class BaseObject
 			return this.VerboseLevel;
 		}
 		
+		virtual void SetVerboseLevel(int verboseLevel)
+		{
+			this.VerboseLevel = verboseLevel;
+		}
+		
 		virtual bool IsVerboseMode()
 		{
 			return this.VerboseLevel >= 1;

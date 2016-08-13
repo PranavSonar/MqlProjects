@@ -37,11 +37,13 @@ int init()
 int start()
 {
 	DecisionDoubleBB decision;
+	decision.SetVerboseLevel(1);
 	BaseTransactionManagement transaction;
+	transaction.SetVerboseLevel(1);
 	ScreenInfo screen;
 	
 	int i = Bars - IndicatorCounted() - 1;
-	double SL, TP;
+	double SL = 0.0, TP = 0.0;
 	
 	while(i >= 0)
 	{

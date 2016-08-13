@@ -51,12 +51,22 @@ class BaseOrder : public BaseObject
 			ObjectSet(objectName, OBJPROP_COLOR, currentOrderColor);
 			ObjectSet(objectName, OBJPROP_WIDTH, 3);
 			
+			if(IsVerboseMode())
+			{
+				printf("%s: price = %f; time = %s", objectName, price, TimeToStr(Time[shift])); 
+			}
+			
 			if(stoploss != 0)
 			{
 				objectName = screen.NewObjectName(SimulatedStopLoss, magic);
 				statusOk = statusOk & ObjectCreate(ChartID(),objectName, OBJ_VLINE, 0, Time[shift], stoploss);
 				ObjectSet(objectName, OBJPROP_COLOR, Red);
 				ObjectSet(objectName, OBJPROP_WIDTH, 1);
+			
+				if(IsVerboseMode())
+				{
+					printf("%s: SL = %f; time = %s", objectName, stoploss, TimeToStr(Time[shift])); 
+				}
 			}
 			
 			if(takeprofit != 0)
@@ -65,6 +75,11 @@ class BaseOrder : public BaseObject
 				statusOk = statusOk & ObjectCreate(ChartID(),objectName, OBJ_VLINE, 0, Time[shift], takeprofit);
 				ObjectSet(objectName, OBJPROP_COLOR, Green);
 				ObjectSet(objectName, OBJPROP_WIDTH, 1);
+			
+				if(IsVerboseMode())
+				{
+					printf("%s: SL = %f; time = %s", objectName, takeprofit, TimeToStr(Time[shift])); 
+				}
 			}
 			
 			return statusOk;
@@ -91,12 +106,22 @@ class BaseOrder : public BaseObject
 			ObjectSet(objectName, OBJPROP_COLOR, Gray);
 			ObjectSet(objectName, OBJPROP_WIDTH, 3);
 			
+			if(IsVerboseMode())
+			{
+				printf("%s: price = %f; time = %s", objectName, price, TimeToStr(Time[shift])); 
+			}
+			
 			if(stoploss != 0)
 			{
 				objectName = screen.ReplaceObjectName(SimulatedStopLoss, magic);
 				statusOk = statusOk & ObjectCreate(ChartID(),objectName, OBJ_VLINE, 0, Time[shift], stoploss);
 				ObjectSet(objectName, OBJPROP_COLOR, Red);
 				ObjectSet(objectName, OBJPROP_WIDTH, 1);
+				
+				if(IsVerboseMode())
+				{
+					printf("%s: SL = %f; time = %s", objectName, stoploss, TimeToStr(Time[shift])); 
+				}
 			}
 			
 			if(takeprofit != 0)
@@ -105,7 +130,13 @@ class BaseOrder : public BaseObject
 				statusOk = statusOk & ObjectCreate(ChartID(),objectName, OBJ_VLINE, 0, Time[0], takeprofit);
 				ObjectSet(objectName, OBJPROP_COLOR, Green);
 				ObjectSet(objectName, OBJPROP_WIDTH, 1);
+				
+				if(IsVerboseMode())
+				{
+					printf("%s: SL = %f; time = %s", objectName, takeprofit, TimeToStr(Time[shift])); 
+				}
 			}
+			
 			
 			return statusOk;
 		}

@@ -21,18 +21,16 @@ class DecisionDoubleBB : public DecisionIndicator
 		DecisionDoubleBB(int verboseLevel = 0, int shiftValue = 1, int internalShift = 0) : DecisionIndicator(verboseLevel,shiftValue,internalShift) { InternalSL = 0.0; InternalTP = 0.0; }
 		DecisionDoubleBB(double sl, double tp, int verboseLevel = 0, int shiftValue = 1, int internalShift = 0) : DecisionIndicator(verboseLevel,shiftValue,internalShift) { InternalSL = sl; InternalTP = tp; }
 		
-		virtual double GetDecision()
+		virtual double GetDecision(double internalBandsDeviation = 1.0, int shift = 0, double internalBandsDeviationWhole = 2.0)
 		{
-			return GetDecision(1.0);
-		}
-		
-		virtual double GetDecision(double internalBandsDeviation = 1.0)
-		{
-			return GetDecision(InternalSL, InternalTP, internalBandsDeviation);
+			return GetDecision(InternalSL, InternalTP, internalBandsDeviation, shift, internalBandsDeviationWhole);
 		}
 		
 		virtual double GetDecision(double &stopLoss, double &takeProfit, double internalBandsDeviation = 1.0, int shift = 0, double internalBandsDeviationWhole = 2.0)
 		{
+			if((shift == 0) && (GetShiftValue() != 0))
+				shift = GetShiftValue();
+			
 			// Calculate decisions based on Bollinger Bands
 			double BBs2 = iBands(Symbol(), PERIOD_CURRENT, Period(), internalBandsDeviationWhole, 0, PRICE_CLOSE, MODE_UPPER, shift);
 			//double BBs2Shifted = iBands(Symbol(), PERIOD_CURRENT, Period(), 2, 0, PRICE_CLOSE, MODE_UPPER, ShiftValue);

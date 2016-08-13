@@ -30,7 +30,6 @@ class FollowTrendTranMan : public BaseTransactionManagement
 						if ((OrderTakeProfit() != targetTP)  && (targetTP != 0.0))
 							statusOk = statusOk & OrderModify(OrderTicket(),OrderOpenPrice(),OrderStopLoss(),targetTP,0,Blue);
 					}
-					
 				}
 			}
 			return statusOk;

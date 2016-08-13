@@ -28,4 +28,7 @@ class DecisionIndicator : public BaseDecision
 		}
 		
 		~DecisionIndicator() {}
+		
+		int GetShiftValue() { return ShiftValue; }
+			
 };
