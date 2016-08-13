@@ -18,8 +18,8 @@ class ScreenInfo
 		{
 			ObjectsDeleteAll(subWindow, OBJ_TEXT);
 			ObjectsDeleteAll(subWindow, OBJ_LABEL);
-   		}
-	 		
+		}
+ 		
 		virtual void DeleteAllObjects(long chartId = 0) { ObjectsDeleteAll(chartId); }
 		
 		virtual void ShowTextValue(string objectName, string value, color textColor = clrNONE, int x = 20, int y = 20, int corner = 1, int size = 14, string font = "Tahoma")
@@ -31,17 +31,60 @@ class ScreenInfo
 			ObjectSetText(objectName, value, size, font, textColor); //The function changes the object description.
 		}
 		
-		virtual void CurrentValue(double cv = 0.0)
+		virtual string NewObjectName(string prefix, int magicNumber = 0)
 		{
-			color textColor = clrNONE;
-			if (cv < 0.00)
-				textColor = Red;
-			else if (cv == 0.0)
-				textColor = Gray;
-			else
-				textColor = Lime;
+			int nr = magicNumber;
+			string name = prefix + IntegerToString(nr);
+			while(ObjectFind(ChartID(), name) >= 0)
+			{
+				nr++;
+				name = prefix + IntegerToString(nr);
+			}
+			return name;
+		}
+		
+		
+		virtual string ReplaceObjectName(string prefix, int magicNumber = 0)
+		{
+			int nr = magicNumber;
+			string name = prefix + IntegerToString(nr);
+			while(ObjectFind(ChartID(), name) < 0)
+			{
+				nr++;
+				name = prefix + IntegerToString(nr);
+			}
+			ObjectDelete(ChartID(),name);
 			
-			DeleteAllObjectsTextAndLabel();
-			ShowTextValue("CV", "CurrentValue: " + DoubleToString(cv,2), textColor);
+			return name;
+		}
+		
+		virtual string LastObjectName(string prefix)
+		{
+			int nr = 0;
+			string name = prefix + IntegerToString(nr);
+			while(ObjectFind(ChartID(), name) >= 0)
+			{
+				nr++;
+				name = prefix + IntegerToString(nr);
+			}
+			return name;
+		}
+		
+		virtual void PrintCurrentValue(double value = 0.0, string objectName = "CV", color textColor = clrNONE)
+		{
+			if(textColor == clrNONE)
+			{
+				if (value < 0.00)
+					textColor = Red;
+				else if (value == 0.0)
+					textColor = Gray;
+				else
+					textColor = Lime;
+			}
+			
+			if(ObjectFind(ChartID(),objectName) >= 0)
+				ObjectDelete(ChartID(),objectName);
+			
+			ShowTextValue(objectName, "CurrentValue: " + DoubleToString(value,2), textColor);
 		}
 };
