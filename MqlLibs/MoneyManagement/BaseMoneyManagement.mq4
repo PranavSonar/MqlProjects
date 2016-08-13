@@ -78,6 +78,8 @@ class BaseMoneyManagement
 			string accountCurrency = AccountCurrency();
 			if(accountCurrency == "")
 				return 0.0;
+			else if(accountCurrency == "USD")
+				return CalculatePriceForUSD();
 			
 			string baseCurrency = StringSubstr(Symbol(),0,3);
 			
@@ -92,13 +94,20 @@ class BaseMoneyManagement
 				testedSymbol = baseCurrency + accountCurrency;
 				if(symbol.SymbolExists(testedSymbol))
 					return 1.0/MarketInfo(testedSymbol, MODE_BID);
+				
+				// indirect currency calculate (might need testing)
+				string symbolList[];
+				symbol.SymbolsListWithSymbolPart(accountCurrency,symbolList);
+				testedSymbol = StringSubstr(symbolList[0],3,3) + baseCurrency;
+				if(symbol.SymbolExists(testedSymbol))
+					return MarketInfo(symbolList[0], MODE_BID)*MarketInfo(testedSymbol, MODE_BID);
 			}
 			
 			return 0.0;
 		}
 		
-		virtual void DetectNumberOfBots()
+		virtual int AutoDetectNumberOfBots()
 		{
-			
+			return WindowsTotal(); // windows might be full of experts.. or not :)
 		}
 };
