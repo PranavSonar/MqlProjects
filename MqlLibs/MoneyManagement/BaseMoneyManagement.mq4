@@ -10,13 +10,14 @@
 #property strict
 
 #include "../SymbolsLib/BaseSymbol.mq4"
+#include "../BaseLibs/BaseObject.mq4"
 
 
 #define OrderIsBuy 1
 #define OrderIsSell 0
 #define OrderIsIncert -1
 
-class BaseMoneyManagement
+class BaseMoneyManagement : public BaseObject
 {
 	private:
 		BaseSymbol symbol;

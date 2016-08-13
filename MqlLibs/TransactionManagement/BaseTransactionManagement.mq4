@@ -11,7 +11,7 @@
 
 #include "BaseOrder.mq4"
 
-class BaseTransactionManagement : protected BaseOrder {
+class BaseTransactionManagement : public BaseOrder {
 	public:
 		BaseTransactionManagement() {}
 		

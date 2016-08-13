@@ -9,7 +9,9 @@
 #property version   "1.00"
 #property strict
 
-class TestLib
+#include "../BaseLibs/BaseObject.mq4"
+
+class TestLib : public BaseObject
 {
 	public:
 		TestLib() {}

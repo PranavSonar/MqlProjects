@@ -135,7 +135,7 @@ class DecisionMA : public DecisionIndicator
 				maLevelCloseResultW1 +
 				maLevelMedianResultW1;
 			
-			if(Verbose)
+			if(IsVerboseMode())
 			{
 				printf("MA Level Decision [%f]: [close=%f median=%f]  H1: %f %f %f %f D1: %f %f %f %f W1: %f %f %f %f\n",
 					maResult, closeLevel, medianLevel,

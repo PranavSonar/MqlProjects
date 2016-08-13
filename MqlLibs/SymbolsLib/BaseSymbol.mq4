@@ -14,8 +14,10 @@
 #property link      "http://www.metaquotes.net"
 
 #include <SymbolsLib.mqh>
+#include "../BaseLibs/BaseObject.mq4"
 
-class BaseSymbol
+
+class BaseSymbol : public BaseObject
 {
 	protected:
 		string SymbolsList[];

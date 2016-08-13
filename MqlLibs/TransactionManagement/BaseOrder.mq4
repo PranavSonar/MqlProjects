@@ -11,12 +11,14 @@
 
 #include "../VerboseInfo/ScreenInfo.mq4"
 
+#include "../BaseLibs/BaseObject.mq4"
+
 
 const string SimulatedOrder = "SimulatedOrder";
 const string SimulatedStopLoss = "SimulatedStopLoss";
 const string SimulatedTakeProfit = "SimulatedTakeProfit";
 
-class BaseOrder
+class BaseOrder : public BaseObject
 {
 	protected:
 		ScreenInfo screen;
@@ -39,23 +41,31 @@ class BaseOrder
 			string   comment=NULL,        // comment 
 			int      magic=0,             // magic number 
 			datetime expiration=0,        // pending order expiration 
-			color    arrow_color=clrNONE  // color 
+			color    arrow_color=clrNONE, // color 
+			int shift = 0
 		)
 		{
 			string objectName = screen.NewObjectName(SimulatedOrder, magic);
-			bool statusOk = ObjectCreate(ChartID(),objectName, OBJ_VLINE, 0, Time[0], price);
-			ObjectSet(objectName, OBJPROP_COLOR, Gray);
+			bool statusOk = ObjectCreate(ChartID(),objectName, OBJ_VLINE, 0, Time[shift], price);
+			color currentOrderColor = cmd == OP_BUY ? Blue : (cmd == OP_SELL ? Orange : Gray);
+			ObjectSet(objectName, OBJPROP_COLOR, currentOrderColor);
 			ObjectSet(objectName, OBJPROP_WIDTH, 3);
 			
-			objectName = screen.NewObjectName(SimulatedStopLoss, magic);
-			statusOk = statusOk & ObjectCreate(ChartID(),objectName, OBJ_VLINE, 0, Time[0], stoploss);
-			ObjectSet(objectName, OBJPROP_COLOR, Red);
-			ObjectSet(objectName, OBJPROP_WIDTH, 1);
+			if(stoploss != 0)
+			{
+				objectName = screen.NewObjectName(SimulatedStopLoss, magic);
+				statusOk = statusOk & ObjectCreate(ChartID(),objectName, OBJ_VLINE, 0, Time[shift], stoploss);
+				ObjectSet(objectName, OBJPROP_COLOR, Red);
+				ObjectSet(objectName, OBJPROP_WIDTH, 1);
+			}
 			
-			objectName = screen.NewObjectName(SimulatedTakeProfit, magic);
-			statusOk = statusOk & ObjectCreate(ChartID(),objectName, OBJ_VLINE, 0, Time[0], takeprofit);
-			ObjectSet(objectName, OBJPROP_COLOR, Green);
-			ObjectSet(objectName, OBJPROP_WIDTH, 1);
+			if(takeprofit != 0)
+			{
+				objectName = screen.NewObjectName(SimulatedTakeProfit, magic);
+				statusOk = statusOk & ObjectCreate(ChartID(),objectName, OBJ_VLINE, 0, Time[shift], takeprofit);
+				ObjectSet(objectName, OBJPROP_COLOR, Green);
+				ObjectSet(objectName, OBJPROP_WIDTH, 1);
+			}
 			
 			return statusOk;
 		}
@@ -67,7 +77,8 @@ class BaseOrder
 			double     stoploss,    // stop loss 
 			double     takeprofit,  // take profit 
 			datetime   expiration,  // expiration 
-			color      arrow_color  // color 
+			color      arrow_color, // color 
+			int shift = 0
 		)
 		{
 			if(SimulatedOrderSelected == -1)
@@ -76,14 +87,14 @@ class BaseOrder
 			int magic = SimulatedOrderSelected;
 			
 			string objectName = screen.ReplaceObjectName(SimulatedOrder, magic);
-			bool statusOk = ObjectCreate(ChartID(),objectName, OBJ_VLINE, 0, Time[0], price);
+			bool statusOk = ObjectCreate(ChartID(),objectName, OBJ_VLINE, 0, Time[shift], price);
 			ObjectSet(objectName, OBJPROP_COLOR, Gray);
 			ObjectSet(objectName, OBJPROP_WIDTH, 3);
 			
 			if(stoploss != 0)
 			{
 				objectName = screen.ReplaceObjectName(SimulatedStopLoss, magic);
-				statusOk = statusOk & ObjectCreate(ChartID(),objectName, OBJ_VLINE, 0, Time[0], stoploss);
+				statusOk = statusOk & ObjectCreate(ChartID(),objectName, OBJ_VLINE, 0, Time[shift], stoploss);
 				ObjectSet(objectName, OBJPROP_COLOR, Red);
 				ObjectSet(objectName, OBJPROP_WIDTH, 1);
 			}

@@ -8,35 +8,55 @@
 #property version   "1.00"
 #property strict
 
-//#property indicator_chart_window  // Drawing in the chart window
-#property indicator_separate_window // Drawing in a separate window
-#property indicator_buffers 1       // Number of buffers
+#property indicator_chart_window  // Drawing in the chart window
+//#property indicator_separate_window // Drawing in a separate window
+#property indicator_buffers 0       // Number of buffers
 #property indicator_color1 Blue     // Color of the 1st line
 #property indicator_color2 Red      // Color of the 2nd line
 
-double Buf_0[];                     // Declaring an indicator array
-
+#include "../../../MqlLibs/DecisionMaking/DecisionDoubleBB.mq4"
+#include "../../../MqlLibs/TransactionManagement/BaseTransactionManagement.mq4"
+#include "../../../MqlLibs/VerboseInfo/ScreenInfo.mq4"
+#include "../../../MqlLibs/VerboseInfo/VerboseInfo.mq4"
 
 //+------------------------------------------------------------------+
 //| Indicator initialization function (used for testing)             |
 //+------------------------------------------------------------------+
 int init()
 {
-	SetIndexBuffer(0, Buf_0);
-	SetIndexStyle(DRAW_SECTION,STYLE_SOLID, 2);
-	return;
+	// print some verbose info
+	VerboseInfo vi;
+	vi.BalanceAccountInfo();
+	vi.ClientAndTerminalInfo();
+	vi.PrintMarketInfo();
+	
+	return INIT_SUCCEEDED;
 }
 
 
 int start()
 {
-	int i, n, Counted_bars;
-	Counted_bars = IndicatorCounted();
-	i = Bars - Counted_bars - 1;
+	DecisionDoubleBB decision;
+	BaseTransactionManagement transaction;
+	ScreenInfo screen;
+	
+	int i = Bars - IndicatorCounted() - 1;
+	double SL, TP;
 	
 	while(i >= 0)
 	{
-		Buf_0[i] = (High[i] + Low[i]) / 2.0;
+		double d = decision.GetDecision(SL, TP, 1.0, i);
+		if(d != IncertitudeDecision)
+		{
+			if(d > 0) // Buy
+			{
+				transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.1, MarketInfo(Symbol(),MODE_ASK),0,SL,TP,NULL, 0, 0, clrNONE, i);
+			}
+			else // Sell
+			{
+				transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.1, MarketInfo(Symbol(),MODE_BID),0,SL,TP,NULL, 0, 0, clrNONE, i);
+			}
+		}
 		i--;
 	}
 	

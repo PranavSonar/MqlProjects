@@ -51,6 +51,6 @@ class MoneyBetOnDecision : public BaseMoneyManagement
 		
 		virtual double GetPriceBasedOnDecision()
 		{
-			return (Point()*10.0)*pow(2.0,currentDecision/maxDecision); // to do: check & fix
+			return (Point()*10.0)*pow(2.0,this.CurrentDecision/this.MaxDecision); // to do: check & fix
 		}
 };
