@@ -11,10 +11,6 @@
 #include "../../MqlLibs/TransactionManagement/CrappyTranManagement.mq4"
 #include "../../MqlLibs/TransactionManagement/FollowTrendTranMan.mq4"
 
-
-//+------------------------------------------------------------------+
-//| Expert initialization function (used for testing)                |
-//+------------------------------------------------------------------+
 int OnInit()
 {
 	if(!IsDemo())
@@ -24,6 +20,7 @@ int OnInit()
 			return (INIT_FAILED);
 	}
 	
+	EventSetTimer(4);	
 	CrappyTranManagement tran;
 	
 	// open 1 transaction based on RSI; we need at least one transaction to test the rest!!
@@ -44,3 +41,10 @@ int OnInit()
 	
 	return(INIT_SUCCEEDED);
 }
+
+void OnDeinit(const int reason)
+{
+	EventKillTimer();
+}
+
+void OnTimer() {}
