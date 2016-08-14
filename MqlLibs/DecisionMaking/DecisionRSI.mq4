@@ -16,6 +16,12 @@ class DecisionRSI : public DecisionIndicator
 	public:
 		DecisionRSI(bool verbose = false, int shiftValue = 1, int internalShift = 0) : DecisionIndicator(verbose, shiftValue, internalShift) {}
 		
+		double GetMaxDecision()
+		{
+			// max(rsiResult) = +/- 12.0 (Buy = +; Sell = -)
+			// min(rsiResult) = 0.0 (Incertitude = 0)
+			return 12.0;
+		}
 		
 		double GetDecision(int shift = 0)
 		{
@@ -64,6 +70,7 @@ class DecisionRSI : public DecisionIndicator
 				((rsiLevelMedianW1 >= 70.0) && (rsiLevelMedianW1 != InvalidValue) ? SellDecision : IncertitudeDecision) +
 				((rsiLevelMedianW1 <= 30.0) && (rsiLevelMedianW1 != InvalidValue) ? BuyDecision : IncertitudeDecision);
 			
+			// whole results based on each RSI level (giving more certitude => double the decision result)
 			if((((rsiLevelCloseH1 < rsiLevelCloseShiftedH1) || (rsiLevelCloseH1 < rsiLevelCloseShifted2H1)) && (rsiLevelCloseResultH1 == SellDecision)) ||
 				(((rsiLevelCloseH1 > rsiLevelCloseShiftedH1) || (rsiLevelCloseH1 > rsiLevelCloseShifted2H1)) && (rsiLevelCloseResultH1 == BuyDecision)))
 				rsiLevelCloseResultH1 = rsiLevelCloseResultH1 * 2;
@@ -88,7 +95,7 @@ class DecisionRSI : public DecisionIndicator
 				(((rsiLevelMedianW1 > rsiLevelMedianShiftedW1) || (rsiLevelMedianW1 > rsiLevelMedianShifted2W1)) && (rsiLevelMedianResultW1 == BuyDecision)))
 				rsiLevelMedianResultW1 = rsiLevelMedianResultW1 * 2;
 			
-			// max(rsiResult) = +/- 6.0
+			// max(rsiResult) = +/- 12.0
 			// min(rsiResult) = 0.0
 			double rsiResult =
 				rsiLevelCloseResultH1 +

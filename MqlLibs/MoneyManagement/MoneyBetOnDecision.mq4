@@ -20,37 +20,23 @@ class MoneyBetOnDecision : public BaseMoneyManagement
 		int NumberOfBots;
 	
 	public:
-		MoneyBetOnDecision()
-		{
-			this.MaxDecision = IncertitudeDecision;
-			this.CurrentDecision = IncertitudeDecision;
-		}
-		
-		MoneyBetOnDecision(int maxDecision, int currentDecision)
+		MoneyBetOnDecision(double maxDecision = 0.0, double currentDecision = 0.0, int numberOfBots = 0)
 		{
 			this.MaxDecision = maxDecision;
 			this.CurrentDecision = currentDecision;
+			
+			if(numberOfBots != 0)
+				this.NumberOfBots = numberOfBots;
+			else
+				this.AutoDetectNumberOfBots();
 		}
 		
-		MoneyBetOnDecision(int maxDecision, int currentDecision, int numberOfBots)
-		{
-			this.MaxDecision = maxDecision;
-			this.CurrentDecision = currentDecision;
-			this.NumberOfBots = numberOfBots;
-		}
-		
-		virtual void ChangeCurrentDecision(int currentDecision)
-		{
-			this.CurrentDecision = currentDecision;
-		}
-		
-		virtual void ChangeMaxDecision(int maxDecision)
-		{
-			this.MaxDecision = maxDecision;
-		}
+		virtual void SetCurrentDecision(double currentDecision) { this.CurrentDecision = currentDecision; }
+		virtual void SetMaxDecision(double maxDecision) { this.MaxDecision = maxDecision; }
 		
 		virtual double GetPriceBasedOnDecision()
 		{
-			return (Point()*10.0)*pow(2.0,this.CurrentDecision/this.MaxDecision); // to do: check & fix
+			double onePip = (Point()*10.0);
+			return onePip * pow(2.0, this.CurrentDecision/this.MaxDecision) / NumberOfBots; // to do: check & fix
 		}
 };

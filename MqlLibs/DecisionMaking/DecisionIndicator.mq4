@@ -29,6 +29,8 @@ class DecisionIndicator : public BaseDecision
 		
 		~DecisionIndicator() {}
 		
-		int GetShiftValue() { return ShiftValue; }
+		virtual double GetMaxValue() { return IncertitudeDecision; }
+		virtual int GetShiftValue() { return ShiftValue; }
+		virtual void SetShiftValue(int shiftValue = 1) { this.ShiftValue = shiftValue; }
 			
 };

@@ -14,6 +14,7 @@
 #include "../../MqlLibs/TransactionManagement/BaseTransactionManagement.mq4"
 #include "../../MqlLibs/VerboseInfo/ScreenInfo.mq4"
 #include "../../MqlLibs/VerboseInfo/VerboseInfo.mq4"
+#include "../../MqlLibs/MoneyManagement/MoneyBetOnDecision.mq4"
 
 
 //+------------------------------------------------------------------+
@@ -33,11 +34,19 @@ int OnInit()
 
 int start()
 {
+	// Decisions:
 	DecisionRSI rsiDecision;
 	Decision3MA maDecision;
 	DecisionDoubleBB bbDecision;
+	
+	// Transaction management (send/etc)
 	BaseTransactionManagement transaction;
 	transaction.SetVerboseLevel(1);
+	
+	// Money management:
+	MoneyBetOnDecision money(rsiDecision.GetMaxDecision() + maDecision.GetMaxDecision() + bbDecision.GetMaxDecision(),0.0,0);
+	
+	// Screen management:
 	ScreenInfo screen;
 	
 	int i = Bars - IndicatorCounted() - 1;
@@ -45,10 +54,17 @@ int start()
 	
 	while(i >= 0)
 	{
-		double d = bbDecision.GetDecision(SL, TP, 2.0, i) + bbDecision.GetDecision(SL, TP, 1.0, i);
-		if(d != IncertitudeDecision)
+		double decision = bbDecision.GetDecision(SL, TP, 1.0, i) + rsiDecision.GetDecision(i) + maDecision.GetDecision(i);
+		money.SetCurrentDecision(decision);
+		
+		if((SL == 0.0) || (TP == 0.0))
 		{
-			if(d > 0) // Buy
+			
+		}
+		
+		if(decision != IncertitudeDecision)
+		{
+			if(decision > 0) // Buy
 			{
 				transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.1, MarketInfo(Symbol(),MODE_ASK),0,SL,TP,NULL, 0, 0, clrNONE, i);
 			}

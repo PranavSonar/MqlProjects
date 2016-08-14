@@ -21,6 +21,13 @@ class DecisionDoubleBB : public DecisionIndicator
 		DecisionDoubleBB(int verboseLevel = 0, int shiftValue = 1, int internalShift = 0) : DecisionIndicator(verboseLevel,shiftValue,internalShift) { InternalSL = 0.0; InternalTP = 0.0; }
 		DecisionDoubleBB(double sl, double tp, int verboseLevel = 0, int shiftValue = 1, int internalShift = 0) : DecisionIndicator(verboseLevel,shiftValue,internalShift) { InternalSL = sl; InternalTP = tp; }
 		
+		virtual double GetMaxDecision()
+		{
+			// max(doubleBBResult) = +/- 4.0 (Buy = +; Sell = -)
+			// min(doubleBBResult) = 0.0 (Incertitude = 0)
+			return 4.0;
+		}
+		
 		virtual double GetDecision(double internalBandsDeviation = 1.0, int shift = 0, double internalBandsDeviationWhole = 2.0)
 		{
 			return GetDecision(InternalSL, InternalTP, internalBandsDeviation, shift, internalBandsDeviationWhole);
@@ -54,12 +61,14 @@ class DecisionDoubleBB : public DecisionIndicator
 			double closeLevel = iClose(Symbol(), Period(), shift);
 			double closeLevelShift = iClose(Symbol(), Period(), shift + ShiftValue);
 			
+			// max(doubleBBResult) = +/- 4.0 (Buy = +; Sell = -)
+			// min(doubleBBResult) = 0.0 (Incertitude = 0)
 			double result = InvalidValue;
 			
 			if((closeLevel <= BBd2) // lower than the last two lines
 				&& (closeLevelShift > closeLevel)) // and the close level goes down
 			{
-				result += 2*SellDecision;
+				result += 4*SellDecision;
 				stopLoss = BBm;
 				takeProfit = BBd2 - (BBd1 - BBd2); // approx. calculation
 			}
@@ -67,7 +76,7 @@ class DecisionDoubleBB : public DecisionIndicator
 			if((closeLevel >= BBd2) && (closeLevel <= BBd1) // between the last two lines
 				&& (closeLevelShift > closeLevel)) // and the close level goes down
 			{
-				result += SellDecision;
+				result += 2*SellDecision;
 				stopLoss = BBm;
 				takeProfit = BBd2;
 			}
@@ -75,7 +84,7 @@ class DecisionDoubleBB : public DecisionIndicator
 			if((closeLevel >= BBs1) && (closeLevel <= BBs2) // between the first two lines
 				&& (closeLevelShift < closeLevel)) // and the close level goes up
 			{
-				result += BuyDecision;
+				result += 2*BuyDecision;
 				stopLoss = BBm;
 				takeProfit = BBs2;
 			}
@@ -83,7 +92,7 @@ class DecisionDoubleBB : public DecisionIndicator
 			if((closeLevel >= BBs2) // even higher than the first line
 				&& (closeLevelShift < closeLevel)) // and the close level goes up
 			{
-				result += 2*BuyDecision;
+				result += 4*BuyDecision;
 				stopLoss = BBm;
 				takeProfit = BBs2 + (BBs2 - BBs1); // approx. calculation
 			}

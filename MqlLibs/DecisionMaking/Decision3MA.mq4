@@ -16,7 +16,14 @@ class Decision3MA : public DecisionIndicator
 	public:
 		Decision3MA(bool verbose = false, int shiftValue = 1, int internalShift = 0) : DecisionIndicator(verbose, shiftValue, internalShift) {}
 		
-		double GetDecision(int internalShift = 0)
+		virtual double GetMaxDecision()
+		{
+			// max(maResult) = +/- 18.0 (Buy = +; Sell = -)
+			// min(maResult) = 0.0 (Incertitude = 0)
+			return 18.0;
+		}
+		
+		virtual double GetDecision(int internalShift = 0)
 		{
 			if((internalShift == 0) && (GetShiftValue() != 0))
 				internalShift = GetShiftValue();
@@ -138,14 +145,28 @@ class Decision3MA : public DecisionIndicator
 				(((maLevelMedianW1 != InvalidValue) && (maLevelMedianW1 < medianLevel) && (medianLevel < maLevelMedianShiftedW1)) ? BuyDecision : IncertitudeDecision) +
 				(((maLevelMedianW1 != InvalidValue) && (maLevelMedianW1 > medianLevel) && (medianLevel > maLevelMedianShiftedW1)) ? SellDecision : IncertitudeDecision);
 			
-			// max(maResult) = +/- 6.0
-			// min(maResult) = 0.0
-			double maResult = maLevelCloseResultH1 +
-				maLevelMedianResultH1 +
-				maLevelCloseResultD1 +
-				maLevelMedianResultD1 +
-				maLevelCloseResultW1 +
-				maLevelMedianResultW1;
+			// buy:  value is not invalid && maFasterLevel > maFasterLevelShifted && maFasterLevel > maSlowerLevel && maFasterLevel crossed maSlowerLevel (maFasterLevel between maSlowerLevel and maSlowerLevelShifted)
+			// sell: value is not invalid && maFasterLevel < maFasterLevelShifted && maFasterLevel < maSlowerLevel && maFasterLevel crossed maSlowerLevel (maFasterLevel between maSlowerLevel and maSlowerLevelShifted)
+			double maLevelCloseResultH1xD1 = (((maLevelCloseH1 != InvalidValue) && ((maLevelCloseH1 > maLevelCloseShiftedH1)) && (maLevelCloseH1 > maLevelCloseD1) && ((maLevelCloseD1 <= maLevelCloseH1) && (maLevelCloseH1 <= maLevelCloseShiftedH1))) ? BuyDecision : IncertitudeDecision)
+				+ (((maLevelCloseH1 != InvalidValue) && (maLevelCloseH1 < maLevelCloseShiftedH1) && (maLevelCloseH1 < maLevelCloseD1) && ((maLevelCloseD1 <= maLevelCloseH1) && (maLevelCloseH1 <= maLevelCloseShiftedH1))) ? SellDecision : IncertitudeDecision);
+			double maLevelCloseResultH1xW1 = (((maLevelCloseH1 != InvalidValue) && (maLevelCloseH1 > maLevelCloseShiftedH1) && (maLevelCloseH1 > maLevelCloseW1) && ((maLevelCloseW1 <= maLevelCloseH1) && (maLevelCloseH1 <= maLevelCloseShiftedH1))) ? BuyDecision : IncertitudeDecision)
+				+ (((maLevelCloseH1 != InvalidValue) && (maLevelCloseH1 < maLevelCloseShiftedH1) && (maLevelCloseH1 < maLevelCloseW1) && ((maLevelCloseW1 <= maLevelCloseH1) && (maLevelCloseH1 <= maLevelCloseShiftedH1))) ? SellDecision : IncertitudeDecision);
+			double maLevelCloseResultD1xW1 = (((maLevelCloseD1 != InvalidValue) && (maLevelCloseD1 > maLevelCloseShiftedD1) && (maLevelCloseD1 > maLevelCloseW1) && ((maLevelCloseW1 <= maLevelCloseD1) && (maLevelCloseD1 <= maLevelCloseShiftedD1))) ? BuyDecision : IncertitudeDecision)
+				+ (((maLevelCloseD1 != InvalidValue) && (maLevelCloseD1 < maLevelCloseShiftedD1) && (maLevelCloseD1 < maLevelCloseW1) && ((maLevelCloseW1 <= maLevelCloseD1) && (maLevelCloseD1 <= maLevelCloseShiftedD1))) ? SellDecision : IncertitudeDecision);
+			
+			double maLevelMedianResultH1xD1 = (((maLevelMedianH1 != InvalidValue) && ((maLevelMedianH1 > maLevelMedianShiftedH1)) && (maLevelMedianH1 > maLevelMedianD1) && ((maLevelMedianD1 <= maLevelMedianH1) && (maLevelMedianH1 <= maLevelMedianShiftedH1))) ? BuyDecision : IncertitudeDecision)
+				+ (((maLevelMedianH1 != InvalidValue) && (maLevelMedianH1 < maLevelMedianShiftedH1) && (maLevelMedianH1 < maLevelMedianD1) && ((maLevelMedianD1 <= maLevelMedianH1) && (maLevelMedianH1 <= maLevelMedianShiftedH1))) ? SellDecision : IncertitudeDecision);
+			double maLevelMedianResultH1xW1 = (((maLevelMedianH1 != InvalidValue) && (maLevelMedianH1 > maLevelMedianShiftedH1) && (maLevelMedianH1 > maLevelMedianW1) && ((maLevelMedianW1 <= maLevelMedianH1) && (maLevelMedianH1 <= maLevelMedianShiftedH1))) ? BuyDecision : IncertitudeDecision)
+				+ (((maLevelMedianH1 != InvalidValue) && (maLevelMedianH1 < maLevelMedianShiftedH1) && (maLevelMedianH1 < maLevelMedianW1) && ((maLevelMedianW1 <= maLevelMedianH1) && (maLevelMedianH1 <= maLevelMedianShiftedH1))) ? SellDecision : IncertitudeDecision);
+			double maLevelMedianResultD1xW1 = (((maLevelMedianD1 != InvalidValue) && (maLevelMedianD1 > maLevelMedianShiftedD1) && (maLevelMedianD1 > maLevelMedianW1) && ((maLevelMedianW1 <= maLevelMedianD1) && (maLevelMedianD1 <= maLevelMedianShiftedD1))) ? BuyDecision : IncertitudeDecision)
+				+ (((maLevelMedianD1 != InvalidValue) && (maLevelMedianD1 < maLevelMedianShiftedD1) && (maLevelMedianD1 < maLevelMedianW1) && ((maLevelMedianW1 <= maLevelMedianD1) && (maLevelMedianD1 <= maLevelMedianShiftedD1))) ? SellDecision : IncertitudeDecision);
+			
+			
+			// max(maResult) = +/- 18.0 (Buy = +; Sell = -)
+			// min(maResult) = 0.0 (Incertitude = 0)
+			double maResult = 
+				(maLevelCloseResultH1 + maLevelMedianResultH1 + maLevelCloseResultD1 + maLevelMedianResultD1 + maLevelCloseResultW1 + maLevelMedianResultW1) +
+				2 * (maLevelCloseResultH1xD1 + maLevelCloseResultH1xW1 + maLevelCloseResultD1xW1 + maLevelMedianResultH1xD1 + maLevelMedianResultH1xW1 + maLevelMedianResultD1xW1);
 			
 			if(IsVerboseMode())
 			{
@@ -161,7 +182,6 @@ class Decision3MA : public DecisionIndicator
 					maLevelCloseD1, maLevelCloseShiftedD1, maLevelMedianD1, maLevelMedianShiftedD1,
 					maLevelCloseW1, maLevelCloseShiftedW1, maLevelMedianW1, maLevelMedianShiftedW1
 				);
-				
 			}
 			
 			return maResult;
