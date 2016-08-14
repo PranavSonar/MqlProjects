@@ -65,10 +65,10 @@ void OnTick()
  
 void LotsDividerCompute()
 {
-	Lotsdivider = 0;
+	Lotsdivider = 0.0;
 	for(int i=1;i<=MaxOrderOpen;i++)
 		Lotsdivider = Lotsdivider + MathPow(2,i-1);
-	Lotsdivider = Lotsdivider*(FxPairs/2);
+	Lotsdivider = Lotsdivider*(FxPairs/2.0);
 }
  
 void SumCompute()
@@ -79,7 +79,7 @@ void SumCompute()
 	OrderIsBuyValue = -1;
 	
 	tran.Get_OpenOrders_AvgPrice(CurrentOpenOrders, AveragePrice, OrderIsBuyValue);
-	money.CalculateTP_SL(TargetTP, TargetSL, OrderIsBuyValue, TpLimitPips, SlLimitPips, AveragePrice, ComputeSpread);
+	money.CalculateTP_SL(TargetTP, TargetSL, OrderIsBuyValue, AveragePrice, TpLimitPips, SlLimitPips, ComputeSpread);
 }
  
 bool OpenNewOrder()

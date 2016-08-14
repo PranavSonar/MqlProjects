@@ -13,9 +13,10 @@
 #include "../BaseLibs/BaseObject.mq4"
 
 
+// Should be defined the same as decision type (because it also has sell/buy)
 #define OrderIsBuy 1
-#define OrderIsSell 0
-#define OrderIsIncert -1
+#define OrderIsSell -1
+#define OrderIsIncert 0
 
 class BaseMoneyManagement : public BaseObject
 {
@@ -34,11 +35,15 @@ class BaseMoneyManagement : public BaseObject
 			return statusOk;
 		}
 		
-		virtual void CalculateTP_SL(double &tp, double &sl, int orderType, double tpLimitPips, double slLimitPips, double price, double spread)
+		virtual void CalculateTP_SL(double &tp, double &sl, int orderType, double price, double tpLimitPips = 50.0, double slLimitPips = 30.0, double spread = 0.0)
 		{
+			if(spread == 0.0) {
+				spread = MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID);
+			}
+			
 			double pip = Point * 10;
-					if (orderType == OrderIsBuy)
-	
+			
+			if (orderType == OrderIsBuy)
 			{
 				tp = price + (tpLimitPips*pip) + (spread);
 				sl = price - (slLimitPips*pip) - (spread);
@@ -50,10 +55,9 @@ class BaseMoneyManagement : public BaseObject
 			}
 		}
 		
-		virtual double CalculatePriceForUSD()
+		virtual double CalculatePriceForBaseCurrencyUSD()
 		{
 			string baseCurrency = StringSubstr(Symbol(),0,3);
-			
 			if(baseCurrency == "AUD")
 				return MarketInfo("AUDUSD",MODE_BID);
 			else if(baseCurrency == "EUR")
@@ -62,25 +66,30 @@ class BaseMoneyManagement : public BaseObject
 				return MarketInfo("GBPUSD",MODE_BID);
 			else if(baseCurrency == "NZD")
 				return MarketInfo("NZDUSD",MODE_BID);
-			else if(baseCurrency == "CAD")
-				return 1/MarketInfo("USDCAD",MODE_BID);
-			else if(baseCurrency == "CHF")
-				return 1/MarketInfo("USDCHF",MODE_BID);
-			else if(baseCurrency == "SGD")
-				return 1/MarketInfo("USDSGD",MODE_BID);
-			else if(baseCurrency == "USD")
+			
+			double invertedPrice = 0.0;
+			if(baseCurrency == "CAD") {
+				invertedPrice = MarketInfo("USDCAD", MODE_BID);
+				return invertedPrice != 0 ? 1.0/invertedPrice : 0.0;
+			} else if(baseCurrency == "CHF") {
+				invertedPrice = MarketInfo("USDCHF", MODE_BID);
+				return invertedPrice != 0 ? 1.0/invertedPrice : 0.0;
+			} else if(baseCurrency == "SGD") {
+				invertedPrice = MarketInfo("USDSGD", MODE_BID);
+				return invertedPrice != 0 ? 1.0/invertedPrice : 0.0;
+			} else if(baseCurrency == "USD")
 				return 1.00;
 			else
 				return 0.0;
 		}
 		
-		virtual double CalculatePrice()
+		virtual double CalculatePriceForBaseCurrency()
 		{
 			string accountCurrency = AccountCurrency();
 			if(accountCurrency == "")
 				return 0.0;
 			else if(accountCurrency == "USD")
-				return CalculatePriceForUSD();
+				return CalculatePriceForBaseCurrencyUSD();
 			
 			string baseCurrency = StringSubstr(Symbol(),0,3);
 			
@@ -92,19 +101,37 @@ class BaseMoneyManagement : public BaseObject
 				if(symbol.SymbolExists(testedSymbol))
 					return MarketInfo(testedSymbol, MODE_BID);
 				
+				double invertedPrice = 0.0;
 				testedSymbol = baseCurrency + accountCurrency;
 				if(symbol.SymbolExists(testedSymbol))
-					return 1.0/MarketInfo(testedSymbol, MODE_BID);
+				{
+					testedSymbol = symbol.GetSymbolStartingWith(testedSymbol);
+					invertedPrice = MarketInfo(testedSymbol, MODE_BID);
+					return invertedPrice != 0.0 ? 1.0/invertedPrice : 0.0;
+				}
 				
 				// indirect currency calculate (might need testing)
 				string symbolList[];
 				symbol.SymbolsListWithSymbolPart(accountCurrency,symbolList);
 				testedSymbol = StringSubstr(symbolList[0],3,3) + baseCurrency;
-				if(symbol.SymbolExists(testedSymbol))
-					return MarketInfo(symbolList[0], MODE_BID)*MarketInfo(testedSymbol, MODE_BID);
+				if(symbol.SymbolExists(testedSymbol)) {
+					testedSymbol = symbol.GetSymbolStartingWith(testedSymbol);
+					return MarketInfo(symbolList[0], MODE_BID) * MarketInfo(testedSymbol, MODE_BID);
+				}
 			}
 			
 			return 0.0;
+		}
+		
+		virtual double CalculatePrice(double decisionType = 0.0)
+		{
+			double price = 0.0;
+			if (decisionType > 0.0)
+				price = MarketInfo(Symbol(),MODE_ASK);
+			if(decisionType < 0.0)
+				price = MarketInfo(Symbol(),MODE_BID);
+		
+			return price;
 		}
 		
 		virtual int AutoDetectNumberOfBots()

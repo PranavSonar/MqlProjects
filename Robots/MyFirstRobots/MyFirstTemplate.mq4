@@ -11,11 +11,11 @@
 #include "../../MqlLibs/DecisionMaking/DecisionRSI.mq4"
 #include "../../MqlLibs/StupidLibs/TestLib.mq4"
 
-VerboseInfo vi;
 
 int OnInit()
 {
 	// Print (one time) information
+	VerboseInfo vi;
 	vi.ClientAndTerminalInfo();
 	vi.BalanceAccountInfo();
 	vi.PrintMarketInfo();

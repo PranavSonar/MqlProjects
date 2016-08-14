@@ -47,6 +47,14 @@ class BaseSymbol : public BaseObject
 			return false;
 		}
 		
+		string GetSymbolStartingWith(string symbolName)
+		{
+			for(int i=0;i<ArraySize(SymbolsList);i++)
+				if(StringFind(SymbolsList[i], symbolName) != -1)
+					return SymbolsList[i];
+			return "";
+		}
+		
 		bool SymbolPartExists(string symbolName, bool isBaseSymbol = true)
 		{
 			int startingSymbolLength = isBaseSymbol ? 0 : 3; // base symbol starts from 0, second symbol starts from 3

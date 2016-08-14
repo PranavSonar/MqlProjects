@@ -8,6 +8,13 @@
 #property version   "1.00"
 #property strict
 
+
+#property indicator_chart_window  // Drawing in the chart window
+//#property indicator_separate_window // Drawing in a separate window
+#property indicator_buffers 0       // Number of buffers
+#property indicator_color1 Blue     // Color of the 1st line
+#property indicator_color2 Red      // Color of the 2nd line
+
 #include "../../MqlLibs/DecisionMaking/DecisionDoubleBB.mq4"
 #include "../../MqlLibs/DecisionMaking/Decision3MA.mq4"
 #include "../../MqlLibs/DecisionMaking/DecisionRSI.mq4"
@@ -20,7 +27,7 @@
 //+------------------------------------------------------------------+
 //| Expert initialization function (used for testing)                |
 //+------------------------------------------------------------------+
-int OnInit()
+int init()
 {
 	// print some verbose info
 	VerboseInfo vi;
@@ -55,23 +62,19 @@ int start()
 	while(i >= 0)
 	{
 		double decision = bbDecision.GetDecision(SL, TP, 1.0, i) + rsiDecision.GetDecision(i) + maDecision.GetDecision(i);
-		money.SetCurrentDecision(decision);
+		int DecisionOrderType = (int)(decision > 0.0 ? BuyDecision : IncertitudeDecision) + 
+			(int)(decision < 0.0 ? SellDecision : IncertitudeDecision);
+		double price = money.GetPriceBasedOnDecision(decision);
 		
 		if((SL == 0.0) || (TP == 0.0))
-		{
-			
-		}
+			money.CalculateTP_SL(TP, SL, DecisionOrderType, price);
 		
 		if(decision != IncertitudeDecision)
 		{
-			if(decision > 0) // Buy
-			{
-				transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.1, MarketInfo(Symbol(),MODE_ASK),0,SL,TP,NULL, 0, 0, clrNONE, i);
-			}
+			if(DecisionOrderType > 0) // Buy
+				transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.1, price,0,SL,TP,NULL, 0, 0, clrNONE, i);
 			else // Sell
-			{
-				transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.1, MarketInfo(Symbol(),MODE_BID),0,SL,TP,NULL, 0, 0, clrNONE, i);
-			}
+				transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.1, price,0,SL,TP,NULL, 0, 0, clrNONE, i);
 		}
 		i--;
 	}
