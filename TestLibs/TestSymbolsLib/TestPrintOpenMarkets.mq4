@@ -17,21 +17,6 @@
 int OnInit()
 {
    BaseSymbol symbol;
-   string symbolsList[], result = "";
-   
-   symbol.PrintAllSymbols();
-   Print("SymbolExists: EURRON: ", symbol.SymbolExists("EURRON"));
-   Print("SymbolExists: RONEUR: ", symbol.SymbolExists("RONEUR"));
-   Print("SymbolPartExists: RON: ", symbol.SymbolPartExists("RON"));
-   Print("SymbolPartExists: RON: ", symbol.SymbolPartExists("RON", false));
-   symbol.SymbolsListWithSymbolPart("RON", symbolsList);
-   symbol.SymbolsListWithSymbolPart("RON", symbolsList, false);
-   
-   for(int i=0;i<ArraySize(symbolsList);i++)
-      result += result + symbolsList[i] + "; ";
-      
-   Print("SymbolsListWithSymbolPart: RON: " + result);
-   symbol.PrintAllSymbols();
    symbol.PrintOpenMarkets();
    
    return(INIT_SUCCEEDED);
