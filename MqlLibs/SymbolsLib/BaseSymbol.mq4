@@ -90,13 +90,14 @@ class BaseSymbol : public BaseObject
 			for(int i=0;i<len;i++)
 				if(MarketInfo(SymbolsList[i], MODE_TRADEALLOWED) == 1)
 				{
-					if(i == len-1)
+					if((i == len-1) || (i%4 == 0))
+					{
 						listOfSymbolsOpenToTrade += SymbolsList[i];
+						Print("Open market symbols: " + listOfSymbolsOpenToTrade);
+						listOfSymbolsOpenToTrade = "";
+					}
 					else
-						listOfSymbolsOpenToTrade += SymbolsList[i] + ",";
+						listOfSymbolsOpenToTrade += SymbolsList[i] + ", ";
 				}
-			len = StringLen(listOfSymbolsOpenToTrade);
-			for(int i=0;i<len;i=i+50)
-			Print("Open market symbols: " + StringSubstr(listOfSymbolsOpenToTrade,i,50));
 		}
 };
