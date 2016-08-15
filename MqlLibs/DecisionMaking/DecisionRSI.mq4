@@ -130,18 +130,19 @@ class DecisionRSI : public DecisionIndicator
 			
 			if(IsVerboseMode())
 			{
-				printf("RSI Level Decision [%f]: H1: %f %f D1: %f %f W1: %f %f\nRSI partial decision: H1: %f %f D1: %f %f W1: %f %f\n",
-					// final RSI decision
-					rsiResult,
-					// close/median levels
-					rsiLevelCloseH1, rsiLevelMedianH1,
-					rsiLevelCloseD1, rsiLevelMedianD1,
-					rsiLevelCloseW1, rsiLevelMedianW1,
-					// partial RSI decisions
-					rsiLevelCloseResultH1, rsiLevelMedianResultH1,
-					rsiLevelCloseResultD1, rsiLevelMedianResultD1,
-					rsiLevelCloseResultW1, rsiLevelMedianResultW1
-				);
+				if((VerboseLevel() > 1) || (rsiResult != 0))
+					printf("RSI Level Decision [%f]: H1: %f %f D1: %f %f W1: %f %f\nRSI partial decision: H1: %f %f D1: %f %f W1: %f %f\n",
+						// final RSI decision
+						rsiResult,
+						// close/median levels
+						rsiLevelCloseH1, rsiLevelMedianH1,
+						rsiLevelCloseD1, rsiLevelMedianD1,
+						rsiLevelCloseW1, rsiLevelMedianW1,
+						// partial RSI decisions
+						rsiLevelCloseResultH1, rsiLevelMedianResultH1,
+						rsiLevelCloseResultD1, rsiLevelMedianResultD1,
+						rsiLevelCloseResultW1, rsiLevelMedianResultW1
+					);
 			}
 			
 			return rsiResult;
