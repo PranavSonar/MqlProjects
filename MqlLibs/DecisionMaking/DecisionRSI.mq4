@@ -131,7 +131,7 @@ class DecisionRSI : public DecisionIndicator
 			if(IsVerboseMode())
 			{
 				if((GetVerboseLevel() > 1) || (rsiResult != 0))
-					printf("RSI Level Decision [%f]: H1: %f %f D1: %f %f W1: %f %f\nRSI partial decision: H1: %f %f D1: %f %f W1: %f %f\n",
+					printf("RSI Level Decision [%f.0]: H1: %.2f %.2f D1: %.2f %.2f W1: %.2f %.2f\nRSI partial decision: H1: %.0f %.0f D1: %.0f %.0f W1: %.0f %.0f\n",
 						// final RSI decision
 						rsiResult,
 						// close/median levels

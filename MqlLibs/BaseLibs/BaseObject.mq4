@@ -51,4 +51,9 @@ class BaseObject
 		{
 			return this.VerboseLevel >= 1;
 		}
+		
+		virtual string StringFormatNumberNotZero(string format, double number) { if(number != 0.0) return StringFormat(format, number); return ""; }
+		virtual string StringFormatNumberWithCondition(string format, double number, bool condition) { if(condition) return StringFormat(format, number); return ""; }
+		virtual string ReturnStringOnCondition(string text, bool condition) { if(condition) return text; return ""; }
+		virtual string ReturnStringOnNumberNotZero(string text, double number) { return ReturnStringOnCondition(text, number != 0.0); }
 };

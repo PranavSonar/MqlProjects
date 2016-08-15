@@ -110,7 +110,7 @@ class DecisionDoubleBB : public DecisionIndicator
 			if(IsVerboseMode())
 			{
 				if((GetVerboseLevel() > 1) || (result != 0))
-					printf("Double BB Level Decision [%f]: [close=%f closeShifted=%f] [SL = %f TP = %f] %f %f %f %f %f\n",
+					printf("Double BB Level Decision [%.2f]: [close=%f closeShifted=%f] [SL=%f TP=%f] BBs2=%f BBs1=%f BBm=%f BBd1=%f BBd2=%f\n",
 						result, closeLevel, closeLevelShift,
 						stopLoss, takeProfit,
 						BBs2, BBs1, BBm, BBd1, BBd2

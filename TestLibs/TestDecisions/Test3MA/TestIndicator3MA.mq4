@@ -9,13 +9,19 @@
 #property strict
 
 #property indicator_chart_window
-#property indicator_buffers 6
-#property indicator_color1 clrIndigo
-#property indicator_color2 clrIndigo
-#property indicator_color3 clrDarkBlue
-#property indicator_color4 clrDarkBlue
-#property indicator_color5 clrMidnightBlue
-#property indicator_color6 clrMidnightBlue
+#property indicator_buffers 12
+//#property indicator_color1  clrIndigo
+//#property indicator_color2  clrIndigo
+//#property indicator_color3  clrIndigo
+//#property indicator_color4  clrIndigo
+//#property indicator_color5  clrDarkBlue
+//#property indicator_color6  clrDarkBlue
+//#property indicator_color7  clrDarkBlue
+//#property indicator_color8  clrDarkBlue
+//#property indicator_color9  clrMidnightBlue
+//#property indicator_color10 clrMidnightBlue
+//#property indicator_color11 clrMidnightBlue
+//#property indicator_color12 clrMidnightBlue
 
 #include "../../../MqlLibs/DecisionMaking/Decision3MA.mq4"
 #include "../../../MqlLibs/TransactionManagement/BaseTransactionManagement.mq4"
@@ -26,6 +32,10 @@
 double Buf_CloseH1[], Buf_MedianH1[],
 	Buf_CloseD1[], Buf_MedianD1[],
 	Buf_CloseW1[], Buf_MedianW1[];
+
+double Buf_CloseShiftedH1[], Buf_MedianShiftedH1[],
+	Buf_CloseShiftedD1[], Buf_MedianShiftedD1[],
+	Buf_CloseShiftedW1[], Buf_MedianShiftedW1[];
 
 //+------------------------------------------------------------------+
 //| Indicator initialization function (used for testing)             |
@@ -40,22 +50,31 @@ int init()
 	
 	
 	SetIndexBuffer(0, Buf_CloseH1);
-	SetIndexStyle(0, DRAW_SECTION, STYLE_SOLID, 1);
-	
+	SetIndexStyle(0, DRAW_SECTION, STYLE_SOLID, 1, clrIndigo);
 	SetIndexBuffer(1, Buf_MedianH1);
-	SetIndexStyle(1, DRAW_SECTION, STYLE_SOLID, 2);
+	SetIndexStyle(1, DRAW_SECTION, STYLE_SOLID, 2, clrIndigo);
+	SetIndexBuffer(2, Buf_CloseShiftedH1);
+	SetIndexStyle(2, DRAW_SECTION, STYLE_DOT, 1, clrDarkBlue);
+	SetIndexBuffer(3, Buf_MedianShiftedH1);
+	SetIndexStyle(3, DRAW_SECTION, STYLE_DOT, 2, clrDarkBlue);
 	
-	SetIndexBuffer(2, Buf_CloseD1);
-	SetIndexStyle(2, DRAW_SECTION, STYLE_SOLID, 1);
+	SetIndexBuffer(4, Buf_CloseD1);
+	SetIndexStyle(4, DRAW_SECTION, STYLE_SOLID, 1, clrDarkBlue);
+	SetIndexBuffer(5, Buf_MedianD1);
+	SetIndexStyle(5, DRAW_SECTION, STYLE_SOLID, 2, clrDarkBlue);
+	SetIndexBuffer(6, Buf_CloseShiftedD1);
+	SetIndexStyle(6, DRAW_SECTION, STYLE_DOT, 1, clrMidnightBlue);
+	SetIndexBuffer(7, Buf_MedianShiftedD1);
+	SetIndexStyle(7, DRAW_SECTION, STYLE_DOT, 2, clrMidnightBlue);
 	
-	SetIndexBuffer(3, Buf_MedianD1);
-	SetIndexStyle(3, DRAW_SECTION, STYLE_SOLID, 2);
-	
-	SetIndexBuffer(4, Buf_CloseW1);
-	SetIndexStyle(4, DRAW_SECTION, STYLE_SOLID, 1);
-	
-	SetIndexBuffer(5, Buf_MedianW1);
-	SetIndexStyle(5, DRAW_SECTION, STYLE_SOLID, 2);
+	SetIndexBuffer(8, Buf_CloseW1);
+	SetIndexStyle(8, DRAW_SECTION, STYLE_SOLID, 1, clrMidnightBlue);
+	SetIndexBuffer(9, Buf_MedianW1);
+	SetIndexStyle(9, DRAW_SECTION, STYLE_SOLID, 2, clrMidnightBlue);
+	SetIndexBuffer(10, Buf_CloseShiftedW1);
+	SetIndexStyle(10, DRAW_SECTION, STYLE_DOT, 1, clrIndigo);
+	SetIndexBuffer(11, Buf_MedianShiftedW1);
+	SetIndexStyle(11, DRAW_SECTION, STYLE_DOT, 2, clrIndigo);
 	
 	return INIT_SUCCEEDED;
 }
@@ -77,6 +96,7 @@ int start()
 	{
 		double d = decision.GetDecision(i);
 		decision.SetIndicatorData(Buf_CloseH1, Buf_MedianH1, Buf_CloseD1, Buf_MedianD1, Buf_CloseW1, Buf_MedianW1, i);
+		decision.SetIndicatorShiftedData(Buf_CloseShiftedH1, Buf_MedianShiftedH1, Buf_CloseShiftedD1, Buf_MedianShiftedD1, Buf_CloseShiftedW1, Buf_MedianShiftedW1, i);
 		
 		if(d != IncertitudeDecision)
 		{

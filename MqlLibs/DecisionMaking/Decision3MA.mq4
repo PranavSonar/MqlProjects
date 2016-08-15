@@ -18,6 +18,10 @@ class Decision3MA : public DecisionIndicator
 			maLevelCloseD1, maLevelMedianD1,
 			maLevelCloseW1, maLevelMedianW1;
 		
+		double maLevelCloseShiftedH1, maLevelMedianShiftedH1,
+			maLevelCloseShiftedD1, maLevelMedianShiftedD1,
+			maLevelCloseShiftedW1, maLevelMedianShiftedW1;
+		
 	public:
 		Decision3MA(bool verbose = false, int shiftValue = 1, int internalShift = 0) : DecisionIndicator(verbose, shiftValue, internalShift) {}
 		
@@ -28,15 +32,32 @@ class Decision3MA : public DecisionIndicator
 		virtual double GetCloseW1()  { return maLevelCloseW1;  }
 		virtual double GetMedianW1() { return maLevelMedianW1; }
 		
+		virtual double GetCloseShiftedH1()  { return maLevelCloseShiftedH1;  }
+		virtual double GetMedianShiftedH1() { return maLevelMedianShiftedH1; }
+		virtual double GetCloseShiftedD1()  { return maLevelCloseShiftedD1;  }
+		virtual double GetMedianShiftedD1() { return maLevelMedianShiftedD1; }
+		virtual double GetCloseShiftedW1()  { return maLevelCloseShiftedW1;  }
+		virtual double GetMedianShiftedW1() { return maLevelMedianShiftedW1; }
+		
+		
 		virtual void SetIndicatorData(
+			double &Buffer_CloseShiftedH1[], double &Buffer_MedianShiftedH1[],
+			double &Buffer_CloseShiftedD1[], double &Buffer_MedianShiftedD1[],
+			double &Buffer_CloseShiftedW1[], double &Buffer_MedianShiftedW1[],
+			int index)
+		{ Buffer_CloseShiftedH1[index] = maLevelCloseShiftedH1; Buffer_MedianShiftedH1[index] = maLevelMedianShiftedH1;
+			Buffer_CloseShiftedD1[index] = maLevelCloseShiftedD1; Buffer_MedianShiftedD1[index] = maLevelMedianShiftedD1;
+			Buffer_CloseShiftedW1[index] = maLevelCloseShiftedW1; Buffer_MedianShiftedW1[index] = maLevelMedianShiftedW1; }
+		
+		virtual void SetIndicatorShiftedData(
 			double &Buffer_CloseH1[], double &Buffer_MedianH1[],
 			double &Buffer_CloseD1[], double &Buffer_MedianD1[],
 			double &Buffer_CloseW1[], double &Buffer_MedianW1[],
-			int index
-		)
+			int index)
 		{ Buffer_CloseH1[index] = maLevelCloseH1; Buffer_MedianH1[index] = maLevelMedianH1;
 			Buffer_CloseD1[index] = maLevelCloseD1; Buffer_MedianD1[index] = maLevelMedianD1;
 			Buffer_CloseW1[index] = maLevelCloseW1; Buffer_MedianW1[index] = maLevelMedianW1; }
+		
 		
 		virtual double GetMaxDecision()
 		{
@@ -70,13 +91,13 @@ class Decision3MA : public DecisionIndicator
 				iMA(Symbol(), PERIOD_CURRENT, PERIOD_H1, 0, MODE_SMA,  PRICE_MEDIAN, internalShift) +
 				iMA(Symbol(), PERIOD_CURRENT, PERIOD_H1, 0, MODE_SMMA, PRICE_MEDIAN, internalShift)
 			) / 4.0;
-			double maLevelCloseShiftedH1 = (
+			maLevelCloseShiftedH1 = (
 				iMA(Symbol(), PERIOD_CURRENT, PERIOD_H1, 0, MODE_EMA,  PRICE_CLOSE, internalShift + ShiftValue) +
 				iMA(Symbol(), PERIOD_CURRENT, PERIOD_H1, 0, MODE_LWMA, PRICE_CLOSE, internalShift + ShiftValue) +
 				iMA(Symbol(), PERIOD_CURRENT, PERIOD_H1, 0, MODE_SMA,  PRICE_CLOSE, internalShift + ShiftValue) +
 				iMA(Symbol(), PERIOD_CURRENT, PERIOD_H1, 0, MODE_SMMA, PRICE_CLOSE, internalShift + ShiftValue)
 			) / 4.0;
-			double maLevelMedianShiftedH1 = (
+			maLevelMedianShiftedH1 = (
 				iMA(Symbol(), PERIOD_CURRENT, PERIOD_H1, 0, MODE_EMA,  PRICE_MEDIAN, internalShift + ShiftValue) +
 				iMA(Symbol(), PERIOD_CURRENT, PERIOD_H1, 0, MODE_LWMA, PRICE_MEDIAN, internalShift + ShiftValue) +
 				iMA(Symbol(), PERIOD_CURRENT, PERIOD_H1, 0, MODE_SMA,  PRICE_MEDIAN, internalShift + ShiftValue) +
@@ -99,13 +120,13 @@ class Decision3MA : public DecisionIndicator
 				iMA(Symbol(), PERIOD_CURRENT, PERIOD_D1, 0, MODE_SMA,  PRICE_MEDIAN, internalShift) +
 				iMA(Symbol(), PERIOD_CURRENT, PERIOD_D1, 0, MODE_SMMA, PRICE_MEDIAN, internalShift)
 			) / 4.0;
-			double maLevelCloseShiftedD1 = (
+			maLevelCloseShiftedD1 = (
 				iMA(Symbol(), PERIOD_CURRENT, PERIOD_D1, 0, MODE_EMA,  PRICE_CLOSE, internalShift) +
 				iMA(Symbol(), PERIOD_CURRENT, PERIOD_D1, 0, MODE_LWMA, PRICE_CLOSE, internalShift) +
 				iMA(Symbol(), PERIOD_CURRENT, PERIOD_D1, 0, MODE_SMA,  PRICE_CLOSE, internalShift) +
 				iMA(Symbol(), PERIOD_CURRENT, PERIOD_D1, 0, MODE_SMMA, PRICE_CLOSE, internalShift)
 			) / 4.0;
-			double maLevelMedianShiftedD1 = (
+			maLevelMedianShiftedD1 = (
 				iMA(Symbol(), PERIOD_CURRENT, PERIOD_D1, 0, MODE_EMA,  PRICE_MEDIAN, internalShift + ShiftValue) +
 				iMA(Symbol(), PERIOD_CURRENT, PERIOD_D1, 0, MODE_LWMA, PRICE_MEDIAN, internalShift + ShiftValue) +
 				iMA(Symbol(), PERIOD_CURRENT, PERIOD_D1, 0, MODE_SMA,  PRICE_MEDIAN, internalShift + ShiftValue) +
@@ -128,13 +149,13 @@ class Decision3MA : public DecisionIndicator
 				iMA(Symbol(), PERIOD_CURRENT, PERIOD_W1, 0, MODE_SMA,  PRICE_MEDIAN, internalShift) +
 				iMA(Symbol(), PERIOD_CURRENT, PERIOD_W1, 0, MODE_SMMA, PRICE_MEDIAN, internalShift)
 			) / 4.0;
-			double maLevelCloseShiftedW1 = (
+			maLevelCloseShiftedW1 = (
 				iMA(Symbol(), PERIOD_CURRENT, PERIOD_W1, 0, MODE_EMA,  PRICE_CLOSE, internalShift + ShiftValue) +
 				iMA(Symbol(), PERIOD_CURRENT, PERIOD_W1, 0, MODE_LWMA, PRICE_CLOSE, internalShift + ShiftValue) +
 				iMA(Symbol(), PERIOD_CURRENT, PERIOD_W1, 0, MODE_SMA,  PRICE_CLOSE, internalShift + ShiftValue) +
 				iMA(Symbol(), PERIOD_CURRENT, PERIOD_W1, 0, MODE_SMMA, PRICE_CLOSE, internalShift + ShiftValue)
 			) / 4.0;
-			double maLevelMedianShiftedW1 = (
+			maLevelMedianShiftedW1 = (
 				iMA(Symbol(), PERIOD_CURRENT, PERIOD_W1, 0, MODE_EMA,  PRICE_MEDIAN, internalShift + ShiftValue) +
 				iMA(Symbol(), PERIOD_CURRENT, PERIOD_W1, 0, MODE_LWMA, PRICE_MEDIAN, internalShift + ShiftValue) +
 				iMA(Symbol(), PERIOD_CURRENT, PERIOD_W1, 0, MODE_SMA,  PRICE_MEDIAN, internalShift + ShiftValue) +
@@ -192,17 +213,39 @@ class Decision3MA : public DecisionIndicator
 			
 			if(IsVerboseMode())
 			{
-				if((GetVerboseLevel() > 1) || (maResult != 0))
+				if((GetVerboseLevel() > 1) || (maResult != 0.0))
 				{
-					printf("MA Level Decision [%f H1[c]: %f H1[m]: %f D1[c]: %f D1[m]: %f W1[c]: %f W1[m]: %f]: [close=%f median=%f]",
-						maResult, maLevelCloseResultH1, maLevelMedianResultH1, maLevelCloseResultD1, maLevelMedianResultD1, maLevelCloseResultW1, maLevelMedianResultW1, closeLevel, medianLevel
-					);
+					string text = StringFormat("MA Level Decision: [%s(%.0f)] [ ", maResult > 0.0 ? "buy" : "sell", maResult);
+					text += StringFormatNumberNotZero("H1[c]: %.0f ", maLevelCloseResultH1);
+					text += StringFormatNumberNotZero("H1[m]: %.0f ", maLevelMedianResultH1);
+					text += StringFormatNumberNotZero("D1[c]: %.0f ", maLevelCloseResultD1);
+					text += StringFormatNumberNotZero("D1[m]: %.0f ", maLevelMedianResultD1);
+					text += StringFormatNumberNotZero("W1[c]: %.0f ", maLevelCloseResultW1);
+					text += StringFormatNumberNotZero("W1[m]: %.0f ", maLevelMedianResultW1);
+					text += StringFormat("]: [close=%f median=%f]", closeLevel, medianLevel);
+					Print(text);
 					
-					printf("MA Level Data: H1: %f %f %f %f D1: %f %f %f %f W1: %f %f %f %f\n",
-						maLevelCloseH1, maLevelCloseShiftedH1, maLevelMedianH1, maLevelMedianShiftedH1,
-						maLevelCloseD1, maLevelCloseShiftedD1, maLevelMedianD1, maLevelMedianShiftedD1,
-						maLevelCloseW1, maLevelCloseShiftedW1, maLevelMedianW1, maLevelMedianShiftedW1
-					);
+					text = "MA Level Data: ";
+					text += ReturnStringOnNumberNotZero(StringFormat("H1[c,cs]: %f %f ", maLevelCloseH1, maLevelCloseShiftedH1), maLevelCloseResultH1);
+					text += ReturnStringOnNumberNotZero(StringFormat("H1[m,ms]: %f %f ", maLevelMedianH1, maLevelMedianShiftedH1), maLevelMedianResultH1);
+					text += ReturnStringOnNumberNotZero(StringFormat("D1[c,cs]: %f %f ", maLevelCloseD1, maLevelCloseShiftedD1), maLevelCloseResultD1);
+					text += ReturnStringOnNumberNotZero(StringFormat("D1[m,ms]: %f %f ", maLevelMedianD1, maLevelMedianShiftedD1), maLevelMedianResultD1);
+					text += ReturnStringOnNumberNotZero(StringFormat("W1[c,cs]: %f %f ", maLevelCloseW1, maLevelCloseShiftedW1), maLevelCloseResultW1);
+					text += ReturnStringOnNumberNotZero(StringFormat("W1[m,ms]: %f %f ", maLevelMedianW1, maLevelMedianShiftedW1), maLevelMedianResultW1);
+					Print(text);
+					
+					text = "Other info: ";
+					text += ReturnStringOnCondition("simple buy decision: (value is not invalid) && (maLevel < close/median < maLevelShifted)", maResult > 0.0);
+					text += ReturnStringOnCondition("simple sell decision: (value is not invalid) && (maLevel > close/median > maLevelShifted)", maResult < 0.0);
+					Print(text);
+					
+					if(MathAbs(maResult) > 1.0)
+					{
+						text = "Other info: ";
+						text += ReturnStringOnCondition("complex buy decision: (value is not invalid) && (maFasterLevel > maFasterLevelShifted) && (maFasterLevel > maSlowerLevel) && (maFasterLevel crossed maSlowerLevel)", maResult > 1.0);
+						text += ReturnStringOnCondition("complex sell decision: (value is not invalid) && (maFasterLevel < maFasterLevelShifted) && (maFasterLevel < maSlowerLevel) && (maFasterLevel crossed maSlowerLevel)", maResult < 1.0);
+						Print(text);
+					}
 				}
 			}
 			
