@@ -192,13 +192,13 @@ class Decision3MA : public DecisionIndicator
 			
 			if(IsVerboseMode())
 			{
-				if((VerboseLevel() > 1) || (result != 0))
+				if((GetVerboseLevel() > 1) || (maResult != 0))
 				{
 					printf("MA Level Decision [%f H1[c]: %f H1[m]: %f D1[c]: %f D1[m]: %f W1[c]: %f W1[m]: %f]: [close=%f median=%f]",
 						maResult, maLevelCloseResultH1, maLevelMedianResultH1, maLevelCloseResultD1, maLevelMedianResultD1, maLevelCloseResultW1, maLevelMedianResultW1, closeLevel, medianLevel
 					);
 					
-					if(VerboseLevel() > 2)
+					if(GetVerboseLevel() > 2)
 					{
 						printf("MA Level Data: H1: %f %f %f %f D1: %f %f %f %f W1: %f %f %f %f\n",
 							maLevelCloseH1, maLevelCloseShiftedH1, maLevelMedianH1, maLevelMedianShiftedH1,
