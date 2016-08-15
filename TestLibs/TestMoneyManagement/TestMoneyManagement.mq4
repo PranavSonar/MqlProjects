@@ -18,15 +18,15 @@ int OnInit()
 	BaseMoneyManagement money;
 	
 	//--- CalculatePriceForUSD
-	printf("CalculatePriceForUSD: %f", money.CalculatePriceForUSD());
+	printf("CalculatePriceForUSD: %f", money.CalculatePriceForBaseCurrencyUSD());
 	
 	//--- GetTotalAmount
 	printf("GetTotalAmount: %f", money.GetTotalAmount());
 
 	//--- CalculateTP_SL
 	double TP, SL;
-	money.CalculateTP_SL(TP,SL,OrderIsBuy,30,20,10,10); printf("CalculateTP_SL: buy: TP = %f, SL = %f", TP, SL);
-	money.CalculateTP_SL(TP,SL,OrderIsSell,30,20,10,10); printf("CalculateTP_SL: sell: TP = %f, SL = %f", TP, SL);
+	money.CalculateTP_SL(TP,SL,OP_BUY,30,20,10,10); printf("CalculateTP_SL: buy: TP = %f, SL = %f", TP, SL);
+	money.CalculateTP_SL(TP,SL,OP_SELL,30,20,10,10); printf("CalculateTP_SL: sell: TP = %f, SL = %f", TP, SL);
 	
 	//--- CheckPriceGoesOurWay
 	printf("CheckPriceGoesOurWay: %f", money.CheckPriceGoesOurWay());

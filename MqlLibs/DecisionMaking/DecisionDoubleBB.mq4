@@ -16,10 +16,20 @@ class DecisionDoubleBB : public DecisionIndicator
 	private:
 		double InternalSL;
 		double InternalTP;
+		double BBs2, BBs1, BBm, BBd1, BBd2;
 		
 	public:
 		DecisionDoubleBB(int verboseLevel = 0, int shiftValue = 1, int internalShift = 0) : DecisionIndicator(verboseLevel,shiftValue,internalShift) { InternalSL = 0.0; InternalTP = 0.0; }
 		DecisionDoubleBB(double sl, double tp, int verboseLevel = 0, int shiftValue = 1, int internalShift = 0) : DecisionIndicator(verboseLevel,shiftValue,internalShift) { InternalSL = sl; InternalTP = tp; }
+		
+		virtual double GetBBs2() { return BBs2; }
+		virtual double GetBBs1() { return BBs1; }
+		virtual double GetBBm()  { return BBm;  }
+		virtual double GetBBd1() { return BBd1; }
+		virtual double GetBBd2() { return BBd2; }
+		
+		virtual void SetIndicatorData(double &Buffer_BBs2[], double &Buffer_BBs1[], double &Buffer_BBm[], double &Buffer_BBd1[], double &Buffer_BBd2[], int index)
+			{ Buffer_BBs2[index] = BBs2; Buffer_BBs1[index] = BBs1; Buffer_BBm[index] = BBm; Buffer_BBd1[index] = BBd1; Buffer_BBd2[index] = BBd2; }
 		
 		virtual double GetMaxDecision()
 		{
@@ -39,15 +49,15 @@ class DecisionDoubleBB : public DecisionIndicator
 				shift = GetShiftValue();
 			
 			// Calculate decisions based on Bollinger Bands
-			double BBs2 = iBands(Symbol(), PERIOD_CURRENT, Period(), internalBandsDeviationWhole, 0, PRICE_CLOSE, MODE_UPPER, shift);
+			BBs2 = iBands(Symbol(), PERIOD_CURRENT, Period(), internalBandsDeviationWhole, 0, PRICE_CLOSE, MODE_UPPER, shift);
 			//double BBs2Shifted = iBands(Symbol(), PERIOD_CURRENT, Period(), 2, 0, PRICE_CLOSE, MODE_UPPER, ShiftValue);
-			double BBs1 = iBands(Symbol(), PERIOD_CURRENT, Period(), internalBandsDeviation, 0, PRICE_CLOSE, MODE_UPPER, shift);
+			BBs1 = iBands(Symbol(), PERIOD_CURRENT, Period(), internalBandsDeviation, 0, PRICE_CLOSE, MODE_UPPER, shift);
 			//double BBs1Shifted = iBands(Symbol(), PERIOD_CURRENT, Period(), 1, 0, PRICE_CLOSE, MODE_UPPER, ShiftValue);
-			double BBm  = iBands(Symbol(), PERIOD_CURRENT, Period(), internalBandsDeviationWhole, 0, MODE_MAIN,   MODE_BASE, shift);
+			BBm  = iBands(Symbol(), PERIOD_CURRENT, Period(), internalBandsDeviationWhole, 0, MODE_MAIN,   MODE_BASE, shift);
 			//double BBmShifted  = iBands(Symbol(), PERIOD_CURRENT, Period(), 2, 0, MODE_MAIN,   MODE_BASE,  ShiftValue);
-			double BBd1 = iBands(Symbol(), PERIOD_CURRENT, Period(), internalBandsDeviation, 0, PRICE_CLOSE, MODE_LOWER, shift);
+			BBd1 = iBands(Symbol(), PERIOD_CURRENT, Period(), internalBandsDeviation, 0, PRICE_CLOSE, MODE_LOWER, shift);
 			//double BBd1Shifted = iBands(Symbol(), PERIOD_CURRENT, Period(), 1, 0, PRICE_CLOSE, MODE_LOWER, ShiftValue);
-			double BBd2 = iBands(Symbol(), PERIOD_CURRENT, Period(), internalBandsDeviationWhole, 0, PRICE_CLOSE, MODE_LOWER, shift);
+			BBd2 = iBands(Symbol(), PERIOD_CURRENT, Period(), internalBandsDeviationWhole, 0, PRICE_CLOSE, MODE_LOWER, shift);
 			//double BBd2Shifted = iBands(Symbol(), PERIOD_CURRENT, Period(), 2, 0, PRICE_CLOSE, MODE_LOWER, ShiftValue);
 			
 			// no Bollinger Bands calculation at all?

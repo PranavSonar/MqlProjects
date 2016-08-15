@@ -10,13 +10,17 @@
 #property strict
 
 #include "BaseTransactionManagement.mq4"
+#include "..\MoneyManagement\BaseMoneyManagement.mq4"
 
 class FollowTrendTranMan : public BaseTransactionManagement
 {
 	public:
-		bool FollowTrend_UpdateSL_TP(double targetSL, double targetTP, bool allCharts = false)
+		bool FollowTrend_UpdateSL_TP_UsingConstants(double targetSLpips = 30.0, double targetTPpips = 50.0, bool allCharts = false)
 		{
 			bool statusOk = RefreshRates();
+			BaseMoneyManagement money;
+			double targetTP, targetSL;
+			money.CalculateTP_SL(targetTP, targetSL, OrderType(), OrderOpenPrice());
 			
 			if ((targetTP > 0) || (targetSL > 0))
 			{

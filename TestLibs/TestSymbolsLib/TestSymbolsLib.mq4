@@ -31,6 +31,8 @@ int OnInit()
       result += result + symbolsList[i] + "; ";
       
    Print("SymbolsListWithSymbolPart: RON: " + result);
+   symbol.PrintAllSymbols();
+   symbol.PrintOpenMarkets();
    
    return(INIT_SUCCEEDED);
 }

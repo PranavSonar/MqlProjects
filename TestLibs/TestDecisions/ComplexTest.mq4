@@ -18,11 +18,15 @@
 #include "../../MqlLibs/DecisionMaking/DecisionDoubleBB.mq4"
 #include "../../MqlLibs/DecisionMaking/Decision3MA.mq4"
 #include "../../MqlLibs/DecisionMaking/DecisionRSI.mq4"
-#include "../../MqlLibs/TransactionManagement/BaseTransactionManagement.mq4"
+#include "../../MqlLibs/TransactionManagement/FollowTrendTranMan.mq4"
 #include "../../MqlLibs/VerboseInfo/ScreenInfo.mq4"
 #include "../../MqlLibs/VerboseInfo/VerboseInfo.mq4"
 #include "../../MqlLibs/MoneyManagement/MoneyBetOnDecision.mq4"
 
+
+input int MaximumNumberOfTransactions;
+int NumberOfTransactionsSell;
+int NumberOfTransactionsBuy;
 
 //+------------------------------------------------------------------+
 //| Expert initialization function (used for testing)                |
@@ -34,6 +38,9 @@ int init()
 	vi.BalanceAccountInfo();
 	vi.ClientAndTerminalInfo();
 	vi.PrintMarketInfo();
+	
+	NumberOfTransactionsSell = 0;
+	NumberOfTransactionsBuy = 0;
 	
 	return INIT_SUCCEEDED;
 }
@@ -47,7 +54,7 @@ int start()
 	DecisionDoubleBB bbDecision;
 	
 	// Transaction management (send/etc)
-	BaseTransactionManagement transaction;
+	FollowTrendTranMan transaction;
 	transaction.SetVerboseLevel(1);
 	
 	// Money management:
@@ -67,14 +74,30 @@ int start()
 		double price = money.GetPriceBasedOnDecision(decision);
 		
 		if((SL == 0.0) || (TP == 0.0))
-			money.CalculateTP_SL(TP, SL, DecisionOrderType, price);
+			money.CalculateTP_SL(TP, SL, DecisionOrderType, price); // TP and SL cannot be calculated well without the price
 		
 		if(decision != IncertitudeDecision)
 		{
-			if(DecisionOrderType > 0) // Buy
-				transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.1, price,0,SL,TP,NULL, 0, 0, clrNONE, i);
-			else // Sell
-				transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.1, price,0,SL,TP,NULL, 0, 0, clrNONE, i);
+			int ticket = 1;
+			if(DecisionOrderType > 0) { // Buy
+				
+				//if(IsDemo())
+					ticket = ticket * transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.1, price,0,SL,TP,NULL, 0, 0, clrNONE, i);
+				//else
+				//	ticket = ticket * OrderSend(Symbol(), OP_BUY, 0.1, price,0,SL,TP,NULL, 0, 0, clrNONE);
+				
+				NumberOfTransactionsBuy ++;
+			} else { // Sell
+				//if(IsDemo())
+					ticket = ticket * transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.1, price,0,SL,TP,NULL, 0, 0, clrNONE, i);
+				//else
+				//	ticket = ticket * OrderSend(Symbol(), OP_SELL, 0.1, price,0,SL,TP,NULL, 0, 0, clrNONE);
+				
+				NumberOfTransactionsSell ++;
+			}
+			
+			if(ticket < 0)
+				printf("There might be a problem with some order: ticket = %d; LastError = %d", ticket, GetLastError());
 		}
 		i--;
 	}

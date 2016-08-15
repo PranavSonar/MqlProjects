@@ -13,6 +13,11 @@
 
 class DecisionRSI : public DecisionIndicator
 {
+	private:
+		double rsiLevelCloseH1, rsiLevelMedianH1,
+			rsiLevelCloseD1, rsiLevelMedianD1,
+			rsiLevelCloseW1, rsiLevelMedianW1;
+			
 	public:
 		DecisionRSI(bool verbose = false, int shiftValue = 1, int internalShift = 0) : DecisionIndicator(verbose, shiftValue, internalShift) {}
 		
@@ -23,28 +28,46 @@ class DecisionRSI : public DecisionIndicator
 			return 12.0;
 		}
 		
+		virtual double GetCloseH1()  { return rsiLevelCloseH1;  }
+		virtual double GetMedianH1() { return rsiLevelMedianH1; }
+		virtual double GetCloseD1()  { return rsiLevelCloseD1;  }
+		virtual double GetMedianD1() { return rsiLevelMedianD1; }
+		virtual double GetCloseW1()  { return rsiLevelCloseW1;  }
+		virtual double GetMedianW1() { return rsiLevelMedianW1; }
+		
+		virtual void SetIndicatorData(
+			double &Buffer_CloseH1[], double &Buffer_MedianH1[],
+			double &Buffer_CloseD1[], double &Buffer_MedianD1[],
+			double &Buffer_CloseW1[], double &Buffer_MedianW1[],
+			int index
+		)
+		{ Buffer_CloseH1[index] = rsiLevelCloseH1; Buffer_MedianH1[index] = rsiLevelMedianH1;
+			Buffer_CloseD1[index] = rsiLevelCloseD1; Buffer_MedianD1[index] = rsiLevelMedianD1;
+			Buffer_CloseW1[index] = rsiLevelCloseW1; Buffer_MedianW1[index] = rsiLevelMedianW1; }
+		
+		
 		double GetDecision(int shift = 0)
 		{
 			if((shift == 0) && (GetShiftValue() != 0))
 				shift = GetShiftValue();
 			
 			// Analysis based on Relative Strength levels:
-			double rsiLevelCloseH1 = iRSI(Symbol(), PERIOD_CURRENT, PERIOD_H1, PRICE_CLOSE, shift);
-			double rsiLevelMedianH1 = iRSI(Symbol(), PERIOD_CURRENT, PERIOD_H1, PRICE_MEDIAN, shift);
+			rsiLevelCloseH1 = iRSI(Symbol(), PERIOD_CURRENT, PERIOD_H1, PRICE_CLOSE, shift);
+			rsiLevelMedianH1 = iRSI(Symbol(), PERIOD_CURRENT, PERIOD_H1, PRICE_MEDIAN, shift);
 			double rsiLevelCloseShiftedH1 = iRSI(Symbol(), PERIOD_CURRENT, PERIOD_H1, PRICE_CLOSE, shift + ShiftValue);
 			double rsiLevelMedianShiftedH1 = iRSI(Symbol(), PERIOD_CURRENT, PERIOD_H1, PRICE_MEDIAN, shift + ShiftValue);
 			double rsiLevelCloseShifted2H1 = iRSI(Symbol(), PERIOD_CURRENT, PERIOD_H1, PRICE_CLOSE, shift + ShiftValue + 1);
 			double rsiLevelMedianShifted2H1 = iRSI(Symbol(), PERIOD_CURRENT, PERIOD_H1, PRICE_MEDIAN, shift + ShiftValue + 1);
 			
-			double rsiLevelCloseD1 = iRSI(Symbol(), PERIOD_CURRENT, PERIOD_D1, PRICE_CLOSE, shift);
-			double rsiLevelMedianD1 = iRSI(Symbol(), PERIOD_CURRENT, PERIOD_D1, PRICE_MEDIAN, shift);
+			rsiLevelCloseD1 = iRSI(Symbol(), PERIOD_CURRENT, PERIOD_D1, PRICE_CLOSE, shift);
+			rsiLevelMedianD1 = iRSI(Symbol(), PERIOD_CURRENT, PERIOD_D1, PRICE_MEDIAN, shift);
 			double rsiLevelCloseShiftedD1 = iRSI(Symbol(), PERIOD_CURRENT, PERIOD_D1, PRICE_CLOSE, shift + ShiftValue);
 			double rsiLevelMedianShiftedD1 = iRSI(Symbol(), PERIOD_CURRENT, PERIOD_D1, PRICE_MEDIAN, shift + ShiftValue);
 			double rsiLevelCloseShifted2D1 = iRSI(Symbol(), PERIOD_CURRENT, PERIOD_D1, PRICE_CLOSE, shift + ShiftValue + 1);
 			double rsiLevelMedianShifted2D1 = iRSI(Symbol(), PERIOD_CURRENT, PERIOD_D1, PRICE_MEDIAN, shift + ShiftValue + 1);
 			
-			double rsiLevelCloseW1 = iRSI(Symbol(), PERIOD_CURRENT, PERIOD_W1, PRICE_CLOSE, shift);
-			double rsiLevelMedianW1 = iRSI(Symbol(), PERIOD_CURRENT, PERIOD_W1, PRICE_MEDIAN, shift);
+			rsiLevelCloseW1 = iRSI(Symbol(), PERIOD_CURRENT, PERIOD_W1, PRICE_CLOSE, shift);
+			rsiLevelMedianW1 = iRSI(Symbol(), PERIOD_CURRENT, PERIOD_W1, PRICE_MEDIAN, shift);
 			double rsiLevelCloseShiftedW1 = iRSI(Symbol(), PERIOD_CURRENT, PERIOD_W1, PRICE_CLOSE, shift + ShiftValue);
 			double rsiLevelMedianShiftedW1 = iRSI(Symbol(), PERIOD_CURRENT, PERIOD_W1, PRICE_MEDIAN, shift + ShiftValue);
 			double rsiLevelCloseShifted2W1 = iRSI(Symbol(), PERIOD_CURRENT, PERIOD_W1, PRICE_CLOSE, shift + ShiftValue + 1);

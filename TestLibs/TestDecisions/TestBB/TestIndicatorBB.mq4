@@ -8,16 +8,22 @@
 #property version   "1.00"
 #property strict
 
-#property indicator_chart_window  // Drawing in the chart window
-//#property indicator_separate_window // Drawing in a separate window
-#property indicator_buffers 0       // Number of buffers
-#property indicator_color1 Blue     // Color of the 1st line
-#property indicator_color2 Red      // Color of the 2nd line
+#property indicator_chart_window
+
+#property indicator_buffers 5
+#property indicator_color1 Blue
+#property indicator_color2 Red
+#property indicator_color3 Gray
+#property indicator_color4 Red
+#property indicator_color5 Blue
 
 #include "../../../MqlLibs/DecisionMaking/DecisionDoubleBB.mq4"
 #include "../../../MqlLibs/TransactionManagement/BaseTransactionManagement.mq4"
 #include "../../../MqlLibs/VerboseInfo/ScreenInfo.mq4"
 #include "../../../MqlLibs/VerboseInfo/VerboseInfo.mq4"
+
+
+double Buf_BBs2[], Buf_BBs1[], Buf_BBm[], Buf_BBd1[], Buf_BBd2[];
 
 //+------------------------------------------------------------------+
 //| Indicator initialization function (used for testing)             |
@@ -29,6 +35,22 @@ int OnInit()
 	vi.BalanceAccountInfo();
 	vi.ClientAndTerminalInfo();
 	vi.PrintMarketInfo();
+	
+	
+	SetIndexBuffer(0, Buf_BBs2);
+	SetIndexStyle(0, DRAW_SECTION, STYLE_SOLID, 2);
+	
+	SetIndexBuffer(1, Buf_BBs1);
+	SetIndexStyle(1, DRAW_SECTION, STYLE_SOLID, 2);
+	
+	SetIndexBuffer(2, Buf_BBm);
+	SetIndexStyle(2, DRAW_SECTION, STYLE_SOLID, 2);
+	
+	SetIndexBuffer(3, Buf_BBd1);
+	SetIndexStyle(3, DRAW_SECTION, STYLE_SOLID, 2);
+	
+	SetIndexBuffer(4, Buf_BBd2);
+	SetIndexStyle(4, DRAW_SECTION, STYLE_SOLID, 2);
 	
 	return INIT_SUCCEEDED;
 }
@@ -48,6 +70,8 @@ int start()
 	while(i >= 0)
 	{
 		double d = decision.GetDecision(SL, TP, 1.0, i);
+		decision.SetIndicatorData(Buf_BBs2, Buf_BBs1, Buf_BBm, Buf_BBd1, Buf_BBd2, i);
+		
 		if(d != IncertitudeDecision)
 		{
 			if(d > 0) // Buy

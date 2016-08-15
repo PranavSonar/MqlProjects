@@ -104,7 +104,7 @@ class BaseOrder : public BaseObject
 			string objectName = screen.ReplaceObjectName(SimulatedOrder, magic);
 			bool statusOk = ObjectCreate(ChartID(),objectName, OBJ_VLINE, 0, Time[shift], price);
 			ObjectSet(objectName, OBJPROP_COLOR, Gray);
-			ObjectSet(objectName, OBJPROP_WIDTH, 3);
+			ObjectSet(objectName, OBJPROP_WIDTH, 0.5);
 			
 			if(IsVerboseMode())
 			{
@@ -116,7 +116,7 @@ class BaseOrder : public BaseObject
 				objectName = screen.ReplaceObjectName(SimulatedStopLoss, magic);
 				statusOk = statusOk & ObjectCreate(ChartID(),objectName, OBJ_VLINE, 0, Time[shift], stoploss);
 				ObjectSet(objectName, OBJPROP_COLOR, Red);
-				ObjectSet(objectName, OBJPROP_WIDTH, 1);
+				ObjectSet(objectName, OBJPROP_WIDTH, 0.3);
 				
 				if(IsVerboseMode())
 				{
@@ -129,7 +129,7 @@ class BaseOrder : public BaseObject
 				objectName = screen.ReplaceObjectName(SimulatedTakeProfit, magic);
 				statusOk = statusOk & ObjectCreate(ChartID(),objectName, OBJ_VLINE, 0, Time[0], takeprofit);
 				ObjectSet(objectName, OBJPROP_COLOR, Green);
-				ObjectSet(objectName, OBJPROP_WIDTH, 1);
+				ObjectSet(objectName, OBJPROP_WIDTH, 0.3);
 				
 				if(IsVerboseMode())
 				{

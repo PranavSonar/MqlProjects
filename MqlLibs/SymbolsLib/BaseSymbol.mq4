@@ -33,13 +33,15 @@ class BaseSymbol : public BaseObject
 				Print("BaseSymbol initialisation is not ok! Hope it works!");
 		}
 		
-		void PrintAllSymbols()
+		
+		virtual void PrintAllSymbols()
 		{
 			for(int i=0;i<ArraySize(SymbolsList);i++)
 				Print(SymbolsList[i] + " " + SymbolDescription(SymbolsList[i]) + SymbolType(SymbolsList[i]));
 		}
 		
-		bool SymbolExists(string symbolName)
+		
+		virtual bool SymbolExists(string symbolName)
 		{
 			for(int i=0;i<ArraySize(SymbolsList);i++)
 				if(StringFind(SymbolsList[i], symbolName) != -1)
@@ -47,7 +49,8 @@ class BaseSymbol : public BaseObject
 			return false;
 		}
 		
-		string GetSymbolStartingWith(string symbolName)
+		
+		virtual string GetSymbolStartingWith(string symbolName)
 		{
 			for(int i=0;i<ArraySize(SymbolsList);i++)
 				if(StringFind(SymbolsList[i], symbolName) != -1)
@@ -55,7 +58,8 @@ class BaseSymbol : public BaseObject
 			return "";
 		}
 		
-		bool SymbolPartExists(string symbolName, bool isBaseSymbol = true)
+		
+		virtual bool SymbolPartExists(string symbolName, bool isBaseSymbol = true)
 		{
 			int startingSymbolLength = isBaseSymbol ? 0 : 3; // base symbol starts from 0, second symbol starts from 3
 			for(int i=0;i<ArraySize(SymbolsList);i++)
@@ -64,7 +68,8 @@ class BaseSymbol : public BaseObject
 			return false;
 		}
 		
-		void SymbolsListWithSymbolPart(string symbolName, string &baseSymbolList[], bool isBaseSymbol = true)
+		
+		virtual void SymbolsListWithSymbolPart(string symbolName, string &baseSymbolList[], bool isBaseSymbol = true)
 		{
 			int startingSymbolLength = isBaseSymbol ? 0 : 3; // base symbol starts from 0, second symbol starts from 3
 			int length = 0;
@@ -77,4 +82,21 @@ class BaseSymbol : public BaseObject
 				}
 		}
 		
+		
+		virtual void PrintOpenMarkets()
+		{
+			string listOfSymbolsOpenToTrade = "";
+			int len = ArraySize(SymbolsList);
+			for(int i=0;i<len;i++)
+				if(MarketInfo(SymbolsList[i], MODE_TRADEALLOWED) == 1)
+				{
+					if(i == len-1)
+						listOfSymbolsOpenToTrade += SymbolsList[i];
+					else
+						listOfSymbolsOpenToTrade += SymbolsList[i] + ",";
+				}
+			len = StringLen(listOfSymbolsOpenToTrade);
+			for(int i=0;i<len;i=i+50)
+			Print("Open market symbols: " + StringSubstr(listOfSymbolsOpenToTrade,i,50));
+		}
 };

@@ -14,9 +14,6 @@
 
 
 // Should be defined the same as decision type (because it also has sell/buy)
-#define OrderIsBuy 1
-#define OrderIsSell -1
-#define OrderIsIncert 0
 
 class BaseMoneyManagement : public BaseObject
 {
@@ -43,12 +40,12 @@ class BaseMoneyManagement : public BaseObject
 			
 			double pip = Point * 10;
 			
-			if (orderType == OrderIsBuy)
+			if (orderType == OP_BUY)
 			{
 				tp = price + (tpLimitPips*pip) + (spread);
 				sl = price - (slLimitPips*pip) - (spread);
 			}
-			else if (orderType == OrderIsSell)
+			else if (orderType == OP_SELL)
 			{
 				tp = price - (tpLimitPips*pip) - (spread);
 				sl = price + (slLimitPips*pip) + (spread);
