@@ -198,14 +198,11 @@ class Decision3MA : public DecisionIndicator
 						maResult, maLevelCloseResultH1, maLevelMedianResultH1, maLevelCloseResultD1, maLevelMedianResultD1, maLevelCloseResultW1, maLevelMedianResultW1, closeLevel, medianLevel
 					);
 					
-					if(GetVerboseLevel() > 2)
-					{
-						printf("MA Level Data: H1: %f %f %f %f D1: %f %f %f %f W1: %f %f %f %f\n",
-							maLevelCloseH1, maLevelCloseShiftedH1, maLevelMedianH1, maLevelMedianShiftedH1,
-							maLevelCloseD1, maLevelCloseShiftedD1, maLevelMedianD1, maLevelMedianShiftedD1,
-							maLevelCloseW1, maLevelCloseShiftedW1, maLevelMedianW1, maLevelMedianShiftedW1
-						);
-					}
+					printf("MA Level Data: H1: %f %f %f %f D1: %f %f %f %f W1: %f %f %f %f\n",
+						maLevelCloseH1, maLevelCloseShiftedH1, maLevelMedianH1, maLevelMedianShiftedH1,
+						maLevelCloseD1, maLevelCloseShiftedD1, maLevelMedianD1, maLevelMedianShiftedD1,
+						maLevelCloseW1, maLevelCloseShiftedW1, maLevelMedianW1, maLevelMedianShiftedW1
+					);
 				}
 			}
 			
