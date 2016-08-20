@@ -61,7 +61,7 @@ class BaseSymbol : public BaseObject
 		
 		virtual bool SymbolPartExists(string symbolName, bool isBaseSymbol = true)
 		{
-			int startingSymbolLength = isBaseSymbol ? 0 : 3; // base symbol starts from 0, second symbol starts from 3
+			int startingSymbolLength = isBaseSymbol ? 0 : 3; // base symbol starts from 0, quote symbol starts from 3
 			for(int i=0;i<ArraySize(SymbolsList);i++)
 				if(StringSubstr(SymbolsList[i],startingSymbolLength,3) == symbolName)
 					return true;
@@ -71,7 +71,7 @@ class BaseSymbol : public BaseObject
 		
 		virtual void SymbolsListWithSymbolPart(string symbolName, string &baseSymbolList[], bool isBaseSymbol = true)
 		{
-			int startingSymbolLength = isBaseSymbol ? 0 : 3; // base symbol starts from 0, second symbol starts from 3
+			int startingSymbolLength = isBaseSymbol ? 0 : 3; // base symbol starts from 0, quote symbol starts from 3
 			int length = 0;
 			for(int i=0;i<ArraySize(SymbolsList);i++)
 				if(StringSubstr(SymbolsList[i],startingSymbolLength,3) == symbolName)

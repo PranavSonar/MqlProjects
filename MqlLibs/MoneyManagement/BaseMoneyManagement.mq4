@@ -52,65 +52,71 @@ class BaseMoneyManagement : public BaseObject
 			}
 		}
 		
-		virtual double CalculatePriceForBaseCurrencyUSD()
+		virtual double CalculatePriceForUSD(bool isBaseSymbol = true)
 		{
-			string baseCurrency = StringSubstr(Symbol(),0,3);
-			if(baseCurrency == "AUD")
+			int startingSymbolLength = isBaseSymbol ? 0 : 3; // base symbol starts from 0, quote symbol starts from 3
+			string currency = StringSubstr(Symbol(),startingSymbolLength,3);
+			if(currency == "AUD")
 				return MarketInfo("AUDUSD",MODE_BID);
-			else if(baseCurrency == "EUR")
+			else if(currency == "EUR")
 				return MarketInfo("EURUSD",MODE_BID);
-			else if(baseCurrency == "GBP")
+			else if(currency == "GBP")
 				return MarketInfo("GBPUSD",MODE_BID);
-			else if(baseCurrency == "NZD")
+			else if(currency == "NZD")
 				return MarketInfo("NZDUSD",MODE_BID);
 			
 			double invertedPrice = 0.0;
-			if(baseCurrency == "CAD") {
+			if(currency == "CAD") {
 				invertedPrice = MarketInfo("USDCAD", MODE_BID);
 				return invertedPrice != 0 ? 1.0/invertedPrice : 0.0;
-			} else if(baseCurrency == "CHF") {
+			} else if(currency == "CHF") {
 				invertedPrice = MarketInfo("USDCHF", MODE_BID);
 				return invertedPrice != 0 ? 1.0/invertedPrice : 0.0;
-			} else if(baseCurrency == "SGD") {
+			} else if(currency == "SGD") {
 				invertedPrice = MarketInfo("USDSGD", MODE_BID);
 				return invertedPrice != 0 ? 1.0/invertedPrice : 0.0;
-			} else if(baseCurrency == "USD")
+			} else if(currency == "USD")
 				return 1.00;
 			else
 				return 0.0;
 		}
 		
-		virtual double CalculatePriceForBaseCurrency()
+		virtual double CalculatePrice(bool isBaseSymbol = true)
 		{
 			string accountCurrency = AccountCurrency();
 			if(accountCurrency == "")
 				return 0.0;
 			else if(accountCurrency == "USD")
-				return CalculatePriceForBaseCurrencyUSD();
+			{
+				double res = CalculatePriceForUSD(isBaseSymbol);
+				if(res != 0.0)
+					return res;
+			}
 			
-			string baseCurrency = StringSubstr(Symbol(),0,3);
+			int startingSymbolLength = isBaseSymbol ? 0 : 3; // base symbol starts from 0, quote symbol starts from 3
+			string currency = StringSubstr(Symbol(),startingSymbolLength,3);
 			
-			if(baseCurrency == accountCurrency)
+			if(currency == accountCurrency)
 				return 1.0;
 			else
 			{
-				string testedSymbol = accountCurrency + baseCurrency;
+				string testedSymbol = accountCurrency + currency;
 				if(symbol.SymbolExists(testedSymbol))
 					return MarketInfo(testedSymbol, MODE_BID);
 				
 				double invertedPrice = 0.0;
-				testedSymbol = baseCurrency + accountCurrency;
+				testedSymbol = currency + accountCurrency;
 				if(symbol.SymbolExists(testedSymbol))
 				{
 					testedSymbol = symbol.GetSymbolStartingWith(testedSymbol);
 					invertedPrice = MarketInfo(testedSymbol, MODE_BID);
-					return invertedPrice != 0.0 ? 1.0/invertedPrice : 0.0;
+					return ((invertedPrice != 0.0) ? (1.0 / invertedPrice) : 0.0);
 				}
 				
 				// indirect currency calculate (might need testing)
 				string symbolList[];
 				symbol.SymbolsListWithSymbolPart(accountCurrency,symbolList);
-				testedSymbol = StringSubstr(symbolList[0],3,3) + baseCurrency;
+				testedSymbol = StringSubstr(symbolList[0],3,3) + currency;
 				if(symbol.SymbolExists(testedSymbol)) {
 					testedSymbol = symbol.GetSymbolStartingWith(testedSymbol);
 					return MarketInfo(symbolList[0], MODE_BID) * MarketInfo(testedSymbol, MODE_BID);

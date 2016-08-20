@@ -44,9 +44,9 @@ class MoneyBetOnDecision : public BaseMoneyManagement
 				this.NumberOfBots = 1.0;
 			
 			double onePip = (Point()*10.0);
-			double priceForBaseCurrency = CalculatePriceForBaseCurrency(); // on market closed this price is zero
+			double priceForQuoteCurrency = CalculatePrice(false); // on market closed this price is zero
 			double priceBasedOnCurrentDecision = CalculatePrice(currentDecision); // on incertitude this price is zero
 			double multiplicationPowerOfTwo = pow(2.0, this.CurrentDecision/this.MaxDecision) / this.NumberOfBots;
-			return priceForBaseCurrency * priceBasedOnCurrentDecision * onePip * multiplicationPowerOfTwo; // to do: check & fix
+			return priceForQuoteCurrency * priceBasedOnCurrentDecision * onePip * multiplicationPowerOfTwo; // to do: check & fix
 		}
 };

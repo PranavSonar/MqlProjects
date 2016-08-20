@@ -62,6 +62,10 @@ int start()
 	decision.SetVerboseLevel(1);
 	BaseTransactionManagement transaction;
 	transaction.SetVerboseLevel(1);
+	transaction.SetSimulatedOrder("SimulatedOrderBA");
+	transaction.SetSimulatedStopLoss("SimulatedStopLossBA");
+	transaction.SetSimulatedTakeProfit("SimulatedTakeProfitBA");
+	
 	ScreenInfo screen;
 	
 	int i = Bars - IndicatorCounted() - 1;

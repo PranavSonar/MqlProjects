@@ -14,22 +14,43 @@
 #include "../BaseLibs/BaseObject.mq4"
 
 
-const string SimulatedOrder = "SimulatedOrder";
-const string SimulatedStopLoss = "SimulatedStopLoss";
-const string SimulatedTakeProfit = "SimulatedTakeProfit";
 
 class BaseOrder : public BaseObject
 {
 	protected:
+		
+		// Names of created objects
+		string SimulatedOrderObjectName;
+		string SimulatedStopLossObjectName;
+		string SimulatedTakeProfitObjectName;
+		
 		ScreenInfo screen;
 		int SimulatedOrderSelected;
 		
 	public:
-		BaseOrder()
+		BaseOrder(string simulatedOrderObjectName = "SimulatedOrder", string simulatedStopLossObjectName = "SimulatedStopLoss", string simulatedTakeProfitObjectName = "SimulatedTakeProfit")
 		{
 			this.SimulatedOrderSelected = -1;
+			this.SimulatedOrderObjectName = simulatedOrderObjectName;
+			this.SimulatedStopLossObjectName = simulatedStopLossObjectName;
+			this.SimulatedTakeProfitObjectName = simulatedTakeProfitObjectName;
 		}
-	
+		
+		virtual void SetSimulatedOrderObjectName(string simulatedOrderObjectName = "SimulatedOrder")
+		{
+			this.SimulatedOrderObjectName = simulatedOrderObjectName;
+		}
+		
+		virtual void SetSimulatedStopLossObjectName(string simulatedStopLossObjectName = "SimulatedStopLoss")
+		{
+			this.SimulatedStopLossObjectName = simulatedStopLossObjectName;
+		}
+		
+		virtual void SetSimulatedTakeProfitObjectName(string simulatedTakeProfitObjectName = "SimulatedTakeProfit")
+		{
+			this.SimulatedTakeProfitObjectName = simulatedTakeProfitObjectName;
+		}
+		
 		virtual int SimulateOrderSend( 
 			string   symbol,              // symbol 
 			int      cmd,                 // operation 
@@ -45,7 +66,7 @@ class BaseOrder : public BaseObject
 			int shift = 0
 		)
 		{
-			string objectName = screen.NewObjectName(SimulatedOrder, magic);
+			string objectName = screen.NewObjectName(SimulatedOrderObjectName, magic);
 			bool statusOk = ObjectCreate(ChartID(),objectName, OBJ_VLINE, 0, Time[shift], price);
 			color currentOrderColor = cmd == OP_BUY ? Blue : (cmd == OP_SELL ? Orange : Gray);
 			ObjectSet(objectName, OBJPROP_COLOR, currentOrderColor);
@@ -58,7 +79,7 @@ class BaseOrder : public BaseObject
 			
 			if(stoploss != 0)
 			{
-				objectName = screen.NewObjectName(SimulatedStopLoss, magic);
+				objectName = screen.NewObjectName(SimulatedStopLossObjectName, magic);
 				statusOk = statusOk & ObjectCreate(ChartID(),objectName, OBJ_VLINE, 0, Time[shift], stoploss);
 				ObjectSet(objectName, OBJPROP_COLOR, Red);
 				ObjectSet(objectName, OBJPROP_WIDTH, 1);
@@ -71,7 +92,7 @@ class BaseOrder : public BaseObject
 			
 			if(takeprofit != 0)
 			{
-				objectName = screen.NewObjectName(SimulatedTakeProfit, magic);
+				objectName = screen.NewObjectName(SimulatedTakeProfitObjectName, magic);
 				statusOk = statusOk & ObjectCreate(ChartID(),objectName, OBJ_VLINE, 0, Time[shift], takeprofit);
 				ObjectSet(objectName, OBJPROP_COLOR, Green);
 				ObjectSet(objectName, OBJPROP_WIDTH, 1);
@@ -86,7 +107,7 @@ class BaseOrder : public BaseObject
 		}
 		
 		
-		virtual bool  SimulateOrderModify( 
+		virtual bool SimulateOrderModify( 
 			int        ticket,      // ticket 
 			double     price,       // price 
 			double     stoploss,    // stop loss 
@@ -101,7 +122,7 @@ class BaseOrder : public BaseObject
 			
 			int magic = SimulatedOrderSelected;
 			
-			string objectName = screen.ReplaceObjectName(SimulatedOrder, magic);
+			string objectName = screen.ReplaceObjectName(SimulatedOrderObjectName, magic);
 			bool statusOk = ObjectCreate(ChartID(),objectName, OBJ_VLINE, 0, Time[shift], price);
 			ObjectSet(objectName, OBJPROP_COLOR, Gray);
 			ObjectSet(objectName, OBJPROP_WIDTH, 0.5);
@@ -113,7 +134,7 @@ class BaseOrder : public BaseObject
 			
 			if(stoploss != 0)
 			{
-				objectName = screen.ReplaceObjectName(SimulatedStopLoss, magic);
+				objectName = screen.ReplaceObjectName(SimulatedStopLossObjectName, magic);
 				statusOk = statusOk & ObjectCreate(ChartID(),objectName, OBJ_VLINE, 0, Time[shift], stoploss);
 				ObjectSet(objectName, OBJPROP_COLOR, Red);
 				ObjectSet(objectName, OBJPROP_WIDTH, 0.3);
@@ -126,7 +147,7 @@ class BaseOrder : public BaseObject
 			
 			if(takeprofit != 0)
 			{
-				objectName = screen.ReplaceObjectName(SimulatedTakeProfit, magic);
+				objectName = screen.ReplaceObjectName(SimulatedTakeProfitObjectName, magic);
 				statusOk = statusOk & ObjectCreate(ChartID(),objectName, OBJ_VLINE, 0, Time[0], takeprofit);
 				ObjectSet(objectName, OBJPROP_COLOR, Green);
 				ObjectSet(objectName, OBJPROP_WIDTH, 0.3);
@@ -150,7 +171,7 @@ class BaseOrder : public BaseObject
 			for(int i=0; i<objectsTotal; i++)
 			{
 				string name = ObjectName(i);
-				if(StringFind(name, SimulatedOrder) == 0) // starts with "SimulatedOrder"
+				if(StringFind(name, SimulatedOrderObjectName) == 0) // starts with "SimulatedOrder"
 					ordersTotal++;
 			}
 			
@@ -162,7 +183,7 @@ class BaseOrder : public BaseObject
 		{
 			if(SimulatedOrderSelected == -1)
 				return 0.0;
-			return ObjectGet(SimulatedStopLoss + IntegerToString(SimulatedOrderSelected), OBJPROP_PRICE1);
+			return ObjectGet(SimulatedStopLossObjectName + IntegerToString(SimulatedOrderSelected), OBJPROP_PRICE1);
 		}
 		
 		
@@ -170,6 +191,6 @@ class BaseOrder : public BaseObject
 		{
 			if(SimulatedOrderSelected == -1)
 				return 0.0;
-			return ObjectGet(SimulatedTakeProfit + IntegerToString(SimulatedOrderSelected), OBJPROP_PRICE1);
+			return ObjectGet(SimulatedTakeProfitObjectName + IntegerToString(SimulatedOrderSelected), OBJPROP_PRICE1);
 		}
 };
