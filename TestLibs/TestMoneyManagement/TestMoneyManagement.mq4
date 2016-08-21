@@ -18,7 +18,7 @@ int OnInit()
 	BaseMoneyManagement money;
 	
 	//--- CalculatePriceForUSD
-	printf("CalculatePriceForUSD: %f", money.CalculatePriceForUSD());
+	printf("CalculatePriceForUSD: %f", money.CalculateCurrencyPriceForUSD());
 	printf("CalculatePrice(isBaseCurrency = true): %f", money.CalculatePrice(true));
 	
 	//--- GetTotalAmount

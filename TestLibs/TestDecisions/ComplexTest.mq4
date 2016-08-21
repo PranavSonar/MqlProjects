@@ -18,7 +18,7 @@
 #include <MyMql/DecisionMaking/DecisionDoubleBB.mqh>
 #include <MyMql/DecisionMaking/Decision3MA.mqh>
 #include <MyMql/DecisionMaking/DecisionRSI.mqh>
-#include <MyMql/TransactionManagement/FollowTrendTranMan.mqh>
+#include <MyMql/TransactionManagement/FlowWithTrendTranMan.mqh>
 #include <MyMql/Info/ScreenInfo.mqh>
 #include <MyMql/Info/VerboseInfo.mqh>
 #include <MyMql/MoneyManagement/MoneyBetOnDecision.mqh>
@@ -54,7 +54,7 @@ int start()
 	DecisionDoubleBB bbDecision;
 	
 	// Transaction management (send/etc)
-	FollowTrendTranMan transaction;
+	FlowWithTrendTranMan transaction;
 	transaction.SetVerboseLevel(1);
 	
 	// Money management:

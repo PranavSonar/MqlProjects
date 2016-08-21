@@ -9,7 +9,7 @@
 #property strict
 
 #include <MyMql/TransactionManagement/CrappyTranManagement.mqh>
-#include <MyMql/TransactionManagement/FollowTrendTranMan.mqh>
+#include <MyMql/TransactionManagement/FlowWithTrendTranMan.mqh>
 
 int OnInit()
 {
@@ -33,9 +33,9 @@ int OnInit()
 	
 	
 	double SL = 0.0, TP = 0.0;
-	FollowTrendTranMan followTrend;
+	FlowWithTrendTranMan followTrend;
 	
-	followTrend.FollowTrend_UpdateSL_TP_UsingConstants(SL, TP);
+	followTrend.FlowWithTrend_UpdateSL_TP_UsingConstants(SL, TP);
 	printf("%f %f", SL, TP);
 	
 	
