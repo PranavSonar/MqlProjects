@@ -1,10 +1,10 @@
 //+------------------------------------------------------------------+
 //|                                         CrappyTranManagement.mq4 |
-//|                                Copyright 2016, Chirita Alexandru |
+//|                     Copyright Robert Costache, Chirita Alexandru |
 //|                                             https://www.mql5.com |
 //+------------------------------------------------------------------+
 #property library
-#property copyright "Copyright 2016, Chirita Alexandru"
+#property copyright "Copyright Robert Costache, Chirita Alexandru"
 #property link      "https://www.mql5.com"
 #property version   "1.00"
 #property strict
