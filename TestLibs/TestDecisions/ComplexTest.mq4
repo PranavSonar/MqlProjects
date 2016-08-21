@@ -15,13 +15,13 @@
 #property indicator_color1 Blue     // Color of the 1st line
 #property indicator_color2 Red      // Color of the 2nd line
 
-#include "../../MqlLibs/DecisionMaking/DecisionDoubleBB.mq4"
-#include "../../MqlLibs/DecisionMaking/Decision3MA.mq4"
-#include "../../MqlLibs/DecisionMaking/DecisionRSI.mq4"
-#include "../../MqlLibs/TransactionManagement/FollowTrendTranMan.mq4"
-#include "../../MqlLibs/VerboseInfo/ScreenInfo.mq4"
-#include "../../MqlLibs/VerboseInfo/VerboseInfo.mq4"
-#include "../../MqlLibs/MoneyManagement/MoneyBetOnDecision.mq4"
+#include <MyMql/DecisionMaking/DecisionDoubleBB.mqh>
+#include <MyMql/DecisionMaking/Decision3MA.mqh>
+#include <MyMql/DecisionMaking/DecisionRSI.mqh>
+#include <MyMql/TransactionManagement/FollowTrendTranMan.mqh>
+#include <MyMql/Info/ScreenInfo.mqh>
+#include <MyMql/Info/VerboseInfo.mqh>
+#include <MyMql/MoneyManagement/MoneyBetOnDecision.mqh>
 
 
 input int MaximumNumberOfTransactions;

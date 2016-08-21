@@ -9,7 +9,7 @@
 #property strict
 
 
-#include "../../MqlLibs/SymbolsLib/BaseSymbol.mq4"
+#include <MyMql/Symbols/BaseSymbol.mqh>
 
 //+------------------------------------------------------------------+
 //| Expert initialization function (used for testing)                |

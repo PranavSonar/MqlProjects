@@ -8,9 +8,9 @@
 #property version   "1.00"
 #property strict
 
-#include "../../MqlLibs/TransactionManagement/CrappyTranManagement.mq4"
-#include "../../MqlLibs/MoneyManagement/BaseMoneyManagement.mq4"
-#include "../../MqlLibs/VerboseInfo/ScreenInfo.mq4"
+#include <MyMql/TransactionManagement/CrappyTranManagement.mqh>
+#include <MyMql/MoneyManagement/BaseMoneyManagement.mqh>
+#include <MyMql/Info/ScreenInfo.mqh>
 
 BaseMoneyManagement money;
 CrappyTranManagement tran;

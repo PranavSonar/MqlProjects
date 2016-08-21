@@ -17,10 +17,10 @@
 #property indicator_color5 clrMidnightBlue
 #property indicator_color6 clrMidnightBlue
 
-#include "../../../MqlLibs/DecisionMaking/DecisionRSI.mq4"
-#include "../../../MqlLibs/TransactionManagement/BaseTransactionManagement.mq4"
-#include "../../../MqlLibs/VerboseInfo/ScreenInfo.mq4"
-#include "../../../MqlLibs/VerboseInfo/VerboseInfo.mq4"
+#include <MyMql/DecisionMaking/DecisionRSI.mqh>
+#include <MyMql/TransactionManagement/BaseTransactionManagement.mqh>
+#include <MyMql/Info/ScreenInfo.mqh>
+#include <MyMql/Info/VerboseInfo.mqh>
 
 double Buf_CloseH1[], Buf_MedianH1[],
 	Buf_CloseD1[], Buf_MedianD1[],

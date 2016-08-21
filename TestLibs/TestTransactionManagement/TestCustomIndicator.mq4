@@ -24,13 +24,13 @@ int init()
 {
 	SetIndexBuffer(0, Buf_0);
 	SetIndexStyle(DRAW_SECTION,STYLE_SOLID, 2);
-	return;
+	return INIT_SUCCEEDED;
 }
 
 
 int start()
 {
-	int i, n, Counted_bars;
+	int i, Counted_bars;
 	Counted_bars = IndicatorCounted();
 	i = Bars - Counted_bars - 1;
 	

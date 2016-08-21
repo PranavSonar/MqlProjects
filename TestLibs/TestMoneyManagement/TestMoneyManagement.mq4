@@ -8,7 +8,7 @@
 #property version   "1.00"
 #property strict
 
-#include "../../MqlLibs/MoneyManagement/BaseMoneyManagement.mq4"
+#include <MyMql/MoneyManagement/BaseMoneyManagement.mqh>
 
 //+------------------------------------------------------------------+
 //| Expert initialization function (used for testing)                |
@@ -18,8 +18,8 @@ int OnInit()
 	BaseMoneyManagement money;
 	
 	//--- CalculatePriceForUSD
-	printf("CalculatePriceForUSD: %f", money.CalculatePriceForBaseCurrencyUSD());
-	printf("CalculatePriceForBaseCurrency: %f", money.CalculatePriceForBaseCurrency());
+	printf("CalculatePriceForUSD: %f", money.CalculatePriceForUSD());
+	printf("CalculatePrice(isBaseCurrency = true): %f", money.CalculatePrice(true));
 	
 	//--- GetTotalAmount
 	printf("GetTotalAmount: %f", money.GetTotalAmount());
@@ -33,7 +33,7 @@ int OnInit()
 	printf("CheckPriceGoesOurWay: %f", money.CheckPriceGoesOurWay());
 	
 	//--- CalculatePrice
-	printf("CalculatePrice: %f", money.CalculatePrice());
+	printf("CalculatePrice: %f", money.CalculatePrice(0.0));
 	
 	
 	return(INIT_SUCCEEDED);

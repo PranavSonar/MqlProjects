@@ -7,9 +7,8 @@
 #property link      "https://www.mql5.com"
 #property version   "1.00"
 #property strict
-#property indicator_chart_window
 
-#include "../../MqlLibs/SymbolsLib/BaseSymbol.mq4"
+#include <MyMql/Symbols/BaseSymbol.mqh>
 
 //+------------------------------------------------------------------+
 //| Expert initialization function (used for testing)                |

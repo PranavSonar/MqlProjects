@@ -8,8 +8,8 @@
 #property version   "1.00"
 #property strict
 
-#include "../../MqlLibs/TransactionManagement/CrappyTranManagement.mq4"
-#include "../../MqlLibs/TransactionManagement/FollowTrendTranMan.mq4"
+#include <MyMql/TransactionManagement/CrappyTranManagement.mqh>
+#include <MyMql/TransactionManagement/FollowTrendTranMan.mqh>
 
 int OnInit()
 {
@@ -32,10 +32,10 @@ int OnInit()
 	printf("AveragePrice = %f; NumberOfOpenOrders = %d; OrderIsBuy = %d.", averagePrice, nrOfOpenOrders, orderIsBuy);
 	
 	
-	double SL, TP;
+	double SL = 0.0, TP = 0.0;
 	FollowTrendTranMan followTrend;
 	
-	followTrend.FollowTrend_UpdateSL_TP(SL, TP);
+	followTrend.FollowTrend_UpdateSL_TP_UsingConstants(SL, TP);
 	printf("%f %f", SL, TP);
 	
 	

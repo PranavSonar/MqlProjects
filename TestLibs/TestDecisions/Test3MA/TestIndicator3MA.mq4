@@ -23,10 +23,10 @@
 //#property indicator_color11 clrMidnightBlue
 //#property indicator_color12 clrMidnightBlue
 
-#include "../../../MqlLibs/DecisionMaking/Decision3MA.mq4"
-#include "../../../MqlLibs/TransactionManagement/BaseTransactionManagement.mq4"
-#include "../../../MqlLibs/VerboseInfo/ScreenInfo.mq4"
-#include "../../../MqlLibs/VerboseInfo/VerboseInfo.mq4"
+#include <MyMql/DecisionMaking/Decision3MA.mqh>
+#include <MyMql/TransactionManagement/BaseTransactionManagement.mqh>
+#include <MyMql/Info/ScreenInfo.mqh>
+#include <MyMql/Info/VerboseInfo.mqh>
 
 
 double Buf_CloseH1[], Buf_MedianH1[],
@@ -87,9 +87,9 @@ int start()
 	decision.SetVerboseLevel(1);
 	BaseTransactionManagement transaction;
 	transaction.SetVerboseLevel(1);
-	transaction.SetSimulatedOrder("SimulatedOrder3MA");
-	transaction.SetSimulatedStopLoss("SimulatedStopLoss3MA");
-	transaction.SetSimulatedTakeProfit("SimulatedTakeProfit3MA");
+	transaction.SetSimulatedOrderObjectName("SimulatedOrder3MA");
+	transaction.SetSimulatedStopLossObjectName("SimulatedStopLoss3MA");
+	transaction.SetSimulatedTakeProfitObjectName("SimulatedTakeProfit3MA");
 	ScreenInfo screen;
 	
 	int i = Bars - IndicatorCounted() - 1;

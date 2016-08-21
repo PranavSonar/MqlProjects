@@ -8,7 +8,7 @@
 #property version   "1.00"
 #property strict
 
-#include "../../../MqlLibs/DecisionMaking/Decision3MA.mq4"
+#include  <MyMql/DecisionMaking/Decision3MA.mqh>
 
 int OnInit()
 {

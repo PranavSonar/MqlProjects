@@ -5,11 +5,16 @@
 
 #property description "First program made, used to check some MQL4 functions" 
 
-#include "../../MqlLibs/VerboseInfo/VerboseInfo.mq4"
-#include "../../MqlLibs/DecisionMaking/DecisionDoubleBB.mq4"
-#include "../../MqlLibs/DecisionMaking/DecisionMA.mq4"
-#include "../../MqlLibs/DecisionMaking/DecisionRSI.mq4"
-#include "../../MqlLibs/StupidLibs/TestLib.mq4"
+
+
+#include <MyMql/TransactionManagement/CrappyTranManagement.mqh>
+#include <MyMql/MoneyManagement/BaseMoneyManagement.mqh>
+#include <MyMql/Info/ScreenInfo.mqh>
+
+#include <MyMql/Info/VerboseInfo.mqh>
+#include <MyMql/DecisionMaking/DecisionDoubleBB.mqh>
+#include <MyMql/DecisionMaking/Decision3MA.mqh>
+#include <MyMql/DecisionMaking/DecisionRSI.mqh>
 
 
 int OnInit()
@@ -36,7 +41,7 @@ void OnDeinit(const int reason)
 double CalculateDecision(double stopLoss = 0.0, double takeProfit = 0.0)
 {
 	DecisionDoubleBB doubleBB;
-	DecisionMA ma;
+	Decision3MA ma;
 	DecisionRSI rsi;
 	
 	double finalResult = 

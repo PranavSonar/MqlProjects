@@ -17,10 +17,10 @@
 #property indicator_color4 Red
 #property indicator_color5 Blue
 
-#include "../../../MqlLibs/DecisionMaking/DecisionDoubleBB.mq4"
-#include "../../../MqlLibs/TransactionManagement/BaseTransactionManagement.mq4"
-#include "../../../MqlLibs/VerboseInfo/ScreenInfo.mq4"
-#include "../../../MqlLibs/VerboseInfo/VerboseInfo.mq4"
+#include <MyMql/DecisionMaking/DecisionDoubleBB.mqh>
+#include <MyMql/TransactionManagement/BaseTransactionManagement.mqh>
+#include <MyMql/Info/ScreenInfo.mqh>
+#include <MyMql/Info/VerboseInfo.mqh>
 
 
 double Buf_BBs2[], Buf_BBs1[], Buf_BBm[], Buf_BBd1[], Buf_BBd2[];
@@ -62,9 +62,9 @@ int start()
 	decision.SetVerboseLevel(1);
 	BaseTransactionManagement transaction;
 	transaction.SetVerboseLevel(1);
-	transaction.SetSimulatedOrder("SimulatedOrderBA");
-	transaction.SetSimulatedStopLoss("SimulatedStopLossBA");
-	transaction.SetSimulatedTakeProfit("SimulatedTakeProfitBA");
+	transaction.SetSimulatedOrderObjectName("SimulatedOrderBA");
+	transaction.SetSimulatedStopLossObjectName("SimulatedStopLossBA");
+	transaction.SetSimulatedTakeProfitObjectName("SimulatedTakeProfitBA");
 	
 	ScreenInfo screen;
 	
