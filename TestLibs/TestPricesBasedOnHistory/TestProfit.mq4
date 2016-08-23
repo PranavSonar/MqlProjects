@@ -22,17 +22,17 @@ double getInvestment(bool investmentTypeRisked = true)
 {
    double investmentProtected = 0;
 
-   double pip = MathAbs(OrderOpenPrice()-OrderStopLoss());
-   double pipC = MathAbs(OrderOpenPrice()-OrderClosePrice());
+   double pip = OrderOpenPrice()-OrderStopLoss();
+   double pipC = OrderOpenPrice()-OrderClosePrice();
    double delta = MarketInfo (OrderSymbol(), MODE_TICKVALUE) / MarketInfo(OrderSymbol(), MODE_TICKSIZE);
    double p = pip*delta*OrderLots();
    double pC = pipC*delta*OrderLots();
-   
+   //double profit = MarketInfo(Symbol(), MODE_TICKVALUE) * OrderLots() * pipC * 1000;
+	//return profit;
+
    if(pC == 0.0)
    	pC = 1.0;
    
-   double exchange = OrderProfit()/pC;
-   p *= exchange;
    p += OrderCommission();
    if(TimeDay(OrderOpenTime()) != TimeDay(OrderCloseTime())) // another day of the month
 	   p += OrderSwap();
@@ -43,7 +43,7 @@ double getInvestment(bool investmentTypeRisked = true)
        (OrderType() == OP_BUY && OrderStopLoss() < OrderOpenPrice()) ||
        (OrderStopLoss() == 0.0))
             )
-   investmentProtected += p;
+   investmentProtected += pC;
    
    return (investmentProtected);
 }
@@ -68,7 +68,6 @@ int OnInit()
 		
 		double orderLots = OrderLots();
 		double orderProfitReal = OrderProfit();
-		double closingQuoteOnHomeCurrency = money.CalculateCurrencyPrice(false,true);
 		double orderCommission = OrderCommission();
 		string orderType = "";
 		switch(OrderType())
@@ -102,35 +101,50 @@ int OnInit()
 		if(orderType == "balance")
 			continue;
 		
-		if(closingQuoteOnHomeCurrency == 0.0)
-			closingQuoteOnHomeCurrency = 1.0;
-		
 		//double pip = MarketInfo (OrderSymbol(), MODE_TICKVALUE) / MarketInfo(OrderSymbol(), MODE_TICKSIZE)*MarketInfo (OrderSymbol(), MODE_POINT);
 		//double myP = MathAbs(OrderOpenPrice()-OrderClosePrice());
 		//double delta = MarketInfo (OrderSymbol (), MODE_TICKVALUE) / MarketInfo(OrderSymbol(), MODE_TICKSIZE);
 		//myP = myP*delta*OrderLots();
 		int accountLeverage = AccountLeverage();
-		double realDelta =  (closePrice-openPrice);
-		//(OrderType() == OP_BUY ? (closePrice-openPrice) : 0.0) + 
-		//	(OrderType() == OP_SELL ? (openPrice-closePrice) : 0.0);
+		double realDelta =
+			(OrderType() == OP_BUY ? (OrderClosePrice()-OrderOpenPrice()) : 0.0) + 
+			(OrderType() == OP_SELL ? (OrderOpenPrice()-OrderClosePrice()) : 0.0);
+		double unRealDelta = OrderStopLoss() != 0.0 ? 
+			((OrderType() == OP_BUY ? (OrderStopLoss()-OrderOpenPrice()) : 0.0) + 
+			(OrderType() == OP_SELL ? (OrderOpenPrice()-OrderStopLoss()) : 0.0))
+			: 0.0;
+		
 		//double inverseDelta = (OrderType() == OP_SELL ? (closePrice-openPrice) : 0.0) + 
 		//	(OrderType() == OP_BUY ? (openPrice-closePrice) : 0.0);
-		double orderProfitTest = realDelta * closingQuoteOnHomeCurrency*accountLeverage*orderLots* MarketInfo (OrderSymbol(), MODE_TICKVALUE) ;
 		
-		printf("[%d]: OrderOpenTime=%s OrderOpenPrice=%f OrderCloseTime=%s OrderClosePrice=%f", i, TimeToStr(openTime), openPrice, TimeToStr(closeTime), closePrice);
-		printf("[%d]: Symbol: %s OrderType=%s OrderCommission=%f ClosingQuoteOnHomeCurrency=%f", i, OrderSymbol(), orderType, orderCommission, closingQuoteOnHomeCurrency);
-		printf("[%d]: CalculatedOrderProfitWithoutCommission=%f RealOrderProfitWithoutCommission=%f", i, getInvestment(), orderProfitReal - orderCommission);
-		printf("[%d]: AccountLeverage=%d AccountMargin=%f", i, accountLeverage, AccountMargin());
+		if(unRealDelta != 0.0)
+			realDelta += unRealDelta;
+		double orderProfitTest = realDelta * MarketInfo(OrderSymbol(), MODE_TICKVALUE) * AccountLeverage() * OrderLots();
+		
+		// almost OrderCommission() = realDelta *  MarketInfo(OrderSymbol(), MODE_TICKVALUE) * OrderLots() * MarketInfo (OrderSymbol(), MODE_POINT) * MarketInfo(OrderSymbol(), MODE_LOTSIZE)
+		printf("[%d] ]%f[ %f %f %f %f",i ,OrderProfit(), orderProfitTest, realDelta, unRealDelta,  (realDelta+unRealDelta) * MarketInfo(OrderSymbol(), MODE_TICKVALUE) * AccountLeverage() * OrderLots());
+
+
+		//printf("%f", MarketInfo (OrderSymbol(), MODE_POINT));     // 0.01
+		//printf("%f", MarketInfo (OrderSymbol(), MODE_TICKVALUE)); // 10.0
+		//printf("%f", MarketInfo (OrderSymbol(), MODE_TICKSIZE));  // 0.01
+		//printf("%f", MarketInfo(OrderSymbol(), MODE_LOTSIZE)); // 1000.0
+		//printf("%f", MarketInfo(OrderSymbol(), MODE_LOTSIZE)); // 1000.0
+		
+		//printf("[%d]: OrderOpenTime=%s OrderOpenPrice=%f OrderCloseTime=%s OrderClosePrice=%f", i, TimeToStr(openTime), openPrice, TimeToStr(closeTime), closePrice);
+		printf("[%d]: Symbol: %s OrderType=%s OrderCommission=%f Lots=%f", i, OrderSymbol(), orderType, orderCommission, OrderLots());
+		//printf("[%d]: 1=%f 2=%f 3=%f RealOrderProfit=%f", i, getInvestment(),  getInvestment(false), orderProfitTest, orderProfitReal);
+		//printf("[%d]: AccountLeverage=%d AccountMargin=%f", i, accountLeverage, AccountMargin());
 		
 		//nr loturi = AccountFreeMarginCheck(OrderSymbol(),OrderType(),OrderLots()) / MarketInfo(OrderSymbol(), MODE_MARGINREQUIRED);
-		//nr loturi/simbol = 1000 = MarketInfo(OrderSymbol(), MODE_LOTSIZE);
+		//nr loturi/simbol = 1000 = MarketInfo(OrderSymbol(), MODE_LOTSIZE) = MarketInfo (OrderSymbol(), MODE_TICKVALUE)/MarketInfo (OrderSymbol(), MODE_TICKSIZE);
 		
-		printf("[%d]: AccountFreeMarginCheck=%f / MarginRequired=%f = Lots=%f ; LotSize=%f realDelta=%f", i,
-			AccountFreeMarginCheck(OrderSymbol(),OrderType(),OrderLots()),
-			MarketInfo(OrderSymbol(), MODE_MARGINREQUIRED),
-			orderLots,
-			MarketInfo(OrderSymbol(), MODE_LOTSIZE),
-			realDelta);
+		//printf("[%d]: AccountFreeMarginCheck=%f / MarginRequired=%f = Lots=%f ; LotSize=%f realDelta=%f", i,
+			//AccountFreeMarginCheck(OrderSymbol(),OrderType(),OrderLots()),
+			//MarketInfo(OrderSymbol(), MODE_MARGINREQUIRED),
+			//orderLots,
+			//MarketInfo(OrderSymbol(), MODE_LOTSIZE),
+			//realDelta);
 		// some work with order
 	}
 	
