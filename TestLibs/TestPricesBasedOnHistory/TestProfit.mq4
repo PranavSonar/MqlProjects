@@ -116,15 +116,15 @@ int OnInit()
 		
 		//double inverseDelta = (OrderType() == OP_SELL ? (closePrice-openPrice) : 0.0) + 
 		//	(OrderType() == OP_BUY ? (openPrice-closePrice) : 0.0);
-		
+		CopyRates
 		if(unRealDelta != 0.0)
 			realDelta += unRealDelta;
 		double orderProfitTest = realDelta * MarketInfo(OrderSymbol(), MODE_TICKVALUE) * AccountLeverage() * OrderLots();
 		
 		// almost OrderCommission() = realDelta *  MarketInfo(OrderSymbol(), MODE_TICKVALUE) * OrderLots() * MarketInfo (OrderSymbol(), MODE_POINT) * MarketInfo(OrderSymbol(), MODE_LOTSIZE)
 		printf("[%d] ]%f[ %f %f %f %f",i ,OrderProfit(), orderProfitTest, realDelta, unRealDelta,  (realDelta+unRealDelta) * MarketInfo(OrderSymbol(), MODE_TICKVALUE) * AccountLeverage() * OrderLots());
-
-
+      ChartOpen("")
+      printf("[%d] profit=%f calcProfit=%f", i, OrderProfit(), OrderLots() * MarketInfo(OrderSymbol(), MODE_LOTSIZE) * (Open[i]-Close[i])
 		//printf("%f", MarketInfo (OrderSymbol(), MODE_POINT));     // 0.01
 		//printf("%f", MarketInfo (OrderSymbol(), MODE_TICKVALUE)); // 10.0
 		//printf("%f", MarketInfo (OrderSymbol(), MODE_TICKSIZE));  // 0.01
@@ -146,6 +146,19 @@ int OnInit()
 			//MarketInfo(OrderSymbol(), MODE_LOTSIZE),
 			//realDelta);
 		// some work with order
+      
+      MqlRates rates[];
+      ArraySetAsSeries(rates,true);
+      int len = OrderCloseTime()-OrderOpenTime();
+      int copied = CopyRates(OrderSymbol(), PERIOD_H1, OrderOpenTime(), len, rates);
+      
+      if(copied < 0)
+         Print("CopyRates failed with error=" + IntegerToString(GetLastError()));
+         
+      double openRate = OrderType() == OP_BUY ? rates[0].open : rates[len].open;
+      double closeRate = OrderType() == OP_BUY ? rates[len].close : rates[0].close;
+      
+      
 	}
 	
 	return(INIT_SUCCEEDED);
