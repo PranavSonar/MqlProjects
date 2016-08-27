@@ -79,12 +79,15 @@ int start()
 		double d = decision.GetDecision(i);
 		decision.SetIndicatorData(Buf_CloseH1, Buf_MedianH1, Buf_CloseD1, Buf_MedianD1, Buf_CloseW1, Buf_MedianW1, i);
 		
+		// calculate profit/loss, TPs, SLs, etc
+		transaction.CalculateData(i);
+		
 		if(d != IncertitudeDecision)
 		{
 			if(d > 0) // Buy
-				transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.1, MarketInfo(Symbol(),MODE_ASK),0,SL,TP,NULL, 0, 0, clrNONE, i);
+				transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.01, MarketInfo(Symbol(),MODE_ASK),0,SL,TP,NULL, 0, 0, clrNONE, i);
 			else // Sell
-				transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.1, MarketInfo(Symbol(),MODE_BID),0,SL,TP,NULL, 0, 0, clrNONE, i);
+				transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.01, MarketInfo(Symbol(),MODE_BID),0,SL,TP,NULL, 0, 0, clrNONE, i);
 			
 			screen.ShowTextValue("CurrentValue", "Number of decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(-1)),clrGray, 20, 0);
 			screen.ShowTextValue("CurrentValueSell", "Number of sell decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(OP_SELL)), clrGray, 20, 20);
@@ -92,6 +95,10 @@ int start()
 		}
 		i--;
 	}
+	
+	Comment("Maximum profit: " + DoubleToStr(transaction.GetMaximumProfitFromOrders(),2)
+		+ "\nMinimum profit: " + DoubleToStr(transaction.GetMaximumProfitFromOrders(),2)
+		+ "\nMedium profit: " + DoubleToStr(transaction.GetMediumProfitFromOrders(),2));
 	
 	return 0;
 }
