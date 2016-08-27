@@ -82,7 +82,6 @@ int init()
 
 int start()
 {
-	int NrDecisionsSell = 0, NrDecisionsBuy = 0;
 	Decision3MA decision;
 	decision.SetVerboseLevel(1);
 	BaseTransactionManagement transaction;
@@ -104,20 +103,15 @@ int start()
 		if(d != IncertitudeDecision)
 		{
 			if(d > 0) // Buy
-			{
 				transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.1, MarketInfo(Symbol(),MODE_ASK),0,SL,TP,NULL, 0, 0, clrNONE, i);
-				NrDecisionsBuy++;
-			}
 			else // Sell
-			{
 				transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.1, MarketInfo(Symbol(),MODE_BID),0,SL,TP,NULL, 0, 0, clrNONE, i);
-				NrDecisionsSell++;
-			}
 			
-			screen.ShowTextValue("CurrentValue","Number of decisions: " + IntegerToString(NrDecisionsSell + NrDecisionsBuy),clrGray, 20, 0);
-			screen.ShowTextValue("CurrentValueSell","Number of sell decisions: " + IntegerToString(NrDecisionsSell), clrGray, 20, 20);
-			screen.ShowTextValue("CurrentValueBuy","Number of buy decisions: " + IntegerToString(NrDecisionsBuy), clrGray, 20, 40);
+			screen.ShowTextValue("CurrentValue", "Number of decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(-1)),clrGray, 20, 0);
+			screen.ShowTextValue("CurrentValueSell", "Number of sell decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(OP_SELL)), clrGray, 20, 20);
+			screen.ShowTextValue("CurrentValueBuy", "Number of buy decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(OP_BUY)), clrGray, 20, 40);
 		}
+		
 		i--;
 	}
 	

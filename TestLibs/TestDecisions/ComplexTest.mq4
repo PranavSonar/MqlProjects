@@ -25,8 +25,6 @@
 
 
 input int MaximumNumberOfTransactions;
-int NumberOfTransactionsSell;
-int NumberOfTransactionsBuy;
 
 //+------------------------------------------------------------------+
 //| Expert initialization function (used for testing)                |
@@ -38,9 +36,6 @@ int init()
 	vi.BalanceAccountInfo();
 	vi.ClientAndTerminalInfo();
 	vi.PrintMarketInfo();
-	
-	NumberOfTransactionsSell = 0;
-	NumberOfTransactionsBuy = 0;
 	
 	return INIT_SUCCEEDED;
 }
@@ -86,16 +81,18 @@ int start()
 				//else
 				//	ticket = ticket * OrderSend(Symbol(), OP_BUY, 0.1, price,0,SL,TP,NULL, 0, 0, clrNONE);
 				
-				NumberOfTransactionsBuy ++;
 			} else { // Sell
 				//if(IsDemo())
 					ticket = ticket * transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.1, price,0,SL,TP,NULL, 0, 0, clrNONE, i);
 				//else
 				//	ticket = ticket * OrderSend(Symbol(), OP_SELL, 0.1, price,0,SL,TP,NULL, 0, 0, clrNONE);
 				
-				NumberOfTransactionsSell ++;
 			}
 			
+			screen.ShowTextValue("CurrentValue", "Number of decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(-1)),clrGray, 20, 0);
+			screen.ShowTextValue("CurrentValueSell", "Number of sell decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(OP_SELL)), clrGray, 20, 20);
+			screen.ShowTextValue("CurrentValueBuy", "Number of buy decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(OP_BUY)), clrGray, 20, 40);
+		
 			if(ticket < 0)
 				printf("There might be a problem with some order: ticket = %d; LastError = %d", ticket, GetLastError());
 		}
