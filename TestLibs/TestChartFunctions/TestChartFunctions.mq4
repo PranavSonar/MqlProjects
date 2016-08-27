@@ -66,6 +66,9 @@ void OnTimer()
 		prevChart=currChart;// let's save the current chart ID for the ChartNext()
 		i++;// Do not forget to increase the counter
 	}
+	
+	//long chartId = ChartOpen(Symbol,period);
+	//ChartNext(chartId);
 }
 
 void RecolorChart(long chartId, color chartColor = clrBlack)
