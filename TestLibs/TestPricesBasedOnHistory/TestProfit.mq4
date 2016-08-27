@@ -10,6 +10,7 @@
 
 #include <MyMql/MoneyManagement/BaseMoneyManagement.mqh>
 #include <MyMql/Symbols/BaseSymbol.mqh>
+#include <MyMql/Simulation/BaseSimulatedOrder.mqh>
 
 //+------------------------------------------------------------------+
 //| Expert initialization function                                   |
@@ -29,48 +30,19 @@ int OnInit()
 			break;
 		}
 		
-		string orderType = "";
-		switch(OrderType())
-		{
-			case 0:
-				orderType = "buy";
-			break;
-			case 1:
-				orderType = "sell";		   
-			break;
-			case 2:
-				orderType = "buy limit";		   
-		   break;
-			case 3:
-				orderType = "sell limit";		   
-		   break;
-			case 4:
-				orderType = "buy stop";		   
-		   break;
-			case 5:
-				orderType = "sell stop";		   
-		   break;
-			case 6:
-				orderType = "balance";		   
-		   break;
-			default:
-				orderType = "-";
-			break;
-		}
+		string orderType = money.OrderTypeToString();
 		
 		if(orderType == "balance")
 			continue;
 		
 		double openPrice = OrderOpenPrice();
-		datetime openTime = OrderOpenTime();
 		double closePrice = OrderClosePrice();
+		datetime closeTime = OrderCloseTime();
+		
 		double stopLoss = OrderStopLoss();
 		double takeProfit = OrderTakeProfit();
-		datetime closeTime = OrderCloseTime();
 		double orderLots = OrderLots() * MarketInfo(OrderSymbol(), MODE_LOTSIZE);
-		double orderCommission = OrderCommission();
 		double orderProfitReal = OrderProfit();
-		int accountLeverage = AccountLeverage();
 		
 		double changeRate = money.CalculateCurrencyPrice(true, true, closeTime);
 		double orderProfitTest = (orderType == "sell" ? (openPrice - closePrice) : (closePrice - openPrice)) * orderLots * changeRate;
@@ -83,10 +55,18 @@ int OnInit()
 		double orderProfitStopLossTest = 0.0;
 		if((orderProfitTest < 0.0) && (stopLoss != 0.0))
 			orderProfitStopLossTest = (orderType == "sell" ? (openPrice - stopLoss) : (stopLoss - openPrice)) * orderLots * changeRate;
-			
 		
 		printf("[%d]: realProfit=%f calculatedProfit=%f calculatedProfitStopLoss=%f calculatedProfitTakeProfit=%f", i, OrderProfit(), orderProfitTest, orderProfitStopLossTest, orderProfitTakeProfitTest);
-		printf("[%d]: Symbol: %s OrderType=%s OrderCommission=%f Lots=%f", i, OrderSymbol(), orderType, orderCommission, OrderLots());
+		
+		
+		BaseSimulatedOrder order(OrderSymbol(), OrderOpenPrice(), OrderLots(), OrderType(), OrderTakeProfit(), OrderStopLoss(), OrderOpenTime());
+		
+		printf("[%d]: realProfit=%f calculatedProfit2=%f calculatedProfitStopLoss2=%f calculatedProfitTakeProfit2=%f", i, OrderProfit(),
+			order.SimulatedOrderProfit(OrderCloseTime(),OrderClosePrice()),
+			order.SimulatedOrderProfit(OrderCloseTime(),OrderStopLoss()),
+			order.SimulatedOrderProfit(OrderCloseTime(),OrderTakeProfit()));
+		
+		printf("[%d]: Symbol: %s OrderType=%s Lots=%f", i, OrderSymbol(), orderType, OrderLots());
 	}
 	
 	return(INIT_SUCCEEDED);
