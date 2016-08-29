@@ -76,8 +76,9 @@ int start()
 		double d = decision.GetDecision(SL, TP, 1.0, i);
 		decision.SetIndicatorData(Buf_BBs2, Buf_BBs1, Buf_BBm, Buf_BBd1, Buf_BBd2, i);
 		
+		//to do
 		// calculate profit/loss, TPs, SLs, etc
-		transaction.CalculateData(i);
+		//transaction.CalculateData(i);
 		
 		if(d != IncertitudeDecision)
 		{
@@ -93,9 +94,10 @@ int start()
 		i--;
 	}
 	
-	Comment("Maximum profit: " + DoubleToStr(transaction.GetMaximumProfitFromOrders(),2)
-		+ "\nMinimum profit: " + DoubleToStr(transaction.GetMaximumProfitFromOrders(),2)
-		+ "\nMedium profit: " + DoubleToStr(transaction.GetMediumProfitFromOrders(),2));
+	//to do
+	//Comment("Maximum profit: " + DoubleToStr(transaction.GetMaximumProfitFromOrders(),2)
+	//	+ "\nMinimum profit: " + DoubleToStr(transaction.GetMaximumProfitFromOrders(),2)
+	//	+ "\nMedium profit: " + DoubleToStr(transaction.GetMediumProfitFromOrders(),2));
 	
 	return 0;
 }
