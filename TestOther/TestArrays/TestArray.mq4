@@ -39,12 +39,13 @@ void OnStart()
 	ListOfDecisions.Add(new CandleDecision());
 	
 	for(int i=0;i<ListOfDecisions.Total();i++)
-		printf("ListOfDecisions[i=%d]=%s", i, ((BaseDecision*)ListOfDecisions.At(i)).GetDecisionName() );
-		
+		printf("ListOfDecisions[i=%d]:%s", i, ((BaseDecision*)ListOfDecisions.At(i)).GetDecisionName());
 		
 	for(int i=0;i<ListOfDecisions.Total();i++)
 		delete ListOfDecisions.At(i);
 	delete ListOfDecisions;
+	
+	
 	
 	// Array
 	BaseDecision *decisions[];
@@ -55,8 +56,7 @@ void OnStart()
 	decisions[3] = new CandleDecision();
 	
 	for(int i=0;i<ArraySize(decisions);i++)
-		printf("decision[i=%d]=%s", i, decisions[i].GetDecisionName());
-		
+		printf("decision[i=%d]:%s", i, decisions[i].GetDecisionName());
 	
 	for(int i=0;i<ArraySize(decisions);i++)
 		delete decisions[i];
