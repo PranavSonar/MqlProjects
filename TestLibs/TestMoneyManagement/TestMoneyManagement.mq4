@@ -17,22 +17,22 @@ int OnInit()
 {
 	BaseMoneyManagement money;
 	//--- CalculatePriceForUSD
-	printf("CalculatePriceForUSD: %f", money.CalculateCurrencyPriceForUSD());
-	printf("CalculatePrice(isBaseCurrency = true): %f", money.CalculatePrice(true));
+	printf("CalculatePriceForUSD(isOrderSymbol = false, isBaseCurrency = false): %f", money.CalculateCurrencyPriceForUSD(false, false));
+	printf("CalculateCurrencyPrice(isOrderSymbol = false, isBaseCurrency = false): %f", money.CalculateCurrencyPrice(false,false));
 	
 	//--- GetTotalAmount
 	printf("GetTotalAmount: %f", money.GetTotalAmount());
 
 	//--- CalculateTP_SL
 	double TP, SL;
-	money.CalculateTP_SL(TP,SL,OP_BUY,30,20,10,10); printf("CalculateTP_SL: buy: TP = %f, SL = %f", TP, SL);
-	money.CalculateTP_SL(TP,SL,OP_SELL,30,20,10,10); printf("CalculateTP_SL: sell: TP = %f, SL = %f", TP, SL);
+	money.CalculateTP_SL(TP,SL,OP_BUY,30.0,20.0,10.0,10.0); printf("CalculateTP_SL: buy: TP = %f, SL = %f", TP, SL);
+	money.CalculateTP_SL(TP,SL,OP_SELL,30.0,20.0,10.0,10.0); printf("CalculateTP_SL: sell: TP = %f, SL = %f", TP, SL);
 	
-	//--- CheckPriceGoesOurWay
-	printf("CheckPriceGoesOurWay: %f", money.CheckPriceGoesOurWay());
+	//--- CheckPriceGoesOurWay (obsolete; removed)
+	//printf("CheckPriceGoesOurWay: %f", money.CheckPriceGoesOurWay());
 	
 	//--- CalculatePrice
-	printf("CalculatePrice: %f", money.CalculatePrice(0.0));
+	printf("CalculateCurrencyPrice: %f", money.CalculateCurrencyPrice(false, false));
 	
 	
 	return(INIT_SUCCEEDED);

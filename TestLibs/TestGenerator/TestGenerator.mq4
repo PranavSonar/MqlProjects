@@ -17,7 +17,7 @@ void OnStart()
 	
 	GenerateTPandSL generator;
 	TransactionData data;
-	generator.GetFirstTransactionData(data,0.5*spread,4.0*spread,0.5);
+	generator.GetFirstTransactionData(data, 0.5*spread, 4.0*spread, 0.5);
 	
 	while(generator.GetNextTransactionData(data))
 		printf("TP=%f SL=%f", data.TakeProfit, data.StopLoss);

@@ -24,6 +24,7 @@
 //#property indicator_color12 clrMidnightBlue
 
 #include <MyMql/DecisionMaking/Decision3MA.mqh>
+#include <MyMql/MoneyManagement/BaseMoneyManagement.mqh>
 #include <MyMql/TransactionManagement/BaseTransactionManagement.mqh>
 #include <MyMql/Info/ScreenInfo.mqh>
 #include <MyMql/Info/VerboseInfo.mqh>
@@ -84,11 +85,16 @@ int start()
 {
 	Decision3MA decision;
 	decision.SetVerboseLevel(1);
+	BaseMoneyManagement money;
 	BaseTransactionManagement transaction;
 	transaction.SetVerboseLevel(1);
 	transaction.SetSimulatedOrderObjectName("SimulatedOrder3MA");
 	transaction.SetSimulatedStopLossObjectName("SimulatedStopLoss3MA");
 	transaction.SetSimulatedTakeProfitObjectName("SimulatedTakeProfit3MA");
+	
+	transaction.AddInitializerTransactionData(0.5, 0.5);
+	transaction.AddInitializerTransactionData(0.2, 0.2);
+	
 	ScreenInfo screen;
 	
 	int i = Bars - IndicatorCounted() - 1;
@@ -99,17 +105,21 @@ int start()
 		double d = decision.GetDecision(i);
 		decision.SetIndicatorData(Buf_CloseH1, Buf_MedianH1, Buf_CloseD1, Buf_MedianD1, Buf_CloseW1, Buf_MedianW1, i);
 		decision.SetIndicatorShiftedData(Buf_CloseShiftedH1, Buf_MedianShiftedH1, Buf_CloseShiftedD1, Buf_MedianShiftedD1, Buf_CloseShiftedW1, Buf_MedianShiftedW1, i);
-
-		//to do
+		
 		// calculate profit/loss, TPs, SLs, etc
-		//transaction.CalculateData(i);
+		transaction.CalculateData(i);
 		
 		if(d != IncertitudeDecision)
 		{
-			if(d > 0) // Buy
-				transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.1, MarketInfo(Symbol(),MODE_ASK),0,SL,TP,NULL, 0, 0, clrNONE, i);
-			else // Sell
-				transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.1, MarketInfo(Symbol(),MODE_BID),0,SL,TP,NULL, 0, 0, clrNONE, i);
+			if(d > 0.0) { // Buy
+				double price =  MarketInfo(Symbol(),MODE_ASK);
+				money.CalculateTP_SL(TP,SL, OP_BUY,price, false, 20.0, 10.0, MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID));
+				transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.1, price,0,SL,TP,NULL, 0, 0, clrNONE, i);
+			} else { // Sell
+				double price =  MarketInfo(Symbol(),MODE_BID);
+				money.CalculateTP_SL(TP,SL, OP_SELL, price, false, 20.0, 10.0, MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID));
+				transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.1, price,0,SL,TP,NULL, 0, 0, clrNONE, i);
+			}
 			
 			screen.ShowTextValue("CurrentValue", "Number of decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(-1)),clrGray, 20, 0);
 			screen.ShowTextValue("CurrentValueSell", "Number of sell decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(OP_SELL)), clrGray, 20, 20);
@@ -119,10 +129,10 @@ int start()
 		i--;
 	}
 	
-	//to do
-	//Comment("Maximum profit: " + DoubleToStr(transaction.GetMaximumProfitFromOrders(),2)
-	//	+ "\nMinimum profit: " + DoubleToStr(transaction.GetMinimumProfitFromOrders(),2)
-	//	+ "\nMedium profit: " + DoubleToStr(transaction.GetMediumProfitFromOrders(),2));
+	
+	Comment("Maximum profit: " + DoubleToStr(transaction.GetTotalMaximumProfitFromOrders(),2)
+		+ "\nMinimum profit: " + DoubleToStr(transaction.GetTotalMinimumProfitFromOrders(),2 )
+		+ "\nMedium profit: " + DoubleToStr(transaction.GetTotalMediumProfitFromOrders(),2));
 	
 	return 0;
 }
