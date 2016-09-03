@@ -84,18 +84,18 @@ int init()
 int start()
 {
 	Decision3MA decision;
-	decision.SetVerboseLevel(1);
 	BaseMoneyManagement money;
 	BaseTransactionManagement transaction;
+	ScreenInfo screen;
+	
+	decision.SetVerboseLevel(1);
 	transaction.SetVerboseLevel(1);
 	transaction.SetSimulatedOrderObjectName("SimulatedOrder3MA");
 	transaction.SetSimulatedStopLossObjectName("SimulatedStopLoss3MA");
 	transaction.SetSimulatedTakeProfitObjectName("SimulatedTakeProfit3MA");
-	
 	transaction.AddInitializerTransactionData(0.5, 0.5);
 	transaction.AddInitializerTransactionData(0.2, 0.2);
 	
-	ScreenInfo screen;
 	
 	int i = Bars - IndicatorCounted() - 1;
 	double SL = 0.0, TP = 0.0;
