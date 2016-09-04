@@ -98,7 +98,7 @@ int start()
 	
 	
 	int i = Bars - IndicatorCounted() - 1;
-	double SL = 0.0, TP = 0.0;
+	double SL = 0.0, TP = 0.0, spread = MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID);
 	
 	while(i >= 0)
 	{
@@ -113,11 +113,11 @@ int start()
 		{
 			if(d > 0.0) { // Buy
 				double price =  MarketInfo(Symbol(),MODE_ASK);
-				money.CalculateTP_SL(TP,SL, OP_BUY,price, false, 20.0, 10.0, MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID));
+				money.CalculateTP_SL(TP,SL, OP_BUY,price, false, 20.0, 10.0, spread);
 				transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.1, price,0,SL,TP,NULL, 0, 0, clrNONE, i);
 			} else { // Sell
 				double price =  MarketInfo(Symbol(),MODE_BID);
-				money.CalculateTP_SL(TP,SL, OP_SELL, price, false, 20.0, 10.0, MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID));
+				money.CalculateTP_SL(TP,SL, OP_SELL, price, false, 20.0, 10.0, spread);
 				transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.1, price,0,SL,TP,NULL, 0, 0, clrNONE, i);
 			}
 			

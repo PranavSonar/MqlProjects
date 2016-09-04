@@ -30,7 +30,7 @@ int OnInit()
 			break;
 		}
 		
-		string orderType = money.OrderTypeToString();
+		string orderType = OrderTypeToString();
 		
 		if(orderType == "balance")
 			continue;

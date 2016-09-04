@@ -66,7 +66,7 @@ int start()
 		double decision = bbDecision.GetDecision(SL, TP, 1.0, i) + rsiDecision.GetDecision(i) + maDecision.GetDecision(i);
 		int DecisionOrderType = (int)(decision > 0.0 ? BuyDecision : IncertitudeDecision) + 
 			(int)(decision < 0.0 ? SellDecision : IncertitudeDecision);
-		double price = money.GetPriceBasedOnDecision(decision);
+		double price = money.GetPriceBasedOnDecision(decision, false);
 		
 		if((SL == 0.0) || (TP == 0.0))
 			money.CalculateTP_SL(TP, SL, DecisionOrderType, price); // TP and SL cannot be calculated well without the price
