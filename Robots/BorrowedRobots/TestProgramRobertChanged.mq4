@@ -118,7 +118,7 @@ bool TestNewOrder()
 void Initialisation()
 {
 	double TotalAmount = money.GetTotalAmount();
-	double ComputePrice = money.CalculatePriceForUSD(false);
+	double ComputePrice = money.CalculateCurrencyPrice(false,false);
 	double TotalLot = NormalizeDouble(TotalAmount/ComputePrice/10.00,2);
 	
 	LotsDividerCompute();

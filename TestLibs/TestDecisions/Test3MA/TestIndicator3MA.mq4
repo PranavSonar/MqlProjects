@@ -141,11 +141,10 @@ int start()
 		
 		i--;
 	}
-	logFile.Close();
-	
-	Comment("Maximum profit: " + DoubleToStr(transaction.GetTotalMaximumProfitFromOrders(),2)
-		+ "\nMinimum profit: " + DoubleToStr(transaction.GetTotalMinimumProfitFromOrders(),2 )
-		+ "\nMedium profit: " + DoubleToStr(transaction.GetTotalMediumProfitFromOrders(),2));
+//	
+//	Comment("Maximum profit: " + DoubleToStr(transaction.GetMaximumProfitFromOrders(),2)
+//		+ "\nMinimum profit: " + DoubleToStr(transaction.GetMinimumProfitFromOrders(),2)
+//		+ "\nMedium profit: " + DoubleToStr(transaction.GetMediumProfitFromOrders(),2));
 	
 	return 0;
 }
