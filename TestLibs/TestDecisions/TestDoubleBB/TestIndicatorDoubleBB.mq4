@@ -18,9 +18,12 @@
 #property indicator_color5 Blue
 
 #include <MyMql/DecisionMaking/DecisionDoubleBB.mqh>
+#include <MyMql/MoneyManagement/BaseMoneyManagement.mqh>
 #include <MyMql/TransactionManagement/BaseTransactionManagement.mqh>
+#include <MyMql/Generator/GenerateTPandSL.mqh>
 #include <MyMql/Info/ScreenInfo.mqh>
 #include <MyMql/Info/VerboseInfo.mqh>
+#include <Files/FileTxt.mqh>
 
 
 double Buf_BBs2[], Buf_BBs1[], Buf_BBm[], Buf_BBd1[], Buf_BBd2[];
@@ -31,10 +34,10 @@ double Buf_BBs2[], Buf_BBs1[], Buf_BBm[], Buf_BBd1[], Buf_BBd2[];
 int OnInit()
 {
 	// print some verbose info
-	VerboseInfo vi;
-	vi.BalanceAccountInfo();
-	vi.ClientAndTerminalInfo();
-	vi.PrintMarketInfo();
+	//VerboseInfo vi;
+	//vi.BalanceAccountInfo();
+	//vi.ClientAndTerminalInfo();
+	//vi.PrintMarketInfo();
 	
 	
 	SetIndexBuffer(0, Buf_BBs2);
@@ -56,36 +59,65 @@ int OnInit()
 }
 
 
+static BaseTransactionManagement transaction;
+
 int start()
 {
 	DecisionDoubleBB decision;
-	decision.SetVerboseLevel(1);
-	BaseTransactionManagement transaction;
-	transaction.SetVerboseLevel(1);
+	BaseMoneyManagement money;
+	ScreenInfo screen;
+	GenerateTPandSL generator;
+	bool logToFile = false;
+	CFileTxt logFile;
+	
+	if(logToFile)
+		logFile.Open("LogFile.txt", FILE_WRITE | FILE_ANSI | FILE_REWRITE);
+	
+	//decision.SetVerboseLevel(1);
+	//transaction.SetVerboseLevel(1);
 	transaction.SetSimulatedOrderObjectName("SimulatedOrderBA");
 	transaction.SetSimulatedStopLossObjectName("SimulatedStopLossBA");
 	transaction.SetSimulatedTakeProfitObjectName("SimulatedTakeProfitBA");
+	//transaction.AddInitializerTransactionData(0.5, 0.5); // BB doesn't need shit
+	//transaction.AddInitializerTransactionData(0.2, 0.2);
 	
-	ScreenInfo screen;
 	
 	int i = Bars - IndicatorCounted() - 1;
-	double SL = 0.0, TP = 0.0;
+	double SL = 0.0, TP = 0.0, spread = MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID);
 	
 	while(i >= 0)
 	{
 		double d = decision.GetDecision(SL, TP, 1.0, i);
 		decision.SetIndicatorData(Buf_BBs2, Buf_BBs1, Buf_BBm, Buf_BBd1, Buf_BBd2, i);
 		
-		//to do
 		// calculate profit/loss, TPs, SLs, etc
-		//transaction.CalculateData(i);
+		transaction.CalculateData(i);
+		
+		if(logToFile)
+			logFile.WriteString(transaction.OrdersToString(true));
 		
 		if(d != IncertitudeDecision)
 		{
-			if(d > 0) // Buy
-				transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.1, MarketInfo(Symbol(),MODE_ASK),0,SL,TP,NULL, 0, 0, clrNONE, i);
-			else // Sell
-				transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.1, MarketInfo(Symbol(),MODE_BID),0,SL,TP,NULL, 0, 0, clrNONE, i);
+			if(d > 0) { // Buy
+				double price =  Open[i];
+				money.CalculateTP_SL(TP, SL, OP_BUY, price, false, spread, 3*spread, spread);
+				generator.ValidateAndFixTPandSL(TP, SL, spread, false);
+				
+				transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.1, Open[i],0,SL,TP,NULL, 0, 0, clrNONE, i);
+				
+				if(logToFile) {
+					logFile.WriteString("[" + IntegerToString(i) + "] New order buy " + DoubleToStr(MarketInfo(Symbol(),MODE_ASK)) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
+					logFile.WriteString(transaction.OrdersToString(true));
+				}
+				
+			} else { // Sell
+				transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.1, Close[i],0,SL,TP,NULL, 0, 0, clrNONE, i);
+				
+				if(logToFile) {
+					logFile.WriteString("[" + IntegerToString(i) + "] New order sell " + DoubleToStr(MarketInfo(Symbol(),MODE_BID)) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
+					logFile.WriteString(transaction.OrdersToString(true));
+				}
+			}
 			
 			screen.ShowTextValue("CurrentValue", "Number of decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders()),clrGray, 20, 0);
 			screen.ShowTextValue("CurrentValueSell", "Number of sell decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(OP_SELL)), clrGray, 20, 20);
@@ -94,10 +126,15 @@ int start()
 		i--;
 	}
 	
-	//to do
-	//Comment("Maximum profit: " + DoubleToStr(transaction.GetMaximumProfitFromOrders(),2)
-	//	+ "\nMinimum profit: " + DoubleToStr(transaction.GetMaximumProfitFromOrders(),2)
-	//	+ "\nMedium profit: " + DoubleToStr(transaction.GetMediumProfitFromOrders(),2));
+	if(logToFile) {
+		logFile.Flush();
+		logFile.Close();
+	}
+	
+	
+	Comment("Maximum profit: " + DoubleToStr(transaction.GetTotalMaximumProfitFromOrders(),2)
+		+ "\nMinimum profit: " + DoubleToStr(transaction.GetTotalMinimumProfitFromOrders(),2)
+		+ "\nMedium profit: " + DoubleToStr(transaction.GetTotalMediumProfitFromOrders(),2));
 	
 	return 0;
 }

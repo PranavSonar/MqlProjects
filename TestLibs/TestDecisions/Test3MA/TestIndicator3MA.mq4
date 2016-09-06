@@ -26,9 +26,11 @@
 #include <MyMql/DecisionMaking/Decision3MA.mqh>
 #include <MyMql/MoneyManagement/BaseMoneyManagement.mqh>
 #include <MyMql/TransactionManagement/BaseTransactionManagement.mqh>
+#include <MyMql/Generator/GenerateTPandSL.mqh>
 #include <MyMql/Info/ScreenInfo.mqh>
 #include <MyMql/Info/VerboseInfo.mqh>
 #include <Files/FileTxt.mqh>
+
 
 double Buf_CloseH1[], Buf_MedianH1[],
 	Buf_CloseD1[], Buf_MedianD1[],
@@ -80,15 +82,19 @@ int init()
 	return INIT_SUCCEEDED;
 }
 
+static BaseTransactionManagement transaction;
 
 int start()
 {
 	Decision3MA decision;
 	BaseMoneyManagement money;
-	BaseTransactionManagement transaction;
 	ScreenInfo screen;
+	GenerateTPandSL generator;
+	bool logToFile = false;
 	CFileTxt logFile;
-	logFile.Open("LogFile.txt", FILE_WRITE | FILE_ANSI | FILE_REWRITE);
+	
+	if(logToFile)
+		logFile.Open("LogFile.txt", FILE_WRITE | FILE_ANSI | FILE_REWRITE);
 				
 	//decision.SetVerboseLevel(1);
 	//transaction.SetVerboseLevel(1);
@@ -110,28 +116,38 @@ int start()
 		
 		// calculate profit/loss, TPs, SLs, etc
 		transaction.CalculateData(i);
-		logFile.WriteString(transaction.OrdersToString(true));
+		
+		if(logToFile)
+			logFile.WriteString(transaction.OrdersToString(true));
 		//SafePrintString(transaction.OrdersToString());
 		//Print("");
 		
 		if(d != IncertitudeDecision)
 		{
 			if(d > 0.0) { // Buy
-				double price =  MarketInfo(Symbol(),MODE_ASK);
-				money.CalculateTP_SL(TP, SL, OP_BUY, price, false, 20.0, 10.0, spread);
+				double price =  Open[i];
+				money.CalculateTP_SL(TP, SL, OP_BUY, price, false, spread, 3*spread, spread);
+				generator.ValidateAndFixTPandSL(TP, SL, spread, false);
 				transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.1, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
 				
-				logFile.WriteString("[" + IntegerToString(i) + "] New order buy" + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
-				logFile.WriteString(transaction.OrdersToString(true));
+				
+				if(logToFile) {
+					logFile.WriteString("[" + IntegerToString(i) + "] New order buy " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
+					logFile.WriteString(transaction.OrdersToString(true));
+				}
 				//SafePrintString(transaction.OrdersToString());
 				//Print("");
 			} else { // Sell
-				double price =  MarketInfo(Symbol(),MODE_BID);
-				money.CalculateTP_SL(TP, SL, OP_SELL, price, false, 20.0, 10.0, spread);
+				double price = Close[i];
+				money.CalculateTP_SL(TP, SL, OP_SELL, price, false, spread, 3*spread, spread);
+				generator.ValidateAndFixTPandSL(TP, SL, spread, false);
 				transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.1, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
 				
-				logFile.WriteString("[" + IntegerToString(i) + "] New order sell" + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
-				logFile.WriteString(transaction.OrdersToString(true));
+				
+				if(logToFile) {
+					logFile.WriteString("[" + IntegerToString(i) + "] New order sell " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
+					logFile.WriteString(transaction.OrdersToString(true));
+				}
 				//SafePrintString(transaction.OrdersToString());
 				//Print("");
 			}
@@ -143,10 +159,16 @@ int start()
 		
 		i--;
 	}
-//	
-//	Comment("Maximum profit: " + DoubleToStr(transaction.GetMaximumProfitFromOrders(),2)
-//		+ "\nMinimum profit: " + DoubleToStr(transaction.GetMinimumProfitFromOrders(),2)
-//		+ "\nMedium profit: " + DoubleToStr(transaction.GetMediumProfitFromOrders(),2));
+	
+	if(logToFile) {
+		logFile.Flush();
+		logFile.Close();
+	}
+	
+	
+	Comment("Maximum profit: " + DoubleToStr(transaction.GetTotalMaximumProfitFromOrders(),2)
+		+ "\nMinimum profit: " + DoubleToStr(transaction.GetTotalMinimumProfitFromOrders(),2)
+		+ "\nMedium profit: " + DoubleToStr(transaction.GetTotalMediumProfitFromOrders(),2));
 	
 	return 0;
 }
