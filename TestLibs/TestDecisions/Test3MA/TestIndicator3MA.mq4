@@ -44,10 +44,10 @@ double Buf_CloseShiftedH1[], Buf_MedianShiftedH1[],
 int init()
 {
 	// print some verbose info
-	VerboseInfo vi;
-	vi.BalanceAccountInfo();
-	vi.ClientAndTerminalInfo();
-	vi.PrintMarketInfo();
+	//VerboseInfo vi;
+	//vi.BalanceAccountInfo();
+	//vi.ClientAndTerminalInfo();
+	//vi.PrintMarketInfo();
 	
 	
 	SetIndexBuffer(0, Buf_CloseH1);
@@ -90,8 +90,8 @@ int start()
 	CFileTxt logFile;
 	logFile.Open("LogFile.txt", FILE_WRITE | FILE_ANSI | FILE_REWRITE);
 				
-	decision.SetVerboseLevel(1);
-	transaction.SetVerboseLevel(1);
+	//decision.SetVerboseLevel(1);
+	//transaction.SetVerboseLevel(1);
 	transaction.SetSimulatedOrderObjectName("SimulatedOrder3MA");
 	transaction.SetSimulatedStopLossObjectName("SimulatedStopLoss3MA");
 	transaction.SetSimulatedTakeProfitObjectName("SimulatedTakeProfit3MA");
@@ -119,16 +119,18 @@ int start()
 			if(d > 0.0) { // Buy
 				double price =  MarketInfo(Symbol(),MODE_ASK);
 				money.CalculateTP_SL(TP, SL, OP_BUY, price, false, 20.0, 10.0, spread);
-				transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.1, price,0,SL,TP,NULL, 0, 0, clrNONE, i);
+				transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.1, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
 				
+				logFile.WriteString("[" + IntegerToString(i) + "] New order buy" + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
 				logFile.WriteString(transaction.OrdersToString(true));
 				//SafePrintString(transaction.OrdersToString());
 				//Print("");
 			} else { // Sell
 				double price =  MarketInfo(Symbol(),MODE_BID);
 				money.CalculateTP_SL(TP, SL, OP_SELL, price, false, 20.0, 10.0, spread);
-				transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.1, price,0,SL,TP,NULL, 0, 0, clrNONE, i);
+				transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.1, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
 				
+				logFile.WriteString("[" + IntegerToString(i) + "] New order sell" + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
 				logFile.WriteString(transaction.OrdersToString(true));
 				//SafePrintString(transaction.OrdersToString());
 				//Print("");
