@@ -99,11 +99,11 @@ int start()
 		if(d != IncertitudeDecision)
 		{
 			if(d > 0) { // Buy
-				double price =  Open[i];
+				double price = Close[i] + spread; // Ask
 				money.CalculateTP_SL(TP, SL, OP_BUY, price, false, spread, 3*spread, spread);
 				generator.ValidateAndFixTPandSL(TP, SL, spread, false);
 				
-				transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.1, Open[i],0,SL,TP,NULL, 0, 0, clrNONE, i);
+				transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.1, price, 0, SL ,TP, NULL, 0, 0, clrNONE, i);
 				
 				if(logToFile) {
 					logFile.WriteString("[" + IntegerToString(i) + "] New order buy " + DoubleToStr(MarketInfo(Symbol(),MODE_ASK)) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
@@ -111,7 +111,10 @@ int start()
 				}
 				
 			} else { // Sell
-				transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.1, Close[i],0,SL,TP,NULL, 0, 0, clrNONE, i);
+				double price = Close[i]; // Bid
+				money.CalculateTP_SL(TP, SL, OP_SELL, price, false, spread, 3*spread, spread);
+				generator.ValidateAndFixTPandSL(TP, SL, spread, false);
+				transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.1, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
 				
 				if(logToFile) {
 					logFile.WriteString("[" + IntegerToString(i) + "] New order sell " + DoubleToStr(MarketInfo(Symbol(),MODE_BID)) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));

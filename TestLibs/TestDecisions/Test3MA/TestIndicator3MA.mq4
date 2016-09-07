@@ -125,7 +125,7 @@ int start()
 		if(d != IncertitudeDecision)
 		{
 			if(d > 0.0) { // Buy
-				double price =  Open[i];
+				double price = Close[i] + spread; // Ask
 				money.CalculateTP_SL(TP, SL, OP_BUY, price, false, spread, 3*spread, spread);
 				generator.ValidateAndFixTPandSL(TP, SL, spread, false);
 				transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.1, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
@@ -138,7 +138,7 @@ int start()
 				//SafePrintString(transaction.OrdersToString());
 				//Print("");
 			} else { // Sell
-				double price = Close[i];
+				double price = Close[i]; // Bid
 				money.CalculateTP_SL(TP, SL, OP_SELL, price, false, spread, 3*spread, spread);
 				generator.ValidateAndFixTPandSL(TP, SL, spread, false);
 				transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.1, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
