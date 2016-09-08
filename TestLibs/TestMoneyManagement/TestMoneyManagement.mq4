@@ -24,9 +24,15 @@ int OnInit()
 	printf("GetTotalAmount: %f", money.GetTotalAmount());
 
 	//--- CalculateTP_SL
-	double TP, SL;
-	money.CalculateTP_SL(TP,SL,OP_BUY,30.0,20.0,10.0,10.0); printf("CalculateTP_SL: buy: TP = %f, SL = %f", TP, SL);
-	money.CalculateTP_SL(TP,SL,OP_SELL,30.0,20.0,10.0,10.0); printf("CalculateTP_SL: sell: TP = %f, SL = %f", TP, SL);
+	double TP, SL, TPpips, SLpips, openPrice, spread;
+	TPpips = 20.0; SLpips = 10.0; openPrice = 1.253212; spread = 0.02;
+	money.CalculateTP_SL(TP,SL,TPpips,SLpips,OP_BUY,openPrice,spread); printf("CalculateTP_SL: TP = %f, SL = %f, TPpips = %f SLpips = %f, price = %f", TP, SL, TPpips, SLpips, openPrice);
+	money.DeCalculateTP_SL(TP,SL,TPpips,SLpips,OP_BUY,openPrice,spread); printf("CalculateTP_SL: TP = %f, SL = %f, TPpips = %f SLpips = %f, price = %f", TP, SL, TPpips, SLpips, openPrice);
+	
+	
+	TPpips = 20.0; SLpips = 10.0; openPrice = 1.253212; spread = 0.02;
+	money.CalculateTP_SL(TP,SL,TPpips,SLpips,OP_SELL,openPrice,spread); printf("CalculateTP_SL: sell: TP = %f, SL = %f, TPpips = %f SLpips = %f, price = %f", TP, SL, TPpips, SLpips, openPrice);
+	money.DeCalculateTP_SL(TP,SL,TPpips,SLpips,OP_SELL,openPrice,spread); printf("CalculateTP_SL: sell: TP = %f, SL = %f, TPpips = %f SLpips = %f, price = %f", TP, SL, TPpips, SLpips, openPrice);
 	
 	//--- CheckPriceGoesOurWay (obsolete; removed)
 	//printf("CheckPriceGoesOurWay: %f", money.CheckPriceGoesOurWay());

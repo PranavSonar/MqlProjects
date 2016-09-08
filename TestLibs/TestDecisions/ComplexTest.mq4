@@ -40,6 +40,7 @@ int init()
 	return INIT_SUCCEEDED;
 }
 
+// UNFINISHED!! WEIRD STUFF HERE!!
 
 int start()
 {
@@ -69,7 +70,7 @@ int start()
 		double price = money.GetPriceBasedOnDecision(decision, false);
 		
 		if((SL == 0.0) || (TP == 0.0))
-			money.CalculateTP_SL(TP, SL, DecisionOrderType, price); // TP and SL cannot be calculated well without the price
+			money.CalculateTP_SL(TP, SL, 30.0, 50.0, DecisionOrderType, price); // TP and SL cannot be calculated well without the price
 		
 		if(decision != IncertitudeDecision)
 		{

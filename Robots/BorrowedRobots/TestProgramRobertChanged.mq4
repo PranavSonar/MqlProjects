@@ -79,7 +79,7 @@ void SumCompute()
 	OrderIsBuyValue = -1;
 	
 	tran.Get_OpenOrders_AvgPrice(CurrentOpenOrders, AveragePrice, OrderIsBuyValue);
-	money.CalculateTP_SL(TargetTP, TargetSL, OrderIsBuyValue, AveragePrice, TpLimitPips, SlLimitPips, ComputeSpread);
+	money.CalculateTP_SL(TargetTP, TargetSL, TpLimitPips, SlLimitPips, OrderIsBuyValue, AveragePrice, false, ComputeSpread);
 }
  
 bool OpenNewOrder()

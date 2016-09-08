@@ -19,7 +19,7 @@
 
 #include <MyMql/DecisionMaking/DecisionDoubleBB.mqh>
 #include <MyMql/MoneyManagement/BaseMoneyManagement.mqh>
-#include <MyMql/TransactionManagement/BaseTransactionManagement.mqh>
+#include <MyMql/TransactionManagement/FlowWithTrendTranMan.mqh>
 #include <MyMql/Generator/GenerateTPandSL.mqh>
 #include <MyMql/Info/ScreenInfo.mqh>
 #include <MyMql/Info/VerboseInfo.mqh>
@@ -59,7 +59,7 @@ int OnInit()
 }
 
 
-static BaseTransactionManagement transaction;
+static FlowWithTrendTranMan transaction;
 
 int start()
 {
@@ -72,6 +72,9 @@ int start()
 	
 	if(logToFile)
 		logFile.Open("LogFile.txt", FILE_WRITE | FILE_ANSI | FILE_REWRITE);
+		
+	int i = Bars - IndicatorCounted() - 1;
+	double SL = 0.0, TP = 0.0, spread = MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID), spreadPips = spread/money.Pip();
 	
 	//decision.SetVerboseLevel(1);
 	//transaction.SetVerboseLevel(1);
@@ -80,10 +83,9 @@ int start()
 	transaction.SetSimulatedTakeProfitObjectName("SimulatedTakeProfitBA");
 	//transaction.AddInitializerTransactionData(0.5, 0.5); // BB doesn't need shit
 	//transaction.AddInitializerTransactionData(0.2, 0.2);
+
+	transaction.AddInitializerTransactionData(2.6*spreadPips, 1.6*spreadPips); 
 	
-	
-	int i = Bars - IndicatorCounted() - 1;
-	double SL = 0.0, TP = 0.0, spread = MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID);
 	
 	while(i >= 0)
 	{
@@ -106,7 +108,7 @@ int start()
 				transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.1, price, 0, SL ,TP, NULL, 0, 0, clrNONE, i);
 				
 				if(logToFile) {
-					logFile.WriteString("[" + IntegerToString(i) + "] New order buy " + DoubleToStr(MarketInfo(Symbol(),MODE_ASK)) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
+					logFile.WriteString("[" + IntegerToString(i) + "] New order buy " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
 					logFile.WriteString(transaction.OrdersToString(true));
 				}
 				
@@ -117,7 +119,7 @@ int start()
 				transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.1, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
 				
 				if(logToFile) {
-					logFile.WriteString("[" + IntegerToString(i) + "] New order sell " + DoubleToStr(MarketInfo(Symbol(),MODE_BID)) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
+					logFile.WriteString("[" + IntegerToString(i) + "] New order sell " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
 					logFile.WriteString(transaction.OrdersToString(true));
 				}
 			}
@@ -126,6 +128,9 @@ int start()
 			screen.ShowTextValue("CurrentValueSell", "Number of sell decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(OP_SELL)), clrGray, 20, 20);
 			screen.ShowTextValue("CurrentValueBuy", "Number of buy decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(OP_BUY)), clrGray, 20, 40);
 		}
+		
+		
+		//transaction.FlowWithTrend_UpdateSL_TP_UsingConstants(2.6*spreadPips, 1.6*spreadPips);
 		i--;
 	}
 	
@@ -134,10 +139,16 @@ int start()
 		logFile.Close();
 	}
 	
-	
+	transaction.GetBestTPandSL(TP, SL);
 	Comment("Maximum profit: " + DoubleToStr(transaction.GetTotalMaximumProfitFromOrders(),2)
 		+ "\nMinimum profit: " + DoubleToStr(transaction.GetTotalMinimumProfitFromOrders(),2)
-		+ "\nMedium profit: " + DoubleToStr(transaction.GetTotalMediumProfitFromOrders(),2));
+		+ "\n[Medium profit]: " + DoubleToStr(transaction.GetTotalMediumProfitFromOrders(),2)
+		+ "\n\nTake profit (best from average): " + DoubleToStr(TP,4)
+		+ "\nStop loss (best from average): " + DoubleToStr(SL,4)
+		+ "\nSpread: " + DoubleToStr(spreadPips, 4)
+		+ "\nTake profit / Spread (best from average): " + DoubleToStr(TP/spreadPips,4)
+		+ "\nStop loss / Spread (best from average): " + DoubleToStr(SL/spreadPips,4)
+		);
 	
 	return 0;
 }
