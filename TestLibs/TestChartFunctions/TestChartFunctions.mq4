@@ -67,8 +67,11 @@ void OnTimer()
 		i++;// Do not forget to increase the counter
 	}
 	
+	//long oldChartId = ChartID();
 	//long chartId = ChartOpen(Symbol,period);
 	//ChartNext(chartId);
+	//ChartClose(oldChartId);
+	
 }
 
 void RecolorChart(long chartId, color chartColor = clrBlack)
