@@ -138,7 +138,7 @@ int start()
 			if(d > 0.0) { // Buy
 				double price = Close[i] + spread; // Ask
 				money.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_BUY, price, false, spread);
-				generator.ValidateAndFixTPandSL(TP, SL, spread, false);
+				generator.ValidateAndFixTPandSL(TP, SL, price, spread, false);
 				transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.1, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
 				
 				
@@ -151,7 +151,7 @@ int start()
 			} else { // Sell
 				double price = Close[i]; // Bid
 				money.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_SELL, price, false, spread);
-				generator.ValidateAndFixTPandSL(TP, SL, spread, false);
+				generator.ValidateAndFixTPandSL(TP, SL, price, spread, false);
 				transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.1, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
 				
 				
