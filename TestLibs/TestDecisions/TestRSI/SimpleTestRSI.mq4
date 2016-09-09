@@ -80,7 +80,7 @@ void OnTick()
 			money.CalculateTP_SL(TP, SL, OP_SELL, price, false, 8*spreadPips, 13*spreadPips, spread);
 			generator.ValidateAndFixTPandSL(TP, SL, spread, false);
 			
-			transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.01, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
+			transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.01, price, 0, SL, TP, NULL, 0, 0, clrNONE);
 			int tichet = OrderSend(Symbol(), OP_SELL, 0.1, price, 0, SL, TP, NULL, 0, 0, clrChocolate);
 			
 			if(tichet == -1)
