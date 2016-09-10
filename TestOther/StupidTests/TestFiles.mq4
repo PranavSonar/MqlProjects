@@ -9,7 +9,7 @@
 #property strict
 
 #include <MyMql\Base\BeforeObject.mqh>
-#include <Files/FileTxt.mqh>
+#include <Files\FileTxt.mqh>
 
 void OnStart()
 {
@@ -19,4 +19,14 @@ void OnStart()
 	logFile.WriteString("Big whatever 2\n");
 	logFile.Flush();
 	logFile.Close();
+	
+	
+	CFileTxt logFile2;
+	logFile2.Open("LogFile.txt", FILE_READ | FILE_ANSI);
+	string line = logFile2.ReadString();
+	while(!logFile2.IsEnding())
+	{
+		line = logFile2.ReadString();
+	}
+	logFile2.Close();
 }
