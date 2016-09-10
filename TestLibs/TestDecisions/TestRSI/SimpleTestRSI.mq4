@@ -14,7 +14,7 @@
 #include <MyMql/Generator/GenerateTPandSL.mqh>
 #include <MyMql/Info/ScreenInfo.mqh>
 #include <MyMql/Info/VerboseInfo.mqh>
-#include <Files/FileTxt.mqh>
+#include <MyMql/Log/WebServiceLog.mqh>
 
 
 int OnInit()
@@ -35,11 +35,7 @@ void OnTick()
 	BaseMoneyManagement money;
 	ScreenInfo screen;
 	GenerateTPandSL generator;
-	bool logToFile = false;
-	CFileTxt logFile;
-	
-	if(logToFile)
-		logFile.Open("LogFile.txt", FILE_WRITE | FILE_ANSI | FILE_REWRITE);
+	WebServiceLog wsLog(false);
 	
 	double SL = 0.0, TP = 0.0, spread = MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID), spreadPips = spread/money.Pip();
 	
@@ -66,16 +62,13 @@ void OnTick()
 				generator.ValidateAndFixTPandSL(TP, SL, price, OP_BUY, spread, false);
 			
 			transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.01, price, 0, SL, TP, NULL, 0, 0, clrNONE);
-			int tichet = OrderSend(Symbol(), OP_BUY, 0.1, price, 0, SL, TP, NULL, 0, 0, clrAqua);
+			int tichet = OrderSend(Symbol(), OP_BUY, 0.01, price, 0, SL, TP, NULL, 0, 0, clrAqua);
 			
 			if(tichet == -1)
 				Print("Failed! Reason: " + IntegerToString(GetLastError()));
 			
-			if(logToFile) {
-				logFile.WriteString("New order buy " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
-				logFile.WriteString(transaction.OrdersToString(true));
-			}
-			
+			wsLog.DataLog("NewOrder", "New order buy " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
+			wsLog.DataLog("OrdersToString", transaction.OrdersToString(true));
 		} else { // Sell
 			double price = MarketInfo(Symbol(), MODE_BID); // Bid
 			money.CalculateTP_SL(TP, SL, 8*spreadPips, 13*spreadPips, OP_SELL, price, false, spread);
@@ -83,26 +76,18 @@ void OnTick()
 				generator.ValidateAndFixTPandSL(TP, SL, price, OP_SELL, spread, false);
 			
 			transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.01, price, 0, SL, TP, NULL, 0, 0, clrNONE);
-			int tichet = OrderSend(Symbol(), OP_SELL, 0.1, price, 0, SL, TP, NULL, 0, 0, clrChocolate);
+			int tichet = OrderSend(Symbol(), OP_SELL, 0.01, price, 0, SL, TP, NULL, 0, 0, clrChocolate);
 			
 			if(tichet == -1)
 				Print("Failed! Reason: " + IntegerToString(GetLastError()));
 			
-			if(logToFile) {
-				logFile.WriteString("New order sell " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
-				logFile.WriteString(transaction.OrdersToString(true));
-			}
+			wsLog.DataLog("NewOrder", "New order sell " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
+			wsLog.DataLog("OrdersToString", transaction.OrdersToString(true));
 		}
 		
 		screen.ShowTextValue("CurrentValue", "Number of decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(-1)),clrGray, 20, 0);
 		screen.ShowTextValue("CurrentValueSell", "Number of sell decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(OP_SELL)), clrGray, 20, 20);
 		screen.ShowTextValue("CurrentValueBuy", "Number of buy decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(OP_BUY)), clrGray, 20, 40);
-	}
-	
-	
-	if(logToFile) {
-		logFile.Flush();
-		logFile.Close();
 	}
 	
 	
@@ -118,4 +103,5 @@ void OnTick()
 		);
 	
 	transaction.FlowWithTrend_UpdateSL_TP_UsingConstants(8*spreadPips, 13*spreadPips);
+	wsLog.EndTradingSession();
 }
