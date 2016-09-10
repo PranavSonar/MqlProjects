@@ -11,7 +11,7 @@
 #include <MyMql\DecisionMaking\DecisionDoubleBB.mqh>
 #include <MyMql\DecisionMaking\Decision3MA.mqh>
 #include <MyMql\DecisionMaking\DecisionRSI.mqh>
-#include <MyMql\DecisionMaking\CandleDecision.mqh>
+#include <MyMql\DecisionMaking\DecisionCandle.mqh>
 
 #include <Arrays\ArrayObj.mqh>
 
@@ -36,7 +36,7 @@ void OnStart()
 	ListOfDecisions.Add(new DecisionDoubleBB());
 	ListOfDecisions.Add(new Decision3MA());
 	ListOfDecisions.Add(new DecisionRSI());
-	ListOfDecisions.Add(new CandleDecision());
+	ListOfDecisions.Add(new DecisionCandle());
 	
 	for(int i=0;i<ListOfDecisions.Total();i++)
 		printf("ListOfDecisions[i=%d]:%s", i, ((BaseDecision*)ListOfDecisions.At(i)).GetDecisionName());
@@ -53,7 +53,7 @@ void OnStart()
 	decisions[0] = new DecisionDoubleBB();
 	decisions[1] = new Decision3MA();
 	decisions[2] = new DecisionRSI();
-	decisions[3] = new CandleDecision();
+	decisions[3] = new DecisionCandle();
 	
 	for(int i=0;i<ArraySize(decisions);i++)
 		printf("decision[i=%d]:%s", i, decisions[i].GetDecisionName());

@@ -61,8 +61,8 @@ void OnTick()
 	{
 		if(d > 0) { // Buy
 			double price = MarketInfo(Symbol(),MODE_ASK); // Ask
-			money.CalculateTP_SL(TP, SL, OP_BUY, price, false, 8*spreadPips, 13*spreadPips, spread);
-			generator.ValidateAndFixTPandSL(TP, SL, price, spread, false);
+			money.CalculateTP_SL(TP, SL, 8*spreadPips, 13*spreadPips, OP_BUY, price, false, spread);
+			generator.ValidateAndFixTPandSL(TP, SL, price, OP_BUY, spread, false);
 			
 			transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.01, price, 0, SL, TP, NULL, 0, 0, clrNONE);
 			int tichet = OrderSend(Symbol(), OP_BUY, 0.1, price, 0, SL, TP, NULL, 0, 0, clrAqua);
@@ -77,8 +77,8 @@ void OnTick()
 			
 		} else { // Sell
 			double price = MarketInfo(Symbol(), MODE_BID); // Bid
-			money.CalculateTP_SL(TP, SL, OP_SELL, price, false, 8*spreadPips, 13*spreadPips, spread);
-			generator.ValidateAndFixTPandSL(TP, SL, price, spread, false);
+			money.CalculateTP_SL(TP, SL, 8*spreadPips, 13*spreadPips, OP_SELL, price, false, spread);
+			generator.ValidateAndFixTPandSL(TP, SL, price, OP_SELL, spread, false);
 			
 			transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.01, price, 0, SL, TP, NULL, 0, 0, clrNONE);
 			int tichet = OrderSend(Symbol(), OP_SELL, 0.1, price, 0, SL, TP, NULL, 0, 0, clrChocolate);
