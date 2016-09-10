@@ -60,10 +60,20 @@ int OnInit()
 	SetIndexBuffer(5, Buf_MedianW1);
 	SetIndexStyle(5, DRAW_SECTION, STYLE_SOLID, 2);
 	
+	if(logToFile)
+		logFile.Open("LogFile.txt", FILE_READ | FILE_WRITE | FILE_ANSI | FILE_REWRITE);
+	
 	return INIT_SUCCEEDED;
 }
 
+void OnDeinit(const int reason)
+{
+	if(logToFile)
+		logFile.Close();
+}
 
+bool logToFile = false;
+static CFileTxt logFile;
 static FlowWithTrendTranMan transaction;
 
 int start()
@@ -72,11 +82,6 @@ int start()
 	BaseMoneyManagement money;
 	ScreenInfo screen;
 	GenerateTPandSL generator;
-	bool logToFile = false;
-	CFileTxt logFile;
-	
-	if(logToFile)
-		logFile.Open("LogFile.txt", FILE_WRITE | FILE_ANSI | FILE_REWRITE);
 	
 	int i = Bars - IndicatorCounted() - 1;
 	double SL = 0.0, TP = 0.0, spread = MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID), spreadPips = spread/money.Pip();
@@ -134,10 +139,8 @@ int start()
 		i--;
 	}
 	
-	if(logToFile) {
+	if(logToFile)
 		logFile.Flush();
-		logFile.Close();
-	}
 	
 	
 	transaction.GetBestTPandSL(TP, SL);

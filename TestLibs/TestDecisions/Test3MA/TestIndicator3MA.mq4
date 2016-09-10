@@ -82,6 +82,14 @@ int init()
 	return INIT_SUCCEEDED;
 }
 
+void OnDeinit(const int reason)
+{
+	if(logToFile)
+		logFile.Close();
+}
+
+bool logToFile = false;
+static CFileTxt logFile;
 static FlowWithTrendTranMan transaction;
 
 int start()
@@ -90,11 +98,13 @@ int start()
 	BaseMoneyManagement money;
 	ScreenInfo screen;
 	GenerateTPandSL generator;
-	bool logToFile = false;
-	CFileTxt logFile;
+	bool openFile = true;
 	
-	if(logToFile)
-		logFile.Open("LogFile.txt", FILE_WRITE | FILE_ANSI | FILE_REWRITE);
+	if(logToFile && openFile) {
+		logFile.Open("LogFile.txt", FILE_READ | FILE_WRITE | FILE_ANSI);
+		logFile.Seek(0, SEEK_END);
+		openFile = false;
+	}
 	
 	//decision.SetVerboseLevel(1);
 	//transaction.SetVerboseLevel(1);
@@ -172,10 +182,9 @@ int start()
 		i--;
 	}
 	
-	if(logToFile) {
+	if(logToFile)
 		logFile.Flush();
-		logFile.Close();
-	}
+	
 	
 	transaction.GetBestTPandSL(TP, SL);
 	Comment("Maximum profit: " + DoubleToStr(transaction.GetTotalMaximumProfitFromOrders(),2)
