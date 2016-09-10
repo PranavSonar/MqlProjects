@@ -18,7 +18,7 @@
 
 int OnInit()
 {
-	 return ExpertValidationsTest(Symbol());
+	return INIT_SUCCEEDED;//ExpertValidationsTest(Symbol());
 }
 
 void OnDeinit(const int reason)
@@ -33,7 +33,8 @@ void OnTick() {
 	BaseMoneyManagement money;
 	ScreenInfo screen;
 	GenerateTPandSL generator;
-	WebServiceLog wsLog(false);
+	//WebServiceLog wsLog(false);
+	BaseWebServiceLog wsLog();
 	
 	//decision.SetVerboseLevel(1);
 	//transaction.SetVerboseLevel(1);
@@ -66,7 +67,7 @@ void OnTick() {
 		if(d > 0.0) { // Buy
 			double price = MarketInfo(Symbol(), MODE_ASK); // Ask
 			money.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_BUY, price, false, spread);
-			if((TP != 0.0) && (SL != 0.0))
+			if((TP != 0.0) || (SL != 0.0))
 				generator.ValidateAndFixTPandSL(TP, SL, price, OP_BUY, spread, false);
 			transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.01, price, 0, SL, TP, NULL, 0, 0, clrNONE);
 			int tichet = OrderSend(Symbol(), OP_BUY, 0.01, price, 0, SL, TP, NULL, 0, 0, clrAqua);
@@ -79,7 +80,7 @@ void OnTick() {
 		} else { // Sell
 			double price = MarketInfo(Symbol(), MODE_BID); // Bid
 			money.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_SELL, price, false, spread);
-			if((TP != 0.0) && (SL != 0.0))
+			if((TP != 0.0) || (SL != 0.0))
 				generator.ValidateAndFixTPandSL(TP, SL, price, OP_SELL, spread, false);
 			transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.01, price, 0, SL, TP, NULL, 0, 0, clrNONE);
 			int tichet = OrderSend(Symbol(), OP_SELL, 0.01, price, 0, SL, TP, NULL, 0, 0, clrChocolate);

@@ -19,7 +19,8 @@
 
 int OnInit()
 {
-	return ExpertValidationsTest(Symbol());
+	IsNowRunning = false;
+	return INIT_SUCCEEDED;//ExpertValidationsTest(Symbol());
 }
 
 void OnDeinit(const int reason)
@@ -28,14 +29,20 @@ void OnDeinit(const int reason)
 
 
 static FlowWithTrendTranMan transaction;
+bool IsNowRunning;
 
 void OnTick()
 {
+	if(IsNowRunning)
+		return;
+	IsNowRunning = true;
+	
 	DecisionDoubleBB decision;
 	BaseMoneyManagement money;
 	ScreenInfo screen;
 	GenerateTPandSL generator;
-	WebServiceLog wsLog(false);
+	//WebServiceLog wsLog(false);
+	BaseWebServiceLog wsLog();
 	
 	double SL = 0.0, TP = 0.0, spread = MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID), spreadPips = spread/money.Pip();
 	
@@ -62,7 +69,7 @@ void OnTick()
 		if(d > 0) { // Buy
 			double price = MarketInfo(Symbol(),MODE_ASK); // Ask
 			//money.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_BUY, price, false, spread);
-			if((TP != 0.0) && (SL != 0.0))
+			if((TP != 0.0) || (SL != 0.0))
 				generator.ValidateAndFixTPandSL(TP, SL, price, OP_BUY, spread, false);
 			transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.01, price, 0, SL ,TP, NULL, 0, 0, clrNONE);
 			int tichet = OrderSend(Symbol(), OP_BUY, 0.01, price, 0, SL, TP, NULL, 0, 0, clrAqua);
@@ -75,7 +82,7 @@ void OnTick()
 		} else { // Sell
 			double price = MarketInfo(Symbol(),MODE_BID); // Bid
 			//money.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_SELL, price, false, spread);
-			if((TP != 0.0) && (SL != 0.0))
+			if((TP != 0.0) || (SL != 0.0))
 				generator.ValidateAndFixTPandSL(TP, SL, price, OP_SELL, spread, false);
 			transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.01, price, 0, SL, TP, NULL, 0, 0, clrNONE);
 			int tichet = OrderSend(Symbol(), OP_SELL, 0.01, price, 0, SL, TP, NULL, 0, 0, clrChocolate);
@@ -105,4 +112,6 @@ void OnTick()
 	
 	transaction.FlowWithTrend_UpdateSL_TP_UsingConstants(3*spreadPips, 2*spreadPips);
 	wsLog.EndTradingSession();
+	
+	IsNowRunning = false;
 }
