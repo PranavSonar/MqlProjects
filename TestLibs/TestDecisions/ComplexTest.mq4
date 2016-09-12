@@ -32,12 +32,14 @@ input int MaximumNumberOfTransactions;
 int init()
 {
 	// print some verbose info
-	VerboseInfo vi;
-	vi.BalanceAccountInfo();
-	vi.ClientAndTerminalInfo();
-	vi.PrintMarketInfo();
+	//VerboseInfo vi;
+	//vi.BalanceAccountInfo();
+	//vi.ClientAndTerminalInfo();
+	//vi.PrintMarketInfo();
 	
-	return INIT_SUCCEEDED;
+	if(IsTesting())
+		return INIT_SUCCEEDED;
+	return ExpertValidationsTest(Symbol());
 }
 
 // UNFINISHED!! WEIRD STUFF HERE!!

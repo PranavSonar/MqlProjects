@@ -18,7 +18,15 @@
 
 int OnInit()
 {
-	return INIT_SUCCEEDED;//ExpertValidationsTest(Symbol());
+	// print some verbose info
+	//VerboseInfo vi;
+	//vi.BalanceAccountInfo();
+	//vi.ClientAndTerminalInfo();
+	//vi.PrintMarketInfo();
+	
+	if(IsTesting())
+		return INIT_SUCCEEDED;
+	return ExpertValidationsTest(Symbol());
 }
 
 void OnDeinit(const int reason)
