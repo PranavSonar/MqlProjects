@@ -118,11 +118,14 @@ bool TestNewOrder()
 void Initialisation()
 {
 	double TotalAmount = money.GetTotalAmount();
-	double ComputePrice = money.CalculateCurrencyPrice(false,false);
-	double TotalLot = NormalizeDouble(TotalAmount/ComputePrice/10.00,2);
-	
+	double ComputePrice = money.CalculateCurrencyPrice(false,true);
 	LotsDividerCompute();
 	ComputeSpread = Ask-Bid;
-	
+
+	if(ComputePrice == 0.0)
+	{
+		ComputePrice = 1;
+	}
+	double TotalLot = NormalizeDouble(TotalAmount/ComputePrice/10.00,2);
 	ManagementLots = NormalizeDouble(TotalLot / 100.00*UsagePercentage/Lotsdivider,2);
 }

@@ -53,6 +53,7 @@ void OnTick()
 	
 	// calculate profit/loss, TPs, SLs, etc
 	transaction.CalculateData();
+	double lots = money.GetLotsBasedOnDecision(d, false);
 	
 	if(d != IncertitudeDecision)
 	{

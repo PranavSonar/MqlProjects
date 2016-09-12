@@ -1,0 +1,29 @@
+//+------------------------------------------------------------------+
+//|                                               YetAnotherTest.mq4 |
+//|                                Copyright 2016, Chirita Alexandru |
+//|                                             https://www.mql5.com |
+//+------------------------------------------------------------------+
+#property copyright "Copyright 2016, Chirita Alexandru"
+#property link      "https://www.mql5.com"
+#property version   "1.00"
+#property strict
+
+#include <MyMql/MoneyManagement/BaseMoneyManagement.mqh>
+#include <MyMql/Generator/GenerateTPandSL.mqh>
+
+void OnTick()
+{
+	GenerateTPandSL generator;
+	BaseMoneyManagement money;
+	double price = MarketInfo(Symbol(), MODE_BID);
+	double SL = 0.0, TP = 0.0, spread = MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID), spreadPips = spread/money.Pip();
+	
+	money.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_BUY, price, false, spread);
+	if((TP != 0.0) || (SL != 0.0))
+		generator.ValidateAndFixTPandSL(TP, SL, price, OP_SELL, spread, true);
+	int tichet = OrderSend(Symbol(), OP_SELL, 0.01, price, 0, SL, TP, NULL, 0, 0, clrChocolate);
+			
+	if(tichet == -1)
+		Print("Failed! Reason: " + IntegerToString(GetLastError()));		
+}
+

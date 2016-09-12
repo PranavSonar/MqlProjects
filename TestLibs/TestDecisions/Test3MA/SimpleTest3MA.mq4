@@ -45,10 +45,11 @@ void OnTick() {
 	transaction.SetSimulatedStopLossObjectName("SimulatedStopLoss3MA");
 	transaction.SetSimulatedTakeProfitObjectName("SimulatedTakeProfit3MA");
 	
-	double d = decision.GetDecision(0);
+	double d = decision.GetDecision();
 
 	// calculate profit/loss, TPs, SLs, etc
-	transaction.CalculateData(0);
+	transaction.CalculateData();
+	double lots = money.GetLotsBasedOnDecision(d, false);
 	
 	wsLog.DataLog("OrdersToString", transaction.OrdersToString(true));
 	
@@ -69,8 +70,8 @@ void OnTick() {
 			money.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_BUY, price, false, spread);
 			if((TP != 0.0) || (SL != 0.0))
 				generator.ValidateAndFixTPandSL(TP, SL, price, OP_BUY, spread, false);
-			transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.01, price, 0, SL, TP, NULL, 0, 0, clrNONE);
-			int tichet = OrderSend(Symbol(), OP_BUY, 0.01, price, 0, SL, TP, NULL, 0, 0, clrAqua);
+			transaction.SimulateOrderSend(Symbol(), OP_BUY, lots, price, 0, SL, TP, NULL, 0, 0, clrNONE);
+			int tichet = OrderSend(Symbol(), OP_BUY, lots, price, 0, SL, TP, NULL, 0, 0, clrAqua);
 			
 			if(tichet == -1)
 				Print("Failed! Reason: " + IntegerToString(GetLastError()));
@@ -82,8 +83,8 @@ void OnTick() {
 			money.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_SELL, price, false, spread);
 			if((TP != 0.0) || (SL != 0.0))
 				generator.ValidateAndFixTPandSL(TP, SL, price, OP_SELL, spread, false);
-			transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.01, price, 0, SL, TP, NULL, 0, 0, clrNONE);
-			int tichet = OrderSend(Symbol(), OP_SELL, 0.01, price, 0, SL, TP, NULL, 0, 0, clrChocolate);
+			transaction.SimulateOrderSend(Symbol(), OP_SELL, lots, price, 0, SL, TP, NULL, 0, 0, clrNONE);
+			int tichet = OrderSend(Symbol(), OP_SELL, lots, price, 0, SL, TP, NULL, 0, 0, clrChocolate);
 			
 			if(tichet == -1)
 				Print("Failed! Reason: " + IntegerToString(GetLastError()));
