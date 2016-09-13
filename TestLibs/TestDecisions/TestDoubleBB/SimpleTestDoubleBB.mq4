@@ -121,16 +121,21 @@ void OnTick()
 	
 	lastDecision = d;
 	
-	//transaction.GetBestTPandSL(TP, SL);
-	//Comment("Maximum profit: " + DoubleToStr(transaction.GetTotalMaximumProfitFromOrders(),2)
-	//	+ "\nMinimum profit: " + DoubleToStr(transaction.GetTotalMinimumProfitFromOrders(),2)
-	//	+ "\n[Medium profit]: " + DoubleToStr(transaction.GetTotalMediumProfitFromOrders(),2)
-	//	+ "\n\nTake profit (best from average): " + DoubleToStr(TP,4)
-	//	+ "\nStop loss (best from average): " + DoubleToStr(SL,4)
-	//	+ "\nSpread: " + DoubleToStr(spreadPips, 4)
-	//	+ "\nTake profit / Spread (best from average): " + DoubleToStr(TP/spreadPips,4)
-	//	+ "\nStop loss / Spread (best from average): " + DoubleToStr(SL/spreadPips,4)
-	//	);
+	
+	double profit;
+	int count;
+	transaction.GetBestTPandSL(TP, SL, profit, count);
+	Comment("Best profit: " + DoubleToStr(profit,2)
+		+ "\nBest Take profit: " + DoubleToStr(TP,4)
+		+ "\nBest Stop loss: " + DoubleToStr(SL,4)
+		+ "\nCount orders: " + IntegerToString(count)
+		+ "\n\nMaximum profit (sum): " + DoubleToStr(transaction.GetTotalMaximumProfitFromOrders(),2)
+		+ "\nMinimum profit (sum): " + DoubleToStr(transaction.GetTotalMinimumProfitFromOrders(),2)
+		+ "\nMedium profit (avg): " + DoubleToStr(transaction.GetTotalMediumProfitFromOrders(),2)
+		+ "\n\nSpread: " + DoubleToStr(spreadPips, 4)
+		+ "\nTake profit / Spread (best from average): " + DoubleToStr(TP/spreadPips,4)
+		+ "\nStop loss / Spread (best from average): " + DoubleToStr(SL/spreadPips,4)
+		);
 	
 	//transaction.FlowWithTrend_UpdateSL_TP_UsingConstants(3*spreadPips, 2*spreadPips);
 	//transaction.FlowWithTrend_UpdateSL_TP();
