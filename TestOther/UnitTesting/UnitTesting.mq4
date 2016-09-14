@@ -90,12 +90,13 @@ bool AssertBB (string text,
 	double RealBBd2, double RealBBd1, double RealBBm, double RealBBs1, double RealBBs2,
 	double BBd2, double BBd1, double BBm, double BBs1, double BBs2)
 {
+	int precision = 4;
 	bool isOk = true;
-	isOk = isOk && AssertEqual(RealBBd2, BBd2, text + "BBd2 failed miserably", 4, false, true);
-	isOk = isOk && AssertEqual(RealBBd1, BBd1, text + "BBd1 failed miserably", 4, false, true);
-	isOk = isOk && AssertEqual(RealBBm,  BBm,  text + "BBm  failed miserably", 4, false, true);
-	isOk = isOk && AssertEqual(RealBBs1, BBs1, text + "BBs1 failed miserably", 4, false, true);
-	isOk = isOk && AssertEqual(RealBBs2, BBs2, text + "BBs2 failed miserably", 4, false, true);
+	isOk = isOk && AssertEqual(RealBBd2, BBd2, text + "BBd2 failed miserably", precision, false, true);
+	isOk = isOk && AssertEqual(RealBBd1, BBd1, text + "BBd1 failed miserably", precision, false, true);
+	isOk = isOk && AssertEqual(RealBBm,  BBm,  text + "BBm  failed miserably", precision, false, true);
+	isOk = isOk && AssertEqual(RealBBs1, BBs1, text + "BBs1 failed miserably", precision, false, true);
+	isOk = isOk && AssertEqual(RealBBs2, BBs2, text + "BBs2 failed miserably", precision, false, true);
 	return isOk;
 }
 
@@ -166,17 +167,19 @@ bool TestMoneyConversion(bool verbose = false)
 	double convertedPrice = money.CalculateCurrencyPrice(false, false);
 	isOk = isOk && (convertedPrice != 0.0);
 	
-	if((convertedPrice == 0.0) && (verbose))
+	if((convertedPrice == 0.0) && (verbose == true))
 		Print("TestMoneyConversion failed on Symbol: " + Symbol() + " IsBase: " + BoolToString(false));
 	
 	convertedPrice = money.CalculateCurrencyPrice(false, true);
 	isOk = isOk && (convertedPrice != 0.0);
 	
-	if((convertedPrice == 0.0) && (verbose))
+	if((convertedPrice == 0.0) && (verbose == true))
 		Print("TestMoneyConversion failed on Symbol: " + Symbol() + " IsBase: " + BoolToString(true));
 	
 	return isOk;
 }
+
+
 
 void OnInit()
 {
