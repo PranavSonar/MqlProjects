@@ -68,11 +68,11 @@ extern int      MAEntry             = 1;
 // 0 = Off, 1 = will base entry on CCI indicator, 2 = will trade in reverse
 extern int      CCIEntry            = 0;
 // 0 = Off, 1 = will base entry on BB, 2 = will trade in reverse
-extern int      BollingerEntry      = 0;
+extern int      BollingerEntry      = 1;
 // 0 = Off, 1 = will base entry on Stoch, 2 = will trade in reverse
 extern int      StochEntry          = 0;
 // 0 = Off, 1 = will base entry on MACD, 2 = will trade in reverse
-extern int      MACDEntry           = 0;
+extern int      MACDEntry           = 1;
 
 extern string   LabelGS             = "Grid Settings:";
 // Auto calculation of TakeProfit and Grid size;
@@ -111,7 +111,7 @@ extern double   CloseTPPips         = 10;
 // Force Take Profit to BE +/- xx Pips
 extern double   ForceTPPips         = 0;
 // Ensure Take Profit is at least BE +/- xx Pips
-extern double   MinTPPips           = 0;
+extern double   MinTPPips           = 5;
 
 extern string   LabelHS             = "Hedge Settings:";
 // Enter the Symbol of the same/correlated pair EXACTLY as used by your broker.
@@ -994,7 +994,7 @@ int start()
                                 {              AllowTrading=false;
                                                 if(PlaySounds)PlaySound(AlertSound);
                                                 Print("Portion Balance dropped below stop trade percent");
-                                                MessageBox("Reset Blessing, account balance dropped below stop trade percent on "+Symbol()+Period(),"Blessing 3: Warning",48);
+                                                MessageBox("Reset Blessing, account balance dropped below stop trade percent on "+Symbol()+IntegerToString(Period()),"Blessing 3: Warning",48);
                                                 return(0);
                                 }
                                 else if(!ShutDown&&!RecoupClosedLoss)
@@ -1052,7 +1052,8 @@ int start()
                 {              if(!FirstRun&&TPb>0&&(ForceCloseOldest||(CbB>0&&OPbO>TPb)||(CbS>0&&OPbO<TPb)))
                                 {              y=ExitTrades(T,DarkViolet,"Close Oldest Trade",TbO);
                                                 if(y==1)
-                                                {              OrderSelect(TbO,SELECT_BY_TICKET);
+                                                {              bool status = OrderSelect(TbO,SELECT_BY_TICKET);
+                                                                if(status)
                                                                 PbC+=OrderProfit()+OrderSwap()+OrderCommission();
                                                                 ca=0;
                                                                 CbC++;
@@ -1126,11 +1127,11 @@ int start()
                 //+-----------------------------------------------------------------+
                 //| Calculate Take Profit                                           |
                 //+-----------------------------------------------------------------+
-                static double BCaL,BEbL;
+                static double BCaL = 0.0,BEbL = 0.0;
                 double nLots=LbB-LbS;
                 if(CbT>0&&(TPb==0||CbT+ChT!=CaL||BEbL!=BEb||BCa!=BCaL||FirstRun))
                 {              string sCalcTP="Set New TP:  BE: "+DTS(BEb,Digits);
-                                double NewTP,BasePips;
+                                double NewTP = 0.0,BasePips = 0.0;
                                 CaL=CbT+ChT;
                                 BCaL=BCa;
                                 BEbL=BEb;
@@ -1211,7 +1212,7 @@ int start()
                 double hBid=MarketInfo(HedgeSymbol,MODE_BID);
                 double hSpread=hAsk-hBid;
                 if(hThisChart)nLots+=LhB-LhS;
-                double TPa,PhPips;
+                double TPa = 0.0,PhPips = 0.0;
                                
                 if(hActive==1)
                 {               if(nLots==0)
@@ -1243,7 +1244,7 @@ int start()
                 //+-----------------------------------------------------------------+
                 //| Calculate Early Exit Percentage                                 |
                 //+-----------------------------------------------------------------+
-                double EEpc,EEopt,EEStartTime,TPaF;
+                double EEpc = 0.0,EEopt = 0.0,EEStartTime = 0.0,TPaF = 0.0;
                                
                 if(UseEarlyExit&&CbT>0)
                 {               if(EEFirstTrade)EEopt=OTbF;
@@ -1296,7 +1297,7 @@ int start()
                 //+-----------------------------------------------------------------+
                 //| Maximize Profit with Moving TP and setting Trailing Profit Stop |
                 //+-----------------------------------------------------------------+
-                double TPbMP;
+                double TPbMP = 0.0;
                 if(MaximizeProfit)
                 {              if(CbT==0)
                                 {              SLbL=0;
@@ -1329,7 +1330,7 @@ int start()
                                                 return(0);
                                 }
                 }
-                double bSL;
+                double bSL = 0.0;
                 if(!FirstRun&&UseStopLoss)
                 {              
                                 if(SLPips>0)
@@ -1456,18 +1457,18 @@ int start()
                                 }
                                 else if((HolShutDown==0&&TimeCurrent()>=HolLast)||HolFirst==0)
                                 {              for(y=0;y<ArraySize(HolArray);y++)
-                                                {              HolFirst=StrToTime(Year()+"."+HolArray[y,0]+"."+HolArray[y,1]);
-                                                                HolLast=StrToTime(Year()+"."+HolArray[y,2]+"."+HolArray[y,3]+" 23:59:59");
+                                                {              HolFirst=StrToTime(IntegerToString(Year())+"."+IntegerToString(HolArray[y,0])+"."+IntegerToString(HolArray[y,1]));
+                                                                HolLast=StrToTime(IntegerToString(Year())+"."+IntegerToString(HolArray[y,2])+"."+IntegerToString(HolArray[y,3])+" 23:59:59");
                                                                 if(TimeCurrent()<HolFirst)
-                                                                {                if(HolFirst>HolLast)HolLast=StrToTime(DTS(Year()+1,0)+"."+HolArray[y,2]+"."+HolArray[y,3]+" 23:59:59");
+                                                                {                if(HolFirst>HolLast)HolLast=StrToTime(DTS(Year()+1,0)+"."+IntegerToString(HolArray[y,2])+"."+IntegerToString(HolArray[y,3])+" 23:59:59");
                                                                                 break;
                                                                 }
                                                                 if(TimeCurrent()<HolLast)
-                                                                {              if(HolFirst>HolLast)HolFirst=StrToTime(DTS(Year()-1,0)+"."+HolArray[y,0]+"."+HolArray[y,1]);
+                                                                {              if(HolFirst>HolLast)HolFirst=StrToTime(DTS(Year()-1,0)+"."+IntegerToString(HolArray[y,0])+"."+IntegerToString(HolArray[y,1]));
                                                                                 break;
                                                                 }
                                                                 if(TimeCurrent()>HolFirst&&HolFirst>HolLast)
-                                                                {              HolLast=StrToTime(DTS(Year()+1,0)+"."+HolArray[y,2]+"."+HolArray[y,3]+" 23:59:59");
+                                                                {              HolLast=StrToTime(DTS(Year()+1,0)+"."+IntegerToString(HolArray[y,2])+"."+IntegerToString(HolArray[y,3])+" 23:59:59");
                                                                                 if(TimeCurrent()<HolLast)break;
                                                                 }
                                                 }
@@ -1524,11 +1525,11 @@ int start()
                                                 if(OrderMagicNumber()!=Magic||OrderSymbol()!=Symbol()||OrderType()>OP_SELL)continue;
                                                 if(OrderType()==OP_BUY&&OrderStopLoss()!=SLbB)
                                                 {              Success=ModifyOrder(OrderOpenPrice(),SLbB,Purple);
-                                                                if(Debug&&Success)Print("Order: "+OrderTicket()+" Sync POSL Buy");
+                                                                if(Debug&&Success)Print("Order: "+IntegerToString(OrderTicket())+" Sync POSL Buy");
                                                 }
                                                 else if(OrderType()==OP_SELL&&OrderStopLoss()!=SLbS)
                                                 {              Success=ModifyOrder(OrderOpenPrice(),SLbS,Purple);
-                                                                if(Debug&&Success)Print("Order: "+OrderTicket()+" Sync POSL Sell");
+                                                                if(Debug&&Success)Print("Order: "+IntegerToString(OrderTicket())+" Sync POSL Sell");
                                                 }
                                 }
                 }
@@ -1764,7 +1765,7 @@ int start()
                 //| Trade Selection Logic                                           |
                 //+-----------------------------------------------------------------+
                 OrderLot=LotSize(Lots[StrToInteger(DTS(MathMin(CbT+CbC,MaxTrades-1),0))]*LotMult);
-                double OPbN;
+                double OPbN = 0.0;
                 if(CbT==0&&CpT<2&&!FirstRun)
                 {              if(B3Traditional)
                                 {              if(BuyMe)
@@ -1773,7 +1774,7 @@ int start()
                                                                                 if(Entry>StopLevel)
                                                                                 {                Ticket=SendOrder(Symbol(),OP_BUYSTOP,OrderLot,Entry,0,Magic,CLR_NONE);
                                                                                                 if(Ticket>0)
-                                                                                                {              if(Debug)Print("Indicator Entry - ("+IndicatorUsed+") BuyStop MC = "+Trend);
+                                                                                                {              if(Debug)Print("Indicator Entry - ("+IndicatorUsed+") BuyStop MC = "+IntegerToString(Trend));
                                                                                                                 CpBS++;
                                                                                                 }
                                                                                 }
@@ -1783,7 +1784,7 @@ int start()
                                                                                 if(Entry>StopLevel)
                                                                                 {              Ticket=SendOrder(Symbol(),OP_BUYLIMIT,OrderLot,-Entry,0,Magic,CLR_NONE);
                                                                                                 if(Ticket>0)
-                                                                                                {              if(Debug)Print("Indicator Entry - ("+IndicatorUsed+") BuyLimit MC = "+Trend);
+                                                                                                {              if(Debug)Print("Indicator Entry - ("+IndicatorUsed+") BuyLimit MC = "+IntegerToString(Trend));
                                                                                                                 CpBL++;
                                                                                                 }
                                                                                 }
@@ -1794,14 +1795,14 @@ int start()
                                                                 {              Entry=g2-MathMod(BID,g2)+EntryOffset;
                                                                                 if(Entry>StopLevel)
                                                                                 {                Ticket=SendOrder(Symbol(),OP_SELLLIMIT,OrderLot,Entry,0,Magic,CLR_NONE);
-                                                                                                if(Ticket>0&&Debug)Print("Indicator Entry - ("+IndicatorUsed+") SellLimit MC = "+Trend);
+                                                                                                if(Ticket>0&&Debug)Print("Indicator Entry - ("+IndicatorUsed+") SellLimit MC = "+IntegerToString(Trend));
                                                                                 }
                                                                 }
                                                                 if(CpSS==0&&CpBL==0&&((Trend!=2||MAEntry==0)||(Trend==2&&MAEntry==1)))
                                                                 {              Entry=MathMod(BID,g2)+EntryOffset;
                                                                                 if(Entry>StopLevel)
                                                                                 {              Ticket=SendOrder(Symbol(),OP_SELLSTOP,OrderLot,-Entry,0,Magic,CLR_NONE);
-                                                                                                if(Ticket>0&&Debug)Print("Indicator Entry - ("+IndicatorUsed+") SellStop MC = "+Trend);
+                                                                                                if(Ticket>0&&Debug)Print("Indicator Entry - ("+IndicatorUsed+") SellStop MC = "+IntegerToString(Trend));
                                                                                 }
                                                                 }
                                                 }
@@ -1833,7 +1834,7 @@ int start()
                                                 {              if(ASK<OPbL-g2)
                                                                 {              if(RSI[0]>RSI_MA)
                                                                                 {              Ticket=SendOrder(Symbol(),OP_BUY,OrderLot,0,slip,Magic,Blue);
-                                                                                                if(Ticket>0&&Debug)Print("SmartGrid Buy RSI: "+RSI[0]+" > MA: "+RSI_MA);
+                                                                                                if(Ticket>0&&Debug)Print("SmartGrid Buy RSI: "+DoubleToStr(RSI[0])+" > MA: "+DoubleToStr(RSI_MA));
                                                                                 }
                                                                                 OPbN=0;
                                                                 }
@@ -1860,7 +1861,7 @@ int start()
                                                 {              if(BID>OPbL+g2)
                                                                 {              if(RSI[0]<RSI_MA)
                                                                                 {                Ticket=SendOrder(Symbol(),OP_SELL,OrderLot,0,slip,Magic,displayColorLoss);
-                                                                                                if(Ticket>0&&Debug)Print("SmartGrid Sell RSI: "+RSI[0]+" < MA: "+RSI_MA);
+                                                                                                if(Ticket>0&&Debug)Print("SmartGrid Sell RSI: "+DoubleToStr(RSI[0])+" < MA: "+DoubleToStr(RSI_MA));
                                                                                 }
                                                                                 OPbN=0;
                                                                 }
@@ -1997,7 +1998,7 @@ int start()
                 //+-----------------------------------------------------------------+
                 //| Check DD% and send Email                                        |
                 //+-----------------------------------------------------------------+
-                string dSpace = 0.0, dMess = 0.0;
+                string dSpace = "", dMess = "";
                                                 
                 if((UseEmail||PlaySounds)&&!Testing)
                 {              if(EmailCount<2&&Email[EmailCount]>0&&DrawDownPC>Email[EmailCount])
@@ -2407,10 +2408,10 @@ double LotSize(double NewLot)
 //+-----------------------------------------------------------------+
 int SendOrder(string OSymbol,int OCmd,double OLot,double OPrice,double OSlip,int OMagic,color OColor=CLR_NONE)
 {              if(FirstRun)return(-1);
-                int Ticket;
+                int Ticket = 0;
                 int retryTimes=5,i=0;
                 int OType=MathMod(OCmd,2);
-                double OrderPrice;
+                double OrderPrice = 0.0;
                 if(AccountFreeMarginCheck(OSymbol,OType,OLot)<=0)return(-1);
                 if(MaxSpread>0&&MarketInfo(OSymbol,MODE_SPREAD)*Point/Pip>MaxSpread)return(-1);
                 while(i<5)
@@ -2516,10 +2517,10 @@ bool ModifyOrder(double OrderOP,double OrderSL,color Color=CLR_NONE)
 //+-------------------------------------------------------------------------+
 int ExitTrades(int Type,color Color,string Reason,int OTicket=0)
 {              static int OTicketNo;
-                bool Success;
-                int Tries,Closed,CloseCount;
+                bool Success = false;
+                int Tries = 0,Closed = 0,CloseCount = 0;
                 int CloseTrades[,2];
-                double OPrice;
+                double OPrice = 0.0;
                 string s;
                 ca=Type;
                 if(Type==T)
@@ -2586,7 +2587,7 @@ int ExitTrades(int Type,color Color,string Reason,int OTicket=0)
                 else ca=0;
                 if(Closed>0)
                 {              if(Closed!=1)s="s";
-                                Print("Closed "+Closed+" position"+s+" because ",Reason);
+                                Print("Closed "+IntegerToString(Closed)+" position"+IntegerToString(s)+" because ",Reason);
                                 if(PlaySounds)PlaySound(AlertSound);
                 }
                 return(Closed);
@@ -2666,7 +2667,7 @@ void Stats(bool NewFile,bool IsTick,double Balance,double DrawDown)
 //+-----------------------------------------------------------------+
 int GenerateMagicNumber()
 {              if(EANumber>99)return(EANumber);
-                return(JenkinsHash(EANumber+"_"+Symbol()+"__"+Period()));
+                return(JenkinsHash(IntegerToString(EANumber)+"_"+Symbol()+"__"+IntegerToString(Period())));
 }
 
 int JenkinsHash(string Input)
