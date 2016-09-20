@@ -22,7 +22,7 @@ extern string   LabelLS             = "Lot Size Settings:";
 // Money Management
 extern bool     UseMM               = true;
 // Adjusts MM base lot for large accounts
-extern double   LAF                 = 0.5;
+extern double   LAF                 = 0.1;
 // Starting lots if Money Management is off
 extern double   Lot                 = 0.01;
 // Multiplier on each level
@@ -40,13 +40,13 @@ extern double   StopTradePercent    = 10;
 // set to true for nano "penny a pip" account (contract size is $10,000)
 extern bool     NanoAccount         = true;
 // Percentage of account you want to trade on this pair
-extern double   PortionPC           = 100;
+extern double   PortionPC           = 20;
 // If Basket open: 0=no Portion change;1=allow portion to increase; -1=allow increase and decrease 
-extern int                            PortionChange                  = 1;                               
+extern int      PortionChange                  = 1;                               
 // Percent of portion for max drawdown level.
 extern double   MaxDDPercent        = 50;
 // Maximum allowed spread while placing trades
-extern double   MaxSpread           = 5;
+extern double   MaxSpread           = 25;
 // Will shutdown over holiday period 
 extern bool     UseHolidayShutdown  = false;
 // List of holidays, each seperated by a comma, [day]/[mth]-[day]/[mth], dates inclusive
@@ -68,7 +68,7 @@ extern int      MAEntry             = 1;
 // 0 = Off, 1 = will base entry on CCI indicator, 2 = will trade in reverse
 extern int      CCIEntry            = 0;
 // 0 = Off, 1 = will base entry on BB, 2 = will trade in reverse
-extern int      BollingerEntry      = 1;
+extern int      BollingerEntry      = 0;
 // 0 = Off, 1 = will base entry on Stoch, 2 = will trade in reverse
 extern int      StochEntry          = 0;
 // 0 = Off, 1 = will base entry on MACD, 2 = will trade in reverse
@@ -107,7 +107,7 @@ extern bool     ForceCloseOldest    = true;
 // Maximum number of oldest trades to close
 extern int      MaxCloseTrades      = 4;
 // After Oldest Trades have closed, Forces Take Profit to BE +/- xx Pips
-extern double   CloseTPPips         = 10;
+extern double   CloseTPPips         = 0;
 // Force Take Profit to BE +/- xx Pips
 extern double   ForceTPPips         = 0;
 // Ensure Take Profit is at least BE +/- xx Pips
@@ -141,7 +141,7 @@ extern bool     ReduceTrailStop     = true;
 
 extern string   LabelES             = "Exit Settings:";
 // Turns on TP move and Profit Trailing Stop Feature
-extern bool     MaximizeProfit      = false;
+extern bool     MaximizeProfit      = true;
 // Locks in Profit at this percent of Total Profit Potential
 extern double   ProfitSet           = 70;
 // Moves TP this amount in pips
@@ -149,15 +149,15 @@ extern double   MoveTP              = 30;
 // Number of times you want TP to move before stopping movement
 extern int      TotalMoves          = 2;
 // Use Stop Loss and/or Trailing Stop Loss
-extern bool     UseStopLoss         = false;
+extern bool     UseStopLoss         = true;
 // Pips for fixed StopLoss from BE, 0=off
-extern double   SLPips              = 30;
+extern double   SLPips              = 40;
 // Pips for trailing stop loss from BE + TSLPips: +ve = fixed trail; -ve = reducing trail; 0=off
 extern double   TSLPips             = 10;
 // Minimum trailing stop pips if using reducing TS
 extern double   TSLPipsMin          = 3;
 // Transmits a SL in case of internet loss
-extern bool     UsePowerOutSL       = false;
+extern bool     UsePowerOutSL       = true;
 // Power Out Stop Loss in pips
 extern double   POSLPips            = 600;
 // Close trades in FIFO order
@@ -371,7 +371,13 @@ double      TPb,StopLevel,TargetPips,LbF,bTS,PortionBalance;
 //| expert initialization function                                  |
 //+-----------------------------------------------------------------+
 int init()
-{              CS="Waiting for next tick .";     // To display comments while testing, simply use CS = .... and
+{
+   if(Lot < MarketInfo(Symbol(),MODE_MINLOT))
+      Lot = MarketInfo(Symbol(),MODE_MINLOT);
+   
+   if(Lot > MarketInfo(Symbol(),MODE_MAXLOT))
+      Lot = MarketInfo(Symbol(),MODE_MAXLOT);
+              CS="Waiting for next tick .";     // To display comments while testing, simply use CS = .... and
                 Comment(CS);                        // it will be displayed by the line at the end of the start() block.
                 CS="";
                 Testing=IsTesting();
