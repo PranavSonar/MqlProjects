@@ -23,8 +23,16 @@ bool AssertBB (string text,
 	return isOk;
 }
 
-void OnStart()
+
+#include <MyMql\Log\WebServiceLog.mqh>
+#include <MyMql\Config\GlobalConfig.mqh>
+
+void OnInit()
 {
+	// Log with WebService
+	WebServiceLog wslog(true);
+	wslog.NewTradingSession();
+	
 	DecisionDoubleBB decision;
 	
 	int shift = 0;
@@ -37,11 +45,15 @@ void OnStart()
 	double RealBBd1 = iBands(Symbol(), PERIOD_CURRENT, Period(), internalBandsDeviation, 0, PRICE_CLOSE, MODE_LOWER, shift);
 	double RealBBd2 = iBands(Symbol(), PERIOD_CURRENT, Period(), internalBandsDeviationWhole, 0, PRICE_CLOSE, MODE_LOWER, shift);
 	
-	for(int nr=1;nr<100;nr++)
+	for(int nr=1;nr<5*Period();nr++)
 	{
 		decision.CalculateBands(BBs2, BBs1, BBm, BBd1, BBd2, internalBandsDeviationWhole, internalBandsDeviation, shift, nr);
 		if(AssertBB(IntegerToString(nr) + ": ", RealBBd2, RealBBd1, RealBBm, RealBBs1, RealBBs2, BBd2, BBd1, BBm, BBs1, BBs2))
-			Print(IntegerToString(nr));
+         wslog.DataLog("BollingerBandsCalculation", "Bollinger bands ok on Symbol: " + _Symbol + " Period: " + IntegerToString(_Period) + " Nr: " + IntegerToString(nr) + " Period: " + IntegerToString(Period()));   	
 	}
-	Print("Period: " + IntegerToString(Period()));
+	wslog.EndTradingSession();
+	
+	// Navigate next
+	GlobalConfig config(true, true, false);
+	config.ChangeSymbol();
 }
