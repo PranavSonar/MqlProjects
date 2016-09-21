@@ -31,29 +31,32 @@ void OnInit()
 {
 	// Log with WebService
 	WebServiceLog wslog(true);
-	wslog.NewTradingSession();
 	
 	DecisionDoubleBB decision;
-	
-	int shift = 0;
-	double BBs2, BBs1, BBm, BBd1, BBd2;
-	double internalBandsDeviationWhole = 2.0, internalBandsDeviation = 1.0;
-	
-	double RealBBs2 = iBands(Symbol(), PERIOD_CURRENT, Period(), internalBandsDeviationWhole, 0, PRICE_CLOSE, MODE_UPPER, shift);
-	double RealBBs1 = iBands(Symbol(), PERIOD_CURRENT, Period(), internalBandsDeviation, 0, PRICE_CLOSE, MODE_UPPER, shift);
-	double RealBBm  = iBands(Symbol(), PERIOD_CURRENT, Period(), internalBandsDeviationWhole, 0, MODE_MAIN,   MODE_BASE, shift);
-	double RealBBd1 = iBands(Symbol(), PERIOD_CURRENT, Period(), internalBandsDeviation, 0, PRICE_CLOSE, MODE_LOWER, shift);
-	double RealBBd2 = iBands(Symbol(), PERIOD_CURRENT, Period(), internalBandsDeviationWhole, 0, PRICE_CLOSE, MODE_LOWER, shift);
-	
-	for(int nr=1;nr<5*Period();nr++)
-	{
-		decision.CalculateBands(BBs2, BBs1, BBm, BBd1, BBd2, internalBandsDeviationWhole, internalBandsDeviation, shift, nr);
-		if(AssertBB(IntegerToString(nr) + ": ", RealBBd2, RealBBd1, RealBBm, RealBBs1, RealBBs2, BBd2, BBd1, BBm, BBs1, BBs2))
-         wslog.DataLog("BollingerBandsCalculation", "Bollinger bands ok on Symbol: " + _Symbol + " Period: " + IntegerToString(_Period) + " Nr: " + IntegerToString(nr) + " Period: " + IntegerToString(Period()));   	
-	}
-	wslog.EndTradingSession();
+	for(int shift=0;shift<10;shift++)
+   {
+      
+   	double BBs2, BBs1, BBm, BBd1, BBd2;
+   	double internalBandsDeviationWhole = 2.0, internalBandsDeviation = 1.0;
+   	
+      double RealBBs2 = iBands(Symbol(), PERIOD_CURRENT, Period(), internalBandsDeviationWhole, 0, PRICE_CLOSE, MODE_UPPER, shift);
+   	double RealBBs1 = iBands(Symbol(), PERIOD_CURRENT, Period(), internalBandsDeviation, 0, PRICE_CLOSE, MODE_UPPER, shift);
+   	double RealBBm  = iBands(Symbol(), PERIOD_CURRENT, Period(), internalBandsDeviationWhole, 0, MODE_MAIN,   MODE_BASE, shift);
+   	double RealBBd1 = iBands(Symbol(), PERIOD_CURRENT, Period(), internalBandsDeviation, 0, PRICE_CLOSE, MODE_LOWER, shift);
+   	double RealBBd2 = iBands(Symbol(), PERIOD_CURRENT, Period(), internalBandsDeviationWhole, 0, PRICE_CLOSE, MODE_LOWER, shift);
+   	
+   	
+   	for(int nr=Period()-2;nr<=Period()+2;nr++)
+   	{
+   		decision.CalculateBands(BBs2, BBs1, BBm, BBd1, BBd2, internalBandsDeviationWhole, internalBandsDeviation, shift, nr);
+   		if(AssertBB(IntegerToString(nr) + ": ", RealBBd2, RealBBd1, RealBBm, RealBBs1, RealBBs2, BBd2, BBd1, BBm, BBs1, BBs2))
+            wslog.DataLog("BollingerBandsCalculation", "Bollinger bands ok on Symbol: " + _Symbol + " Period: " + IntegerToString(_Period) + " Nr: " + IntegerToString(nr) + " Shift: " + IntegerToString(shift));   	
+   	}
+   }
 	
 	// Navigate next
-	GlobalConfig config(true, true, false);
+	GlobalConfig config(true, true, false, false);
 	config.ChangeSymbol();
+	//config.ChangePeriod();
+	
 }
