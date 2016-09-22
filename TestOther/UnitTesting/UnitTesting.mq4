@@ -128,7 +128,7 @@ bool TestOrderLimits(int orderType = OP_BUY)
 	bool isOk = true;
 	BaseMoneyManagement money;
 	
-	double digits = 5;
+	int digits = 5;
 	double price = MarketInfo(Symbol(), MODE_BID);
 	double SL = 0.0, TP = 0.0, SL2 = 0.0, TP2 = 0.0, SlLimitPips = 0.0, TpLimitPips = 0.0, SlLimitPips2 = 0.0, TpLimitPips2 = 0.0, spread = MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID), spreadPips = spread/money.Pip();
 	
@@ -214,6 +214,6 @@ void OnInit()
 	SafePrintString(finalText);
 	
 	// Navigate next
-	GlobalConfig config(true, true, false);
+	GlobalConfig config(true, true, false, false);
 	config.ChangeSymbol();
 }
