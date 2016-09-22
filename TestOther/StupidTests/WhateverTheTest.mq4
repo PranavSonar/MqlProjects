@@ -8,8 +8,17 @@
 #property version   "1.00"
 #property strict
 
+void RefTest(string &s)
+{
+   s = "23fds";
+}
+
 void OnStart()
 {
+   string ads = "fff";
+   RefTest(ads);
+   printf(ads);
+   
 	printf("%f", AccountFreeMargin());
 	AccountFreeMarginCheck(Symbol(),OP_SELL, 0.01);
 }
