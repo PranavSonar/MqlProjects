@@ -198,18 +198,18 @@ bool TestMoneyConversion(string &errors, bool verbose = false)
    if(convertedPrice == 0.0)
    {
       isOk = false;
-      errors += "money.CalculateCurrencyPrice(false, false)==0.0";
+      errors += "money.CalculateCurrencyPrice(false, false)==0.0 ";
       if(verbose)
-         printf("money.CalculateCurrencyPrice(false, false)==0.0");
+         printf("money.CalculateCurrencyPrice(false, false)==0.0 ");
    }
    
    convertedPrice = money.CalculateCurrencyPrice(false, true);
    if(convertedPrice == 0.0)
    {
       isOk = false;
-      errors += "money.CalculateCurrencyPrice(false, true)==0.0";
+      errors += "money.CalculateCurrencyPrice(false, true)==0.0 ";
       if(verbose)
-         printf("money.CalculateCurrencyPrice(false, true)==0.0");
+         printf("money.CalculateCurrencyPrice(false, true)==0.0 ");
    }
    
    return isOk;
@@ -252,6 +252,6 @@ void OnInit()
 	SafePrintString(finalText);
 	
 	// Navigate next
-	//GlobalConfig config(true, true, false, false);
-	//config.ChangeSymbol();
+	GlobalConfig config(true, true, false, false);
+	config.ChangeSymbol();
 }
