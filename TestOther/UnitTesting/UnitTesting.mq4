@@ -138,14 +138,14 @@ bool TestOrderLimits(string &errors, int orderType = OP_BUY)
    if((TP == 0.0) || (SL == 0.0))
    {
       isOk = false;
-      errors += "CalculateTP(" + IntegerToString(orderType) + "; " + DoubleToString(NormalizeDouble(TP, digits)) + "==0.0 || " + DoubleToString(NormalizeDouble(SL, digits)) + "==0.0) ";
+      errors += "CalculateTP_SL(" + IntegerToString(orderType) + "; " + DoubleToString(NormalizeDouble(TP, digits)) + "==0.0 || " + DoubleToString(NormalizeDouble(SL, digits)) + "==0.0) ";
    }
 
 	money.CalculateSL(SL2, SlLimitPips, orderType, price, false, spread);
 	if(NormalizeDouble(SL2, digits) != NormalizeDouble(SL, digits))
    {
       isOk = false;
-      errors += "CalculateTP(" + IntegerToString(orderType) + "; " + DoubleToString(NormalizeDouble(SL2, digits)) + "!=" + DoubleToString(NormalizeDouble(SL, digits)) + ") ";
+      errors += "CalculateSL(" + IntegerToString(orderType) + "; " + DoubleToString(NormalizeDouble(SL2, digits)) + "!=" + DoubleToString(NormalizeDouble(SL, digits)) + ") ";
    }
 	
 	money.CalculateTP(TP2, TpLimitPips, orderType, price, false, spread);
