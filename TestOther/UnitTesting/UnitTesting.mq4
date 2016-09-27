@@ -250,6 +250,7 @@ bool TestSymbolsLibrary(string &errors)
    bool ret = true;
    SymbolsLibrary lib;
    
+   lib.ParseSymbolsAndLoadData();
    double libData = lib.Close(_Symbol);
    double realData = iClose(_Symbol,0,0);
    if(libData != realData)
@@ -258,6 +259,7 @@ bool TestSymbolsLibrary(string &errors)
       ret = false;
    }
    
+   lib.ParseSymbolsAndLoadData();
    libData = lib.Open(_Symbol);
    realData = iOpen(_Symbol,0,0);
    if(libData != realData)
@@ -266,6 +268,7 @@ bool TestSymbolsLibrary(string &errors)
       ret = false;
    }
    
+   lib.ParseSymbolsAndLoadData();
    libData = lib.High(_Symbol);
    realData = iHigh(_Symbol,0,0);
    if(libData != realData)
@@ -274,6 +277,7 @@ bool TestSymbolsLibrary(string &errors)
       ret = false;
    }
    
+   lib.ParseSymbolsAndLoadData();
    libData = lib.Low(_Symbol);
    realData = iLow(_Symbol,0,0);
    if(libData != realData)
@@ -315,9 +319,9 @@ void OnInit()
 	if(!TestFileLog(errors))
 	   finalText += "TestFileLog failed on Symbol: " + Symbol() + " (" + errors + ")\n";
 	
-	//// The test is not ok; code is ok - test may show unwanted errors; everything is good as is
-	//if(!TestSymbolsLibrary(errors))
-	//   finalText += "TestSymbolsLibrary failed on Symbol: " + Symbol() + " (" + errors + ")\n";
+	// The test is not ok; code is ok - test may show unwanted errors; everything is good as is
+	if(!TestSymbolsLibrary(errors))
+	   finalText += "TestSymbolsLibrary failed on Symbol: " + Symbol() + " (" + errors + ")\n";
 	
 	if(finalText == "")
 		finalText = "All green";
