@@ -68,11 +68,11 @@ extern int      MAEntry             = 1;
 // 0 = Off, 1 = will base entry on CCI indicator, 2 = will trade in reverse
 extern int      CCIEntry            = 0;
 // 0 = Off, 1 = will base entry on BB, 2 = will trade in reverse
-extern int      BollingerEntry      = 0;
+extern int      BollingerEntry      = 1;
 // 0 = Off, 1 = will base entry on Stoch, 2 = will trade in reverse
 extern int      StochEntry          = 0;
 // 0 = Off, 1 = will base entry on MACD, 2 = will trade in reverse
-extern int      MACDEntry           = 1;
+extern int      MACDEntry           = 0;
 
 extern string   LabelGS             = "Grid Settings:";
 // Auto calculation of TakeProfit and Grid size;
@@ -95,7 +95,7 @@ extern string   LabelTS             = "Trading Settings:";
 // Maximum number of trades to place (stops placing orders when reaches MaxTrades)
 extern int      MaxTrades           = 15;
 // Close All level, when reaches this level, doesn't wait for TP to be hit
-extern int      BreakEvenTrade      = 12;
+extern int      BreakEvenTrade      = 20;
 // Pips added to Break Even Point before BE closure
 extern double   BEPlusPips          = 2;
 // True = will close the oldest open trade after CloseTradesLevel is reached
@@ -143,7 +143,7 @@ extern string   LabelES             = "Exit Settings:";
 // Turns on TP move and Profit Trailing Stop Feature
 extern bool     MaximizeProfit      = true;
 // Locks in Profit at this percent of Total Profit Potential
-extern double   ProfitSet           = 70;
+extern double   ProfitSet           = 30;
 // Moves TP this amount in pips
 extern double   MoveTP              = 30;
 // Number of times you want TP to move before stopping movement
@@ -151,7 +151,7 @@ extern int      TotalMoves          = 2;
 // Use Stop Loss and/or Trailing Stop Loss
 extern bool     UseStopLoss         = true;
 // Pips for fixed StopLoss from BE, 0=off
-extern double   SLPips              = 40;
+extern double   SLPips              = 30;
 // Pips for trailing stop loss from BE + TSLPips: +ve = fixed trail; -ve = reducing trail; 0=off
 extern double   TSLPips             = 10;
 // Minimum trailing stop pips if using reducing TS
