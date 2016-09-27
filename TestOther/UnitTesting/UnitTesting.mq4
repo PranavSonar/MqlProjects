@@ -20,6 +20,7 @@ const string WSAssertErrorString = "Web service error";
 
 bool TestWebService(string &errors)
 {
+   errors = ""; 
 	WebServiceLog wslog(true);
 	
 	wslog.NewTradingSession();
@@ -102,6 +103,7 @@ bool AssertBB (string &errors, string text,
 
 bool TestBollingerBands(string &retErrors)
 {
+   retErrors = "";
 	bool isOk = true;
 	DecisionDoubleBB decision;
 	
@@ -125,6 +127,7 @@ bool TestBollingerBands(string &retErrors)
 
 bool TestOrderLimits(string &errors, int orderType = OP_BUY)
 {
+   errors = "";
 	bool isOk = true;
 	BaseMoneyManagement money;
 	
@@ -191,6 +194,7 @@ bool TestOrderLimits(string &errors, int orderType = OP_BUY)
 
 bool TestMoneyConversion(string &errors, bool verbose = false)
 {
+   errors = "";
    bool isOk = true;
    BaseMoneyManagement money;
    
@@ -215,7 +219,79 @@ bool TestMoneyConversion(string &errors, bool verbose = false)
    return isOk;
 }
 
+#include <MyMql\Log\FileLog.mqh>
 
+const string TestedFileLogText = "sometext";
+
+bool TestFileLog(string errors)
+{
+   FileLog fLog("Test.txt",true,true);
+   fLog.WriteLine(TestedFileLogText);
+   fLog.CloseLog();
+   
+   fLog.OpenLog();
+   
+   string read = fLog.ReadString();
+   if(read != TestedFileLogText)
+   {
+      errors += "TestFileLog: '" + read + "' != '" + TestedFileLogText + "' ";
+      return false;
+   }
+   
+   return true;
+}
+
+
+#include <MyMql\Symbols\SymbolsLibrary.mqh>
+
+bool TestSymbolsLibrary(string &errors)
+{
+   errors = "";
+   bool ret = true;
+   SymbolsLibrary lib;
+   
+   double libData = lib.Close(_Symbol);
+   double realData = iClose(_Symbol,0,0);
+   if(libData != realData)
+   {
+      errors += "lib.Close(_Symbol)=" + DoubleToString(libData) + " != iClose(_Symbol,0,0)=" + DoubleToString(realData) + " ";
+      ret = false;
+   }
+   
+   libData = lib.Open(_Symbol);
+   realData = iOpen(_Symbol,0,0);
+   if(libData != realData)
+   {
+      errors += "lib.Open(_Symbol)=" + DoubleToString(libData) + " != iOpen(_Symbol,0,0)=" + DoubleToString(realData) + " ";
+      ret = false;
+   }
+   
+   libData = lib.High(_Symbol);
+   realData = iHigh(_Symbol,0,0);
+   if(libData != realData)
+   {
+      errors += "lib.High(_Symbol)=" + DoubleToString(libData) + " != iHigh(_Symbol,0,0)=" + DoubleToString(realData) + " ";
+      ret = false;
+   }
+   
+   libData = lib.Low(_Symbol);
+   realData = iLow(_Symbol,0,0);
+   if(libData != realData)
+   {
+      errors += "lib.Low(_Symbol)=" + DoubleToString(libData) + " != iLow(_Symbol,0,0)=" + DoubleToString(realData) + " ";
+      ret = false;
+   }
+   
+   libData = lib.NumberOfSymbolsInLibrary();
+   realData = SymbolsTotal(false);
+   if(libData != realData)
+   {
+      errors += "lib.NumberOfSymbolsInLibrary()=" + DoubleToString(libData) + " != SymbolsTotal(false)=" + DoubleToString(realData) + " ";
+      ret = false;
+   }
+   
+   return ret;
+}
 
 void OnInit()
 {
@@ -235,6 +311,13 @@ void OnInit()
 	
 	if(!TestMoneyConversion(errors, false))
 		finalText += "TestMoneyConversion(true) failed on Symbol: " + Symbol() + " (" + errors + ")\n";
+	
+	if(!TestFileLog(errors))
+	   finalText += "TestFileLog failed on Symbol: " + Symbol() + " (" + errors + ")\n";
+	
+	//// The test is not ok; code is ok - test may show unwanted errors; everything is good as is
+	//if(!TestSymbolsLibrary(errors))
+	//   finalText += "TestSymbolsLibrary failed on Symbol: " + Symbol() + " (" + errors + ")\n";
 	
 	if(finalText == "")
 		finalText = "All green";
