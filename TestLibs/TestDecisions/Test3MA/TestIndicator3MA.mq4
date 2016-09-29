@@ -115,19 +115,7 @@ int start()
 	transaction.SetSimulatedStopLossObjectName("SimulatedStopLoss3MA");
 	transaction.SetSimulatedTakeProfitObjectName("SimulatedTakeProfit3MA");
 	
-	
-//	transaction.AddInitializerTransactionData(2.6*spreadPips, 2.6*spreadPips);
-//	transaction.AddInitializerTransactionData(2.6*spreadPips, 1.1*spreadPips);
-//	transaction.AddInitializerTransactionData(2.6*spreadPips, 1.88*spreadPips);
-//	transaction.AddInitializerTransactionData(3*spreadPips, 2.6*spreadPips);
-//	transaction.AddInitializerTransactionData(2.6*spreadPips, 0.3*spreadPips);
-//	transaction.AddInitializerTransactionData(2.6*spreadPips, 0.1*spreadPips); 
-//	transaction.AddInitializerTransactionData(2.6*spreadPips, 1.53*spreadPips);
-//	transaction.AddInitializerTransactionData(2.6*spreadPips, 1.83*spreadPips);
-//	
-	transaction.AddInitializerTransactionData(2.6*spreadPips, 1.6*spreadPips); 
-	//transaction.AddInitializerTransactionData(2.6*spreadPips, 2.2*spreadPips); 
-	
+	transaction.AutoAddTransactionData(spreadPips);
 	
 	while(i >= 0)
 	{

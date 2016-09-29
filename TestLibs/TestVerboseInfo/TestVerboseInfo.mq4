@@ -18,5 +18,5 @@ int init()
 	info.PrintMarketInfo();
 	info.BalanceAccountInfo();
 	info.ClientAndTerminalInfo();
-	return info.ExpertValidationsTest();
+	return INIT_SUCCEEDED;
 }

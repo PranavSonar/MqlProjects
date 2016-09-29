@@ -93,11 +93,8 @@ int start()
 	transaction.SetSimulatedOrderObjectName("SimulatedOrderBA");
 	transaction.SetSimulatedStopLossObjectName("SimulatedStopLossBA");
 	transaction.SetSimulatedTakeProfitObjectName("SimulatedTakeProfitBA");
-	//transaction.AddInitializerTransactionData(0.5, 0.5); // BB doesn't need shit
-	//transaction.AddInitializerTransactionData(0.2, 0.2);
-
-	transaction.AddInitializerTransactionData(2.6*spreadPips, 1.6*spreadPips); 
 	
+	transaction.AutoAddTransactionData(spreadPips);
 	
 	while(i >= 0)
 	{

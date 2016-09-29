@@ -92,9 +92,7 @@ int start()
 	transaction.SetSimulatedStopLossObjectName("SimulatedStopLossRSI");
 	transaction.SetSimulatedTakeProfitObjectName("SimulatedTakeProfitRSI");
 	
-	transaction.AddInitializerTransactionData(8*spreadPips, 13*spreadPips); 
-	//transaction.AddInitializerTransactionData(8*spreadPips, 21*spreadPips); 
-	
+	transaction.AutoAddTransactionData(spreadPips);
 	
 	while(i >= 0)
 	{
