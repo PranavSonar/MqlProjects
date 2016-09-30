@@ -304,8 +304,8 @@ void OnInit()
 		finalText += "TestWebService() failed on Symbol: " + Symbol() + " (" + errors + ")\n";
 	
 	// The test is not going to work as is. Ignore for now
-	//if(!TestBollingerBands())
-	//	finalText += "TestBollingerBands() failed on Symbol: " + Symbol() + "\n";
+	//if(!TestBollingerBands(errors))
+	//	finalText += "TestBollingerBands() failed on Symbol: " + Symbol() + " (" + errors + ")\n";
 	
 	if(!TestOrderLimits(errors, OP_BUY))
 		finalText += "TestOrderLimits(OP_BUY) failed on Symbol: " + Symbol() + " (" + errors + ")\n";
