@@ -8,16 +8,10 @@
 #property version   "1.00"
 #property strict
 
-#property indicator_separate_window
-#property indicator_buffers 6
-#property indicator_color1 clrDeepSkyBlue
-#property indicator_color2 clrDeepSkyBlue
-#property indicator_color3 clrDarkBlue
-#property indicator_color4 clrDarkBlue
-#property indicator_color5 clrMidnightBlue
-#property indicator_color6 clrMidnightBlue
+// To fix this to make it work on all charts
 
-#include <MyMql/DecisionMaking/DecisionRSI.mqh>
+
+#include <MyMql/DecisionMaking/Decision3MA.mqh>
 #include <MyMql/MoneyManagement/BaseMoneyManagement.mqh>
 #include <MyMql/TransactionManagement/FlowWithTrendTranMan.mqh>
 #include <MyMql/Generator/GenerateTPandSL.mqh>
@@ -30,68 +24,39 @@ double Buf_CloseH1[], Buf_MedianH1[],
 	Buf_CloseD1[], Buf_MedianD1[],
 	Buf_CloseW1[], Buf_MedianW1[];
 
-//+------------------------------------------------------------------+
-//| Indicator initialization function (used for testing)             |
-//+------------------------------------------------------------------+
-int OnInit()
-{
-	// print some verbose info
-	//VerboseInfo vi;
-	//vi.BalanceAccountInfo();
-	//vi.ClientAndTerminalInfo();
-	//vi.PrintMarketInfo();
-	
-	
-	SetIndexBuffer(0, Buf_CloseH1);
-	SetIndexStyle(0, DRAW_SECTION, STYLE_SOLID, 1);
-	
-	SetIndexBuffer(1, Buf_MedianH1);
-	SetIndexStyle(1, DRAW_SECTION, STYLE_SOLID, 2);
-	
-	SetIndexBuffer(2, Buf_CloseD1);
-	SetIndexStyle(2, DRAW_SECTION, STYLE_SOLID, 1);
-	
-	SetIndexBuffer(3, Buf_MedianD1);
-	SetIndexStyle(3, DRAW_SECTION, STYLE_SOLID, 2);
-	
-	SetIndexBuffer(4, Buf_CloseW1);
-	SetIndexStyle(4, DRAW_SECTION, STYLE_SOLID, 1);
-	
-	SetIndexBuffer(5, Buf_MedianW1);
-	SetIndexStyle(5, DRAW_SECTION, STYLE_SOLID, 2);
-	
-	if(logToFile)
-		logFile.Open("LogFile.txt", FILE_READ | FILE_WRITE | FILE_ANSI | FILE_REWRITE);
-	
-	return INIT_SUCCEEDED;
-}
+double Buf_CloseShiftedH1[], Buf_MedianShiftedH1[],
+	Buf_CloseShiftedD1[], Buf_MedianShiftedD1[],
+	Buf_CloseShiftedW1[], Buf_MedianShiftedW1[];
 
-void OnDeinit(const int reason)
-{
-	if(logToFile)
-		logFile.Close();
-}
 
 bool logToFile = false;
 static CFileTxt logFile;
 static FlowWithTrendTranMan transaction;
 
-int start()
+int init()
 {
-   _SW
-	DecisionRSI decision;
+	   _SW
+   
+	Decision3MA decision;
 	BaseMoneyManagement money;
 	ScreenInfo screen;
 	GenerateTPandSL generator;
+	bool openFile = true;
 	
-	int i = Bars - IndicatorCounted() - 1;
-	double SL = 0.0, TP = 0.0, spread = MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID), spreadPips = spread/money.Pip();
+	if(logToFile && openFile) {
+		logFile.Open("LogFile.txt", FILE_READ | FILE_WRITE | FILE_ANSI);
+		logFile.Seek(0, SEEK_END);
+		openFile = false;
+	}
 	
 	//decision.SetVerboseLevel(1);
 	//transaction.SetVerboseLevel(1);
-	transaction.SetSimulatedOrderObjectName("SimulatedOrderRSI");
-	transaction.SetSimulatedStopLossObjectName("SimulatedStopLossRSI");
-	transaction.SetSimulatedTakeProfitObjectName("SimulatedTakeProfitRSI");
+	int i = Bars - IndicatorCounted() - 1;
+	double SL = 0.0, TP = 0.0, spread = MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID), spreadPips = spread/money.Pip();
+	
+	transaction.SetSimulatedOrderObjectName("SimulatedOrder3MA");
+	transaction.SetSimulatedStopLossObjectName("SimulatedStopLoss3MA");
+	transaction.SetSimulatedTakeProfitObjectName("SimulatedTakeProfit3MA");
 	
 	transaction.AutoAddTransactionData(spreadPips);
 	
@@ -99,34 +64,44 @@ int start()
 	{
 		double d = decision.GetDecision(i);
 		decision.SetIndicatorData(Buf_CloseH1, Buf_MedianH1, Buf_CloseD1, Buf_MedianD1, Buf_CloseW1, Buf_MedianW1, i);
+		decision.SetIndicatorShiftedData(Buf_CloseShiftedH1, Buf_MedianShiftedH1, Buf_CloseShiftedD1, Buf_MedianShiftedD1, Buf_CloseShiftedW1, Buf_MedianShiftedW1, i);
 		
 		// calculate profit/loss, TPs, SLs, etc
 		transaction.CalculateData(i);
 		
+		if(logToFile)
+			logFile.WriteString(transaction.OrdersToString(true));
+		//SafePrintString(transaction.OrdersToString());
+		//Print("");
+		
 		if(d != IncertitudeDecision)
 		{
-			if(d > 0) { // Buy
+			if(d > 0.0) { // Buy
 				double price = Close[i] + spread; // Ask
-				money.CalculateTP_SL(TP, SL, OP_BUY, price, false, spread, 8*spreadPips, 13*spreadPips);
+				money.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_BUY, price, false, spread);
 				generator.ValidateAndFixTPandSL(TP, SL, price, OP_BUY, spread, false);
+				transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.1, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
 				
-				transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.01, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
 				
 				if(logToFile) {
-					logFile.WriteString("[" + IntegerToString(i) + "] New order buy " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
+					logFile.WriteString("[" + IntegerToString(i) + "] New order buy " + DoubleToString(price) + " " + DoubleToString(SL) + " " + DoubleToString(TP));
 					logFile.WriteString(transaction.OrdersToString(true));
 				}
-				
+				//SafePrintString(transaction.OrdersToString());
+				//Print("");
 			} else { // Sell
 				double price = Close[i]; // Bid
-				money.CalculateTP_SL(TP, SL, OP_SELL, price, false, spread, 8*spreadPips, 13*spreadPips);
+				money.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_SELL, price, false, spread);
 				generator.ValidateAndFixTPandSL(TP, SL, price, OP_SELL, spread, false);
-				transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.01, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
+				transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.1, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
+				
 				
 				if(logToFile) {
-					logFile.WriteString("[" + IntegerToString(i) + "] New order sell " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
+					logFile.WriteString("[" + IntegerToString(i) + "] New order sell " + DoubleToString(price) + " " + DoubleToString(SL) + " " + DoubleToString(TP));
 					logFile.WriteString(transaction.OrdersToString(true));
 				}
+				//SafePrintString(transaction.OrdersToString());
+				//Print("");
 			}
 			
 			screen.ShowTextValue("CurrentValue", "Number of decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(-1)),clrGray, 20, 0);
@@ -134,7 +109,7 @@ int start()
 			screen.ShowTextValue("CurrentValueBuy", "Number of buy decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(OP_BUY)), clrGray, 20, 40);
 		}
 		
-		//transaction.FlowWithTrend_UpdateSL_TP_UsingConstants(8*spreadPips, 13*spreadPips);
+		//transaction.FlowWithTrend_UpdateSL_TP_UsingConstants(2.6*spreadPips, 1.6*spreadPips);
 		i--;
 	}
 	
@@ -158,5 +133,12 @@ int start()
 		);
 	
    _EW
-	return 0;
+   
+	return INIT_SUCCEEDED;
+}
+
+void OnDeinit(const int reason)
+{
+	if(logToFile)
+		logFile.Close();
 }

@@ -28,7 +28,12 @@ bool AssertBB (string text,
 #include <MyMql\Config\GlobalConfig.mqh>
 
 void OnInit()
-{
+{  
+	if(FirstSymbol == NULL)
+	   
+	GlobalConfig config(true, true, false, false);
+	
+	   
 	// Log with WebService
 	WebServiceLog wslog(true);
 	
@@ -55,7 +60,6 @@ void OnInit()
    }
 	
 	// Navigate next
-	GlobalConfig config(true, true, false, false);
 	config.ChangeSymbol();
 	//config.ChangePeriod();
 	

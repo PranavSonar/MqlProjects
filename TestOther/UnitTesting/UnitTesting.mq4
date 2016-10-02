@@ -20,6 +20,7 @@ const string WSAssertErrorString = "Web service error";
 
 bool TestWebService(string &errors)
 {
+   _SW
    errors = ""; 
 	WebServiceLog wslog(true);
 	
@@ -81,6 +82,7 @@ bool TestWebService(string &errors)
 	// Clean the database; if everything worked until now, it should work now too
 	wslog.DeleteLastSession();
 	
+   _EW
 	return isOk;
 }
 
@@ -91,6 +93,8 @@ bool AssertBB (string &errors, string text,
 	double RealBBd2, double RealBBd1, double RealBBm, double RealBBs1, double RealBBs2,
 	double BBd2, double BBd1, double BBm, double BBs1, double BBs2)
 {
+   _SW
+   
 	int precision = 4;
 	bool isOk = true;
 	isOk = isOk && AssertEqual(errors, RealBBd2, BBd2, text + "BBd2 failed miserably", precision, false, false);
@@ -98,11 +102,14 @@ bool AssertBB (string &errors, string text,
 	isOk = isOk && AssertEqual(errors, RealBBm,  BBm,  text + "BBm  failed miserably", precision, false, false);
 	isOk = isOk && AssertEqual(errors, RealBBs1, BBs1, text + "BBs1 failed miserably", precision, false, false);
 	isOk = isOk && AssertEqual(errors, RealBBs2, BBs2, text + "BBs2 failed miserably", precision, false, false);
+	
+	_EW
 	return isOk;
 }
 
 bool TestBollingerBands(string &retErrors)
 {
+   _SW
    retErrors = "";
 	bool isOk = true;
 	DecisionDoubleBB decision;
@@ -120,6 +127,7 @@ bool TestBollingerBands(string &retErrors)
 	decision.CalculateBands(BBs2, BBs1, BBm, BBd1, BBd2, internalBandsDeviationWhole, internalBandsDeviation, shift, period-1);
 	isOk = isOk && AssertBB(retErrors, IntegerToString(period) + ": ", RealBBd2, RealBBd1, RealBBm, RealBBs1, RealBBs2, BBd2, BBd1, BBm, BBs1, BBs2);
 	
+	_EW
 	return isOk;
 }
 
@@ -127,6 +135,7 @@ bool TestBollingerBands(string &retErrors)
 
 bool TestOrderLimits(string &errors, int orderType = OP_BUY)
 {
+   _SW
    errors = "";
 	bool isOk = true;
 	BaseMoneyManagement money;
@@ -186,6 +195,8 @@ bool TestOrderLimits(string &errors, int orderType = OP_BUY)
       isOk = false;
       errors += "DeCalculateSL(" + IntegerToString(orderType) + "; " + DoubleToString(NormalizeDouble(SlLimitPips2, digits)) + "!=" + DoubleToString(NormalizeDouble(SlLimitPips, digits)) + ") ";
    }
+   
+   _EW
 	return isOk;
 }
 
@@ -194,6 +205,7 @@ bool TestOrderLimits(string &errors, int orderType = OP_BUY)
 
 bool TestMoneyConversion(string &errors, bool verbose = false)
 {
+   _SW
    errors = "";
    bool isOk = true;
    BaseMoneyManagement money;
@@ -215,7 +227,7 @@ bool TestMoneyConversion(string &errors, bool verbose = false)
       if(verbose)
          printf("money.CalculateCurrencyPrice(false, true)==0.0 ");
    }
-   
+   _EW
    return isOk;
 }
 
@@ -225,6 +237,7 @@ const string TestedFileLogText = "sometext";
 
 bool TestFileLog(string errors)
 {
+   _SW
    FileLog fLog("Test.txt",true,true);
    fLog.WriteLine(TestedFileLogText);
    fLog.CloseLog();
@@ -237,7 +250,7 @@ bool TestFileLog(string errors)
       errors += "TestFileLog: '" + read + "' != '" + TestedFileLogText + "' ";
       return false;
    }
-   
+   _EW
    return true;
 }
 
@@ -246,6 +259,7 @@ bool TestFileLog(string errors)
 
 bool TestSymbolsLibrary(string &errors)
 {
+   _SW
    errors = "";
    bool ret = true;
    SymbolsLibrary lib;
@@ -294,11 +308,20 @@ bool TestSymbolsLibrary(string &errors)
       ret = false;
    }
    
+   _EW
    return ret;
 }
 
 void OnInit()
 {
+	// Log with WebService
+	WebServiceLog wslog(true);
+	
+   if(FirstSymbol == NULL)
+      wslog.NewTradingSession();
+	
+	GlobalConfig config(true, true, false, false);
+	
 	string finalText = "", errors = "";
 	if(!TestWebService(errors))
 		finalText += "TestWebService() failed on Symbol: " + Symbol() + " (" + errors + ")\n";
@@ -326,19 +349,15 @@ void OnInit()
 	if(finalText == "")
 		finalText = "All green";
 	
-	
-	// Log with WebService
-	WebServiceLog wslog(true);
-	wslog.NewTradingSession();
-	
 	if(!MarketInfo(_Symbol, MODE_TRADEALLOWED))
 	   finalText += "; Trade not allowed";
 	wslog.DataLog("UnitTest on " + Symbol(), finalText);
-	wslog.EndTradingSession();
 	
 	SafePrintString(finalText);
 	
 	// Navigate next
-	GlobalConfig config(true, true, false, false);
+	config.InitializeConfig();
 	config.ChangeSymbol();
+	wslog.EndTradingSession();
+	
 }

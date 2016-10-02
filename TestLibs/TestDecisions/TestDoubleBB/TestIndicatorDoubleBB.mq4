@@ -73,6 +73,8 @@ static FlowWithTrendTranMan transaction;
 
 int start()
 {
+   _SW
+   
 	DecisionDoubleBB decision;
 	BaseMoneyManagement money;
 	ScreenInfo screen;
@@ -148,19 +150,20 @@ int start()
 	
 	
 	double profit;
-	int count;
-	transaction.GetBestTPandSL(TP, SL, profit, count);
-	Comment("Best profit: " + DoubleToStr(profit,2)
-		+ "\nBest Take profit: " + DoubleToStr(TP,4)
-		+ "\nBest Stop loss: " + DoubleToStr(SL,4)
-		+ "\nCount orders: " + IntegerToString(count)
-		+ "\n\nMaximum profit (sum): " + DoubleToStr(transaction.GetTotalMaximumProfitFromOrders(),2)
-		+ "\nMinimum profit (sum): " + DoubleToStr(transaction.GetTotalMinimumProfitFromOrders(),2)
-		+ "\nMedium profit (avg): " + DoubleToStr(transaction.GetTotalMediumProfitFromOrders(),2)
-		+ "\n\nSpread: " + DoubleToStr(spreadPips, 4)
-		+ "\nTake profit / Spread (best from average): " + DoubleToStr(TP/spreadPips,4)
-		+ "\nStop loss / Spread (best from average): " + DoubleToStr(SL/spreadPips,4)
+	int count, countNegative, countPositive;
+	transaction.GetBestTPandSL(TP, SL, profit, count, countNegative, countPositive);
+	Comment("Best profit: " + DoubleToString(profit,2)
+		+ "\nBest Take profit: " + DoubleToString(TP,4) + " (spreadPips * " + DoubleToString(TP/spreadPips,2) + ")" 
+		+ "\nBest Stop loss: " + DoubleToString(SL,4) + " (spreadPips * " + DoubleToString(SL/spreadPips,2) + ")"
+		+ "\nCount orders: " + IntegerToString(count) + " (" + IntegerToString(countPositive) + " positive orders & " + IntegerToString(countNegative) + " negative orders); Procentual profit: " + DoubleToString((double)countPositive/(count>0?(double)count:1))
+		+ "\n\nMaximum profit (sum): " + DoubleToString(transaction.GetTotalMaximumProfitFromOrders(),2)
+		+ "\nMinimum profit (sum): " + DoubleToString(transaction.GetTotalMinimumProfitFromOrders(),2)
+		+ "\nMedium profit (avg): " + DoubleToString(transaction.GetTotalMediumProfitFromOrders(),2)
+		+ "\n\nSpread: " + DoubleToString(spreadPips, 4)
+		+ "\nTake profit / Spread (best from average): " + DoubleToString(TP/spreadPips,4)
+		+ "\nStop loss / Spread (best from average): " + DoubleToString(SL/spreadPips,4)
 		);
 	
+	_EW
 	return 0;
 }
