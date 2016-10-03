@@ -5,11 +5,11 @@
 //+------------------------------------------------------------------+
 #property copyright "Copyright 2016, MetaQuotes Software Corp."
 #property link      "https://www.mql5.com"
-#property version   "1.00"
+#property version   "1.01"
 #property strict
 
 #property indicator_separate_window
-#property indicator_buffers 6
+#property indicator_buffers 7
 #property indicator_color1 clrDeepSkyBlue
 #property indicator_color2 clrDeepSkyBlue
 #property indicator_color3 clrDarkBlue
@@ -24,11 +24,13 @@
 #include <MyMql/Info/ScreenInfo.mqh>
 #include <MyMql/Info/VerboseInfo.mqh>
 #include <Files/FileTxt.mqh>
+#include <MyMql/Log/WebServiceLog.mqh>
 
 
 double Buf_CloseH1[], Buf_MedianH1[],
 	Buf_CloseD1[], Buf_MedianD1[],
 	Buf_CloseW1[], Buf_MedianW1[];
+double Buf_Decision[];
 
 //+------------------------------------------------------------------+
 //| Indicator initialization function (used for testing)             |
@@ -60,25 +62,30 @@ int OnInit()
 	SetIndexBuffer(5, Buf_MedianW1);
 	SetIndexStyle(5, DRAW_SECTION, STYLE_SOLID, 2);
 	
-	if(logToFile)
-		logFile.Open("LogFile.txt", FILE_READ | FILE_WRITE | FILE_ANSI | FILE_REWRITE);
+	SetIndexBuffer(6, Buf_Decision);
+	SetIndexStyle(6, DRAW_SECTION, STYLE_SOLID, 0, clrNONE);
+	
+	//if(logToFile)
+	//	logFile.Open("LogFile.txt", FILE_READ | FILE_WRITE | FILE_ANSI | FILE_REWRITE);
 	
 	return INIT_SUCCEEDED;
 }
 
-void OnDeinit(const int reason)
-{
-	if(logToFile)
-		logFile.Close();
-}
+//void OnDeinit(const int reason)
+//{
+//	if(logToFile)
+//		logFile.Close();
+//}
 
-bool logToFile = false;
-static CFileTxt logFile;
+//bool logToFile = false;
+//static CFileTxt logFile;
 static FlowWithTrendTranMan transaction;
 
 int start()
 {
    _SW
+	
+	WebServiceLog wslog(false,false,false,"RSI.txt");
 	DecisionRSI decision;
 	BaseMoneyManagement money;
 	ScreenInfo screen;
@@ -99,6 +106,7 @@ int start()
 	{
 		double d = decision.GetDecision(i);
 		decision.SetIndicatorData(Buf_CloseH1, Buf_MedianH1, Buf_CloseD1, Buf_MedianD1, Buf_CloseW1, Buf_MedianW1, i);
+		Buf_Decision[i] = d;
 		
 		// calculate profit/loss, TPs, SLs, etc
 		transaction.CalculateData(i);
@@ -112,10 +120,10 @@ int start()
 				
 				transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.01, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
 				
-				if(logToFile) {
-					logFile.WriteString("[" + IntegerToString(i) + "] New order buy " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
-					logFile.WriteString(transaction.OrdersToString(true));
-				}
+				//if(logToFile) {
+				//	logFile.WriteString("[" + IntegerToString(i) + "] New order buy " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
+				//	logFile.WriteString(transaction.OrdersToString(true));
+				//}
 				
 			} else { // Sell
 				double price = Close[i]; // Bid
@@ -123,10 +131,10 @@ int start()
 				generator.ValidateAndFixTPandSL(TP, SL, price, OP_SELL, spread, false);
 				transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.01, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
 				
-				if(logToFile) {
-					logFile.WriteString("[" + IntegerToString(i) + "] New order sell " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
-					logFile.WriteString(transaction.OrdersToString(true));
-				}
+				//if(logToFile) {
+				//	logFile.WriteString("[" + IntegerToString(i) + "] New order sell " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
+				//	logFile.WriteString(transaction.OrdersToString(true));
+				//}
 			}
 			
 			screen.ShowTextValue("CurrentValue", "Number of decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(-1)),clrGray, 20, 0);
@@ -138,14 +146,14 @@ int start()
 		i--;
 	}
 	
-	if(logToFile)
-		logFile.Flush();
+	//if(logToFile)
+	//	logFile.Flush();
 	
 	
 	double profit;
 	int count, countNegative, countPositive;
 	transaction.GetBestTPandSL(TP, SL, profit, count, countNegative, countPositive);
-	Comment("Best profit: " + DoubleToString(profit,2)
+	string summary = "Best profit: " + DoubleToString(profit,2)
 		+ "\nBest Take profit: " + DoubleToString(TP,4) + " (spreadPips * " + DoubleToString(TP/spreadPips,2) + ")" 
 		+ "\nBest Stop loss: " + DoubleToString(SL,4) + " (spreadPips * " + DoubleToString(SL/spreadPips,2) + ")"
 		+ "\nCount orders: " + IntegerToString(count) + " (" + IntegerToString(countPositive) + " positive orders & " + IntegerToString(countNegative) + " negative orders); Procentual profit: " + DoubleToString((double)countPositive/(count>0?(double)count:1))
@@ -154,8 +162,10 @@ int start()
 		+ "\nMedium profit (avg): " + DoubleToString(transaction.GetTotalMediumProfitFromOrders(),2)
 		+ "\n\nSpread: " + DoubleToString(spreadPips, 4)
 		+ "\nTake profit / Spread (best from average): " + DoubleToString(TP/spreadPips,4)
-		+ "\nStop loss / Spread (best from average): " + DoubleToString(SL/spreadPips,4)
-		);
+		+ "\nStop loss / Spread (best from average): " + DoubleToString(SL/spreadPips,4);
+	wslog.DataLog("TestIndicator3MA on " + _Symbol, summary);
+	Comment(summary);
+	
 	
    _EW
 	return 0;

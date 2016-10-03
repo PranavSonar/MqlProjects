@@ -62,7 +62,7 @@ void OnTimer()
 		if(currChart<0) break;          // Have reached the end of the chart list
 		Print(i,ChartSymbol(currChart)," ID =",currChart);
 		RecolorChart(currChart);
-		
+		ChartApplyTemplate
 		prevChart=currChart;// let's save the current chart ID for the ChartNext()
 		i++;// Do not forget to increase the counter
 	}
