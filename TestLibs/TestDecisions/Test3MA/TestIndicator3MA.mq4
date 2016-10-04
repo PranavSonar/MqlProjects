@@ -24,13 +24,14 @@
 //#property indicator_color12 clrMidnightBlue
 
 #include <MyMql/DecisionMaking/Decision3MA.mqh>
-#include <MyMql/MoneyManagement/BaseMoneyManagement.mqh>
+#include <MyMql/Global/Money/BaseMoneyManagement.mqh>
 #include <MyMql/TransactionManagement/FlowWithTrendTranMan.mqh>
 #include <MyMql/Generator/GenerateTPandSL.mqh>
 #include <MyMql/Info/ScreenInfo.mqh>
 #include <MyMql/Info/VerboseInfo.mqh>
 #include <Files/FileTxt.mqh>
-#include <MyMql/Log/WebServiceLog.mqh>
+#include <MyMql/Global/Log/WebServiceLog.mqh>
+#include <MyMql/Global/Global.mqh>
 
 
 

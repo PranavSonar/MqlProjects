@@ -9,7 +9,7 @@
 #property strict
 
 #include <MyMql\Base\BeforeObject.mqh>
-#include <MyMql\Log\WebServiceLog.mqh>
+#include <MyMql\Global\Log\WebServiceLog.mqh>
 
 
 const string XmlEncodingString = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n";
@@ -131,7 +131,7 @@ bool TestBollingerBands(string &retErrors)
 	return isOk;
 }
 
-#include <MyMql\MoneyManagement\BaseMoneyManagement.mqh>
+#include <MyMql\Global\Money\BaseMoneyManagement.mqh>
 
 bool TestOrderLimits(string &errors, int orderType = OP_BUY)
 {
@@ -201,7 +201,7 @@ bool TestOrderLimits(string &errors, int orderType = OP_BUY)
 }
 
 
-#include <MyMql\Config\GlobalConfig.mqh>
+#include <MyMql\Global\Config\GlobalConfig.mqh>
 
 bool TestMoneyConversion(string &errors, bool verbose = false)
 {
@@ -231,7 +231,7 @@ bool TestMoneyConversion(string &errors, bool verbose = false)
    return isOk;
 }
 
-#include <MyMql\Log\FileLog.mqh>
+#include <MyMql\Global\Log\FileLog.mqh>
 
 const string TestedFileLogText = "sometext";
 
@@ -255,7 +255,7 @@ bool TestFileLog(string errors)
 }
 
 
-#include <MyMql\Symbols\SymbolsLibrary.mqh>
+#include <MyMql\Global\Symbols\SymbolsLibrary.mqh>
 
 bool TestSymbolsLibrary(string &errors)
 {
@@ -356,7 +356,7 @@ void OnInit()
 	SafePrintString(finalText);
 	
 	// Navigate next
-	config.InitializeConfig();
+	config.Initialize();
 	config.ChangeSymbol();
 	wslog.EndTradingSession();
 	

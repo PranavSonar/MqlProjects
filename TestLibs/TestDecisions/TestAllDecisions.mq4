@@ -11,8 +11,8 @@
 #include <MyMql\DecisionMaking\Decision3MA.mqh>
 #include <MyMql\DecisionMaking\DecisionDoubleBB.mqh>
 #include <MyMql\DecisionMaking\DecisionRSI.mqh>
-#include <MyMql\Config\GlobalConfig.mqh>
-#include <MyMql\Log\WebServiceLog.mqh>
+#include <MyMql\Global\Config\GlobalConfig.mqh>
+#include <MyMql\Global\Log\WebServiceLog.mqh>
 
 #import "user32.dll"
 int RegisterWindowMessageW(string MessageName);
@@ -92,9 +92,9 @@ int OnInit()
 	{
 		wslog.NewTradingSession();
 	   StartCustomIndicator2(hWnd,"Projects\\TestLibs\\TestDecisions\\Test3MA\\TestIndicator3MA\0", true);
-	   StartCustomIndicator2(hWnd,"Projects\\TestLibs\\TestDecisions\\TestDoubleBB\\TestIndicatorDoubleBB\0", true);
-	   StartCustomIndicator2(hWnd,"Projects\\TestLibs\\TestDecisions\\TestRSI\\TestIndicatorRSI\0", true);
-		config.InitializeConfig();
+	   //StartCustomIndicator2(hWnd,"Projects\\TestLibs\\TestDecisions\\TestDoubleBB\\TestIndicatorDoubleBB\0", true);
+	   //StartCustomIndicator2(hWnd,"Projects\\TestLibs\\TestDecisions\\TestRSI\\TestIndicatorRSI\0", true);
+		config.Initialize();
    }
    
 	// Navigate next

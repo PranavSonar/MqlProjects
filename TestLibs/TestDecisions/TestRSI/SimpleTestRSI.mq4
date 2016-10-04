@@ -9,12 +9,13 @@
 #property strict
 
 #include <MyMql/DecisionMaking/DecisionRSI.mqh>
-#include <MyMql/MoneyManagement/BaseMoneyManagement.mqh>
+#include <MyMql/Global/Money/BaseMoneyManagement.mqh>
 #include <MyMql/TransactionManagement/FlowWithTrendTranMan.mqh>
 #include <MyMql/Generator/GenerateTPandSL.mqh>
 #include <MyMql/Info/ScreenInfo.mqh>
 #include <MyMql/Info/VerboseInfo.mqh>
-#include <MyMql/Log/WebServiceLog.mqh>
+#include <Files/FileTxt.mqh>
+#include <MyMql/Global/Log/WebServiceLog.mqh>
 
 
 int OnInit()
@@ -60,7 +61,7 @@ void OnTick()
 	
 	// calculate profit/loss, TPs, SLs, etc
 	transaction.CalculateData();
-	double lots = money.GetLotsBasedOnDecision(d, false);
+	double lots = MarketInfo(_Symbol, MODE_MINLOT); //money.GetLotsBasedOnDecision(d, false); -> to be moved
 	
 	if(d != IncertitudeDecision)
 	{

@@ -9,7 +9,7 @@
 #property strict
 
 
-#include <MyMql/Log/WebServiceLog.mqh>
+#include <MyMql\Global\Log\WebServiceLog.mqh>
 
 int OnInit()
 {

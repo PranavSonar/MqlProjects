@@ -18,11 +18,13 @@
 #include <MyMql/DecisionMaking/DecisionDoubleBB.mqh>
 #include <MyMql/DecisionMaking/Decision3MA.mqh>
 #include <MyMql/DecisionMaking/DecisionRSI.mqh>
+#include <MyMql/Global/Money/MoneyBetOnDecision.mqh>
 #include <MyMql/TransactionManagement/FlowWithTrendTranMan.mqh>
+#include <MyMql/Generator/GenerateTPandSL.mqh>
 #include <MyMql/Info/ScreenInfo.mqh>
 #include <MyMql/Info/VerboseInfo.mqh>
-#include <MyMql/MoneyManagement/MoneyBetOnDecision.mqh>
-
+#include <Files/FileTxt.mqh>
+#include <MyMql/Global/Log/WebServiceLog.mqh>
 
 input int MaximumNumberOfTransactions;
 
