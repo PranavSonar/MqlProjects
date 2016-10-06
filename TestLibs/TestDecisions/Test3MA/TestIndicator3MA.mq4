@@ -105,11 +105,10 @@ static FlowWithTrendTranMan transaction;
 
 int start()
 {
-   _SW
+	_SW
    
-	WebServiceLog wslog(false,false,false,"3MA.txt");
+	GlobalContext.DatabaseLog.Initialize(false,false,false,"3MA.txt");
 	Decision3MA decision;
-	BaseMoneyManagement money;
 	ScreenInfo screen;
 	GenerateTPandSL generator;
 	//bool openFile = true;
@@ -123,7 +122,7 @@ int start()
 	//decision.SetVerboseLevel(1);
 	//transaction.SetVerboseLevel(1);
 	int i = Bars - IndicatorCounted() - 1;
-	double SL = 0.0, TP = 0.0, spread = MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID), spreadPips = spread/money.Pip();
+	double SL = 0.0, TP = 0.0, spread = MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID), spreadPips = spread/GlobalContext.Money.Pip();
 	
 	transaction.SetSimulatedOrderObjectName("SimulatedOrder3MA");
 	transaction.SetSimulatedStopLossObjectName("SimulatedStopLoss3MA");
@@ -146,41 +145,34 @@ int start()
 		////SafePrintString(transaction.OrdersToString());
 		////Print("");
 		
-		if(d != IncertitudeDecision)
-		{
-			if(d > 0.0) { // Buy
-				double price = Close[i] + spread; // Ask
-				money.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_BUY, price, false, spread);
-				generator.ValidateAndFixTPandSL(TP, SL, price, OP_BUY, spread, false);
-				transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.1, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
-				
-				
-				//if(logToFile) {
-				//	logFile.WriteString("[" + IntegerToString(i) + "] New order buy " + DoubleToString(price) + " " + DoubleToString(SL) + " " + DoubleToString(TP));
-				//	logFile.WriteString(transaction.OrdersToString(true));
-				//}
-				////SafePrintString(transaction.OrdersToString());
-				////Print("");
-			} else { // Sell
-				double price = Close[i]; // Bid
-				money.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_SELL, price, false, spread);
-				generator.ValidateAndFixTPandSL(TP, SL, price, OP_SELL, spread, false);
-				transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.1, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
-				
-				
-				//if(logToFile) {
-				//	logFile.WriteString("[" + IntegerToString(i) + "] New order sell " + DoubleToString(price) + " " + DoubleToString(SL) + " " + DoubleToString(TP));
-				//	logFile.WriteString(transaction.OrdersToString(true));
-				//}
-				////SafePrintString(transaction.OrdersToString());
-				////Print("");
-			}
+		if(d > 0.0) { // Buy
+			double price = Close[i] + spread; // Ask
+			GlobalContext.Money.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_BUY, price, false, spread);
+			generator.ValidateAndFixTPandSL(TP, SL, price, OP_BUY, spread, false);
+			transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.1, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
 			
-			screen.ShowTextValue("CurrentValue", "Number of decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(-1)),clrGray, 20, 0);
-			screen.ShowTextValue("CurrentValueSell", "Number of sell decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(OP_SELL)), clrGray, 20, 20);
-			screen.ShowTextValue("CurrentValueBuy", "Number of buy decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(OP_BUY)), clrGray, 20, 40);
+			
+			//if(logToFile) {
+			//	logFile.WriteString("[" + IntegerToString(i) + "] New order buy " + DoubleToString(price) + " " + DoubleToString(SL) + " " + DoubleToString(TP));
+			//	logFile.WriteString(transaction.OrdersToString(true));
+			//}
+			////SafePrintString(transaction.OrdersToString());
+			////Print("");
+		} else if(d < 0.0) { // Sell
+			double price = Close[i]; // Bid
+			GlobalContext.Money.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_SELL, price, false, spread);
+			generator.ValidateAndFixTPandSL(TP, SL, price, OP_SELL, spread, false);
+			transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.1, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
+			
+			
+			//if(logToFile) {
+			//	logFile.WriteString("[" + IntegerToString(i) + "] New order sell " + DoubleToString(price) + " " + DoubleToString(SL) + " " + DoubleToString(TP));
+			//	logFile.WriteString(transaction.OrdersToString(true));
+			//}
+			////SafePrintString(transaction.OrdersToString());
+			////Print("");
 		}
-		
+	
 		//transaction.FlowWithTrend_UpdateSL_TP_UsingConstants(2.6*spreadPips, 1.6*spreadPips);
 		i--;
 	}
@@ -188,6 +180,9 @@ int start()
 	//if(logToFile)
 	//	logFile.Flush();
 	
+	screen.ShowTextValue("CurrentValue", "Number of decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders()),clrGray, 20, 0);
+	screen.ShowTextValue("CurrentValueSell", "Number of sell decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(OP_SELL)), clrGray, 20, 20);
+	screen.ShowTextValue("CurrentValueBuy", "Number of buy decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(OP_BUY)), clrGray, 20, 40);
 	
 	double profit;
 	int count, countNegative, countPositive;
@@ -202,10 +197,11 @@ int start()
 		+ "\n\nSpread: " + DoubleToString(spreadPips, 4)
 		+ "\nTake profit / Spread (best from average): " + DoubleToString(TP/spreadPips,4)
 		+ "\nStop loss / Spread (best from average): " + DoubleToString(SL/spreadPips,4);
-	wslog.DataLog("TestIndicator3MA on " + _Symbol, summary);
+	
+	GlobalContext.DatabaseLog.DataLog("TestIndicator3MA on " + _Symbol, summary);
 	Comment(summary);
 	
 	
-   _EW
+	_EW
 	return 0;
 }

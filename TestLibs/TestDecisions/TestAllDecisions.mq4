@@ -91,7 +91,7 @@ int OnInit()
 	if(FirstSymbol == NULL)
 	{
 		wslog.NewTradingSession();
-	   StartCustomIndicator2(hWnd,"Projects\\TestLibs\\TestDecisions\\Test3MA\\TestIndicator3MA\0", true);
+	   //StartCustomIndicator2(hWnd,"Projects\\TestLibs\\TestDecisions\\Test3MA\\TestIndicator3MA\0", true);
 	   //StartCustomIndicator2(hWnd,"Projects\\TestLibs\\TestDecisions\\TestDoubleBB\\TestIndicatorDoubleBB\0", true);
 	   //StartCustomIndicator2(hWnd,"Projects\\TestLibs\\TestDecisions\\TestRSI\\TestIndicatorRSI\0", true);
 		config.Initialize();

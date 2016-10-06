@@ -81,9 +81,8 @@ int start()
 {
    _SW
    
-	WebServiceLog wslog(false,false,false,"2BB.txt");
+	GlobalContext.DatabaseLog.Initialize(false,false,false,"2BB.txt");
 	DecisionDoubleBB decision;
-	BaseMoneyManagement money;
 	ScreenInfo screen;
 	GenerateTPandSL generator;
 //	bool openFile = true;
@@ -95,7 +94,7 @@ int start()
 //	}
 	
 	int i = Bars - IndicatorCounted() - 1;
-	double SL = 0.0, TP = 0.0, spread = MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID), spreadPips = spread/money.Pip();
+	double SL = 0.0, TP = 0.0, spread = MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID), spreadPips = spread/GlobalContext.Money.Pip();
 	
 	//decision.SetVerboseLevel(1);
 	//transaction.SetVerboseLevel(1);
@@ -117,37 +116,29 @@ int start()
 		//if(logToFile)
 		//	logFile.WriteString(transaction.OrdersToString(true));
 		
-		if(d != IncertitudeDecision)
-		{
-			if(d > 0) { // Buy
-				double price = Close[i] + spread; // Ask
-				money.CalculateTP_SL(TP, SL, OP_BUY, price, false, spread, 3*spread, spread);
-				generator.ValidateAndFixTPandSL(TP, SL, price, OP_BUY, spread, false);
-				
-				transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.1, price, 0, SL ,TP, NULL, 0, 0, clrNONE, i);
-				
+		if(d > 0.0) { // Buy
+			double price = Close[i] + spread; // Ask
+			GlobalContext.Money.CalculateTP_SL(TP, SL, OP_BUY, price, false, spread, 3*spread, spread);
+			generator.ValidateAndFixTPandSL(TP, SL, price, OP_BUY, spread, false);
+			
+			transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.1, price, 0, SL ,TP, NULL, 0, 0, clrNONE, i);
+			
 //				if(logToFile) {
 //					logFile.WriteString("[" + IntegerToString(i) + "] New order buy " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
 //					logFile.WriteString(transaction.OrdersToString(true));
 //				}
-				
-			} else { // Sell
-				double price = Close[i]; // Bid
-				money.CalculateTP_SL(TP, SL, OP_SELL, price, false, spread, 3*spread, spread);
-				generator.ValidateAndFixTPandSL(TP, SL, price, OP_SELL, spread, false);
-				transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.1, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
-				
-				//if(logToFile) {
-				//	logFile.WriteString("[" + IntegerToString(i) + "] New order sell " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
-				//	logFile.WriteString(transaction.OrdersToString(true));
-				//}
-			}
 			
-			screen.ShowTextValue("CurrentValue", "Number of decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders()),clrGray, 20, 0);
-			screen.ShowTextValue("CurrentValueSell", "Number of sell decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(OP_SELL)), clrGray, 20, 20);
-			screen.ShowTextValue("CurrentValueBuy", "Number of buy decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(OP_BUY)), clrGray, 20, 40);
+		} else if(d < 0.0) { // Sell
+			double price = Close[i]; // Bid
+			GlobalContext.Money.CalculateTP_SL(TP, SL, OP_SELL, price, false, spread, 3*spread, spread);
+			generator.ValidateAndFixTPandSL(TP, SL, price, OP_SELL, spread, false);
+			transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.1, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
+			
+			//if(logToFile) {
+			//	logFile.WriteString("[" + IntegerToString(i) + "] New order sell " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
+			//	logFile.WriteString(transaction.OrdersToString(true));
+			//}
 		}
-		
 		
 		//transaction.FlowWithTrend_UpdateSL_TP_UsingConstants(2.6*spreadPips, 1.6*spreadPips);
 		i--;
@@ -156,6 +147,9 @@ int start()
 	//if(logToFile)
 	//	logFile.Flush();
 	
+	screen.ShowTextValue("CurrentValue", "Number of decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders()),clrGray, 20, 0);
+	screen.ShowTextValue("CurrentValueSell", "Number of sell decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(OP_SELL)), clrGray, 20, 20);
+	screen.ShowTextValue("CurrentValueBuy", "Number of buy decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(OP_BUY)), clrGray, 20, 40);
 	
 	double profit;
 	int count, countNegative, countPositive;
@@ -170,7 +164,7 @@ int start()
 		+ "\n\nSpread: " + DoubleToString(spreadPips, 4)
 		+ "\nTake profit / Spread (best from average): " + DoubleToString(TP/spreadPips,4)
 		+ "\nStop loss / Spread (best from average): " + DoubleToString(SL/spreadPips,4);
-	wslog.DataLog("TestIndicator3MA on " + _Symbol, summary);
+	GlobalContext.DatabaseLog.DataLog("TestIndicator3MA on " + _Symbol, summary);
 	Comment(summary);
 	
 	
