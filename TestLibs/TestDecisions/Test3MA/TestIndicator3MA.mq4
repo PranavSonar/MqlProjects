@@ -23,7 +23,7 @@
 //#property indicator_color11 clrMidnightBlue
 //#property indicator_color12 clrMidnightBlue
 
-#include <MyMql/DecisionMaking/Decision3MA.mqh>
+#include <MyMql/DecisionMaking/Decision3CombinedMA.mqh>
 #include <MyMql/Global/Money/BaseMoneyManagement.mqh>
 #include <MyMql/TransactionManagement/FlowWithTrendTranMan.mqh>
 #include <MyMql/Generator/GenerateTPandSL.mqh>
@@ -108,7 +108,7 @@ int start()
 	_SW
    
 	GlobalContext.DatabaseLog.Initialize(false,false,false,"3MA.txt");
-	Decision3MA decision;
+	Decision3CombinedMA decision;
 	ScreenInfo screen;
 	GenerateTPandSL generator;
 	//bool openFile = true;
