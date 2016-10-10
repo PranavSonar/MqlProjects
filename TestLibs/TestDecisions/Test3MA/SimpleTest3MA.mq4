@@ -8,7 +8,7 @@
 #property version   "1.00"
 #property strict
 
-#include <MyMql/DecisionMaking/Decision3MA.mqh>
+#include <MyMql/DecisionMaking/Decision3CombinedMA.mqh>
 #include <MyMql/Global/Money/BaseMoneyManagement.mqh>
 #include <MyMql/TransactionManagement/FlowWithTrendTranMan.mqh>
 #include <MyMql/Generator/GenerateTPandSL.mqh>
@@ -38,7 +38,7 @@ void OnDeinit(const int reason)
 static FlowWithTrendTranMan transaction;
 
 void OnTick() {
-	Decision3MA decision;
+	Decision3CombinedMA decision;
 	BaseMoneyManagement money;
 	ScreenInfo screen;
 	GenerateTPandSL generator;
