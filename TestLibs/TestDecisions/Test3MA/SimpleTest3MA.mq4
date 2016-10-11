@@ -9,13 +9,11 @@
 #property strict
 
 #include <MyMql/DecisionMaking/Decision3CombinedMA.mqh>
-#include <MyMql/Global/Money/BaseMoneyManagement.mqh>
 #include <MyMql/TransactionManagement/FlowWithTrendTranMan.mqh>
-#include <MyMql/Generator/GenerateTPandSL.mqh>
 #include <MyMql/Info/ScreenInfo.mqh>
 #include <MyMql/Info/VerboseInfo.mqh>
 #include <Files/FileTxt.mqh>
-#include <MyMql/Global/Log/WebServiceLog.mqh>
+#include <MyMql/Global/Global.mqh>
 
 int OnInit()
 {
@@ -39,16 +37,14 @@ static FlowWithTrendTranMan transaction;
 
 void OnTick() {
 	Decision3CombinedMA decision;
-	BaseMoneyManagement money;
 	ScreenInfo screen;
-	GenerateTPandSL generator;
 	//WebServiceLog wsLog(false);
 	BaseWebServiceLog wsLog();
 	
 	//decision.SetVerboseLevel(1);
 	//transaction.SetVerboseLevel(1);
 	
-	double SL = 0.0, TP = 0.0, spread = MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID), spreadPips = spread/money.Pip();
+	double SL = 0.0, TP = 0.0, spread = MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID), spreadPips = spread/GlobalContext.Money.Pip();
 	
 	transaction.SetSimulatedOrderObjectName("SimulatedOrder3MA");
 	transaction.SetSimulatedStopLossObjectName("SimulatedStopLoss3MA");
@@ -58,7 +54,7 @@ void OnTick() {
 
 	// calculate profit/loss, TPs, SLs, etc
 	transaction.CalculateData();
-	double lots = MarketInfo(_Symbol, MODE_MINLOT); //money.GetLotsBasedOnDecision(d, false); -> to be moved
+	double lots = MarketInfo(_Symbol, MODE_MINLOT); //GlobalContext.Money.GetLotsBasedOnDecision(d, false); -> to be moved
 	
 	wsLog.DataLog("OrdersToString", transaction.OrdersToString(true));
 	
@@ -68,9 +64,9 @@ void OnTick() {
 	{
 		if(d > 0.0) { // Buy
 			double price = MarketInfo(Symbol(), MODE_ASK); // Ask
-			money.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_BUY, price, false, spread);
+			GlobalContext.Money.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_BUY, price, false, spread);
 			if((TP != 0.0) || (SL != 0.0))
-				generator.ValidateAndFixTPandSL(TP, SL, price, OP_BUY, spread, false);
+				GlobalContext.Limit.ValidateAndFixTPandSL(TP, SL, price, OP_BUY, spread, false);
 			transaction.SimulateOrderSend(Symbol(), OP_BUY, lots, price, 0, SL, TP, NULL, 0, 0, clrNONE);
 			int tichet = OrderSend(Symbol(), OP_BUY, lots, price, 0, SL, TP, NULL, 0, 0, clrAqua);
 			
@@ -81,9 +77,9 @@ void OnTick() {
 			wsLog.DataLog("OrdersToString", transaction.OrdersToString(true));
 		} else { // Sell
 			double price = MarketInfo(Symbol(), MODE_BID); // Bid
-			money.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_SELL, price, false, spread);
+			GlobalContext.Money.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_SELL, price, false, spread);
 			if((TP != 0.0) || (SL != 0.0))
-				generator.ValidateAndFixTPandSL(TP, SL, price, OP_SELL, spread, false);
+				GlobalContext.Limit.ValidateAndFixTPandSL(TP, SL, price, OP_SELL, spread, false);
 			transaction.SimulateOrderSend(Symbol(), OP_SELL, lots, price, 0, SL, TP, NULL, 0, 0, clrNONE);
 			int tichet = OrderSend(Symbol(), OP_SELL, lots, price, 0, SL, TP, NULL, 0, 0, clrChocolate);
 			

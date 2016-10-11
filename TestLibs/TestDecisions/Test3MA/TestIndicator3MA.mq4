@@ -24,13 +24,10 @@
 //#property indicator_color12 clrMidnightBlue
 
 #include <MyMql/DecisionMaking/Decision3CombinedMA.mqh>
-#include <MyMql/Global/Money/BaseMoneyManagement.mqh>
 #include <MyMql/TransactionManagement/FlowWithTrendTranMan.mqh>
-#include <MyMql/Generator/GenerateTPandSL.mqh>
 #include <MyMql/Info/ScreenInfo.mqh>
 #include <MyMql/Info/VerboseInfo.mqh>
 #include <Files/FileTxt.mqh>
-#include <MyMql/Global/Log/WebServiceLog.mqh>
 #include <MyMql/Global/Global.mqh>
 
 
@@ -110,7 +107,6 @@ int start()
 	GlobalContext.DatabaseLog.Initialize(false,false,false,"3MA.txt");
 	Decision3CombinedMA decision;
 	ScreenInfo screen;
-	GenerateTPandSL generator;
 	//bool openFile = true;
 	
 	//if(logToFile && openFile) {
@@ -148,7 +144,7 @@ int start()
 		if(d > 0.0) { // Buy
 			double price = Close[i] + spread; // Ask
 			GlobalContext.Money.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_BUY, price, false, spread);
-			generator.ValidateAndFixTPandSL(TP, SL, price, OP_BUY, spread, false);
+			GlobalContext.Limit.ValidateAndFixTPandSL(TP, SL, price, OP_BUY, spread, false);
 			transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.1, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
 			
 			
@@ -161,7 +157,7 @@ int start()
 		} else if(d < 0.0) { // Sell
 			double price = Close[i]; // Bid
 			GlobalContext.Money.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_SELL, price, false, spread);
-			generator.ValidateAndFixTPandSL(TP, SL, price, OP_SELL, spread, false);
+			GlobalContext.Limit.ValidateAndFixTPandSL(TP, SL, price, OP_SELL, spread, false);
 			transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.1, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
 			
 			

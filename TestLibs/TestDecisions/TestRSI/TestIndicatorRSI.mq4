@@ -18,13 +18,10 @@
 #property indicator_color6 clrMidnightBlue
 
 #include <MyMql/DecisionMaking/DecisionRSI.mqh>
-#include <MyMql/Global/Money/BaseMoneyManagement.mqh>
 #include <MyMql/TransactionManagement/FlowWithTrendTranMan.mqh>
-#include <MyMql/Generator/GenerateTPandSL.mqh>
 #include <MyMql/Info/ScreenInfo.mqh>
 #include <MyMql/Info/VerboseInfo.mqh>
 #include <Files/FileTxt.mqh>
-#include <MyMql/Global/Log/WebServiceLog.mqh>
 #include <MyMql/Global/Global.mqh>
 
 
@@ -88,9 +85,7 @@ int start()
 	
 	GlobalContext.DatabaseLog.Initialize(false,false,false,"RSI.txt");
 	DecisionRSI decision;
-	BaseMoneyManagement money;
 	ScreenInfo screen;
-	GenerateTPandSL generator;
 	
 	int i = Bars - IndicatorCounted() - 1;
 	double SL = 0.0, TP = 0.0, spread = MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID), spreadPips = spread/GlobalContext.Money.Pip();
@@ -115,7 +110,7 @@ int start()
 		if(d > 0.0) { // Buy
 			double price = Close[i] + spread; // Ask
 			GlobalContext.Money.CalculateTP_SL(TP, SL, OP_BUY, price, false, spread, 8*spreadPips, 13*spreadPips);
-			generator.ValidateAndFixTPandSL(TP, SL, price, OP_BUY, spread, false);
+			GlobalContext.Limit.ValidateAndFixTPandSL(TP, SL, price, OP_BUY, spread, false);
 			
 			transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.01, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
 			
@@ -127,7 +122,7 @@ int start()
 		} else if(d < 0.0) { // Sell
 			double price = Close[i]; // Bid
 			GlobalContext.Money.CalculateTP_SL(TP, SL, OP_SELL, price, false, spread, 8*spreadPips, 13*spreadPips);
-			generator.ValidateAndFixTPandSL(TP, SL, price, OP_SELL, spread, false);
+			GlobalContext.Limit.ValidateAndFixTPandSL(TP, SL, price, OP_SELL, spread, false);
 			transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.01, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
 			
 			//if(logToFile) {

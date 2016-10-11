@@ -8,7 +8,7 @@
 #property version   "1.00"
 #property strict
 
-#include <MyMql\DecisionMaking\Decision3MA.mqh>
+#include <MyMql\DecisionMaking\DecisionCombinedMA.mqh>
 #include <MyMql\DecisionMaking\DecisionDoubleBB.mqh>
 #include <MyMql\DecisionMaking\DecisionRSI.mqh>
 #include <MyMql\Global\Config\GlobalConfig.mqh>
