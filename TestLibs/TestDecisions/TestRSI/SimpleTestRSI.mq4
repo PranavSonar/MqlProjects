@@ -10,8 +10,6 @@
 
 #include <MyMql/DecisionMaking/DecisionRSI.mqh>
 #include <MyMql/TransactionManagement/FlowWithTrendTranMan.mqh>
-#include <MyMql/Info/ScreenInfo.mqh>
-#include <MyMql/Info/VerboseInfo.mqh>
 #include <Files/FileTxt.mqh>
 #include <MyMql/Global/Global.mqh>
 
@@ -65,7 +63,7 @@ void OnTick()
 			double price = MarketInfo(Symbol(),MODE_ASK); // Ask
 			GlobalContext.Money.CalculateTP_SL(TP, SL, 8*spreadPips, 13*spreadPips, OP_BUY, price, false, spread);
 			if((TP != 0.0) || (SL != 0.0))
-				GlobalContext.Limits.ValidateAndFixTPandSL(TP, SL, price, OP_BUY, spread, false);
+				GlobalContext.Limit.ValidateAndFixTPandSL(TP, SL, price, OP_BUY, spread, false);
 			
 			transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.01, price, 0, SL, TP, NULL, 0, 0, clrNONE);
 			int tichet = OrderSend(Symbol(), OP_BUY, 0.01, price, 0, SL, TP, NULL, 0, 0, clrAqua);
@@ -79,7 +77,7 @@ void OnTick()
 			double price = MarketInfo(Symbol(), MODE_BID); // Bid
 			GlobalContext.Money.CalculateTP_SL(TP, SL, 8*spreadPips, 13*spreadPips, OP_SELL, price, false, spread);
 			if((TP != 0.0) || (SL != 0.0))
-				GlobalContext.Limits.ValidateAndFixTPandSL(TP, SL, price, OP_SELL, spread, false);
+				GlobalContext.Limit.ValidateAndFixTPandSL(TP, SL, price, OP_SELL, spread, false);
 			
 			transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.01, price, 0, SL, TP, NULL, 0, 0, clrNONE);
 			int tichet = OrderSend(Symbol(), OP_SELL, 0.01, price, 0, SL, TP, NULL, 0, 0, clrChocolate);

@@ -19,8 +19,6 @@
 
 #include <MyMql/DecisionMaking/DecisionDoubleBB.mqh>
 #include <MyMql/TransactionManagement/FlowWithTrendTranMan.mqh>
-#include <MyMql/Info/ScreenInfo.mqh>
-#include <MyMql/Info/VerboseInfo.mqh>
 #include <Files/FileTxt.mqh>
 #include <MyMql/Global/Global.mqh>
 
