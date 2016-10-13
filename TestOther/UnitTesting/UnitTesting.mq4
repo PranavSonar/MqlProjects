@@ -8,9 +8,7 @@
 #property version   "1.00"
 #property strict
 
-#include <MyMql\Base\BeforeObject.mqh>
-#include <MyMql\Global\Log\WebServiceLog.mqh>
-
+#include <MyMql/Global/Global.mqh>
 
 const string XmlEncodingString = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n";
 const string BeginString = "<string xmlns=\"http://tempuri.org/\">";
@@ -131,7 +129,6 @@ bool TestBollingerBands(string &retErrors)
 	return isOk;
 }
 
-#include <MyMql\Global\Money\BaseMoneyManagement.mqh>
 
 bool TestOrderLimits(string &errors, int orderType = OP_BUY)
 {
@@ -201,7 +198,6 @@ bool TestOrderLimits(string &errors, int orderType = OP_BUY)
 }
 
 
-#include <MyMql\Global\Config\GlobalConfig.mqh>
 
 bool TestMoneyConversion(string &errors, bool verbose = false)
 {
@@ -231,11 +227,10 @@ bool TestMoneyConversion(string &errors, bool verbose = false)
    return isOk;
 }
 
-#include <MyMql\Global\Log\FileLog.mqh>
 
 const string TestedFileLogText = "sometext";
 
-bool TestFileLog(string errors)
+bool TestFileLog(string &errors)
 {
    _SW
    FileLog fLog("Test.txt",true,true);
@@ -254,8 +249,6 @@ bool TestFileLog(string errors)
    return true;
 }
 
-
-#include <MyMql\Global\Symbols\SymbolsLibrary.mqh>
 
 bool TestSymbolsLibrary(string &errors)
 {
@@ -359,5 +352,4 @@ void OnInit()
 	config.Initialize();
 	config.ChangeSymbol();
 	wslog.EndTradingSession();
-	
 }
