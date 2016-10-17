@@ -64,6 +64,8 @@ int OnInit()
 	//if(logToFile)
 	//	logFile.Open("LogFile.txt", FILE_READ | FILE_WRITE | FILE_ANSI | FILE_REWRITE);
 	
+	GlobalContext.DatabaseLog.Initialize(false,false,false,"RSI.txt");
+	
 	return INIT_SUCCEEDED;
 }
 
@@ -81,7 +83,6 @@ int start()
 {
 	_SW
 	
-	GlobalContext.DatabaseLog.Initialize(false,false,false,"RSI.txt");
 	DecisionRSI decision;
 	ScreenInfo screen;
 	
@@ -91,6 +92,7 @@ int start()
 	//decision.SetVerboseLevel(1);
 	//transaction.SetVerboseLevel(1);
 	transaction.SetSimulatedOrderObjectName("SimulatedOrderRSI");
+	transaction.SetSimulatedTransactionWholeName("SimulatedTransactionWholeRSI");
 	transaction.SetSimulatedStopLossObjectName("SimulatedStopLossRSI");
 	transaction.SetSimulatedTakeProfitObjectName("SimulatedTakeProfitRSI");
 	
@@ -140,13 +142,14 @@ int start()
 	screen.ShowTextValue("CurrentValueSell", "Number of sell decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(OP_SELL)), clrGray, 20, 20);
 	screen.ShowTextValue("CurrentValueBuy", "Number of buy decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(OP_BUY)), clrGray, 20, 40);
 	
-	
 	double profit;
-	int count, countNegative, countPositive;
-	transaction.GetBestTPandSL(TP, SL, profit, count, countNegative, countPositive);
+	int count, countNegative, countPositive, irregularLimitsType;
+	bool irregularLimits;
+	transaction.GetBestTPandSL(TP, SL, profit, count, countNegative, countPositive, irregularLimits, irregularLimitsType);
 	string summary = "Best profit: " + DoubleToString(profit,2)
 		+ "\nBest Take profit: " + DoubleToString(TP,4) + " (spreadPips * " + DoubleToString(TP/spreadPips,2) + ")" 
 		+ "\nBest Stop loss: " + DoubleToString(SL,4) + " (spreadPips * " + DoubleToString(SL/spreadPips,2) + ")"
+		+ "\nIrregular Limits: " + BoolToString(irregularLimits) + " Type: " + IntegerToString(irregularLimitsType)
 		+ "\nCount orders: " + IntegerToString(count) + " (" + IntegerToString(countPositive) + " positive orders & " + IntegerToString(countNegative) + " negative orders); Procentual profit: " + DoubleToString((double)countPositive/(count>0?(double)count:1))
 		+ "\n\nMaximum profit (sum): " + DoubleToString(transaction.GetTotalMaximumProfitFromOrders(),2)
 		+ "\nMinimum profit (sum): " + DoubleToString(transaction.GetTotalMinimumProfitFromOrders(),2)
@@ -154,7 +157,7 @@ int start()
 		+ "\n\nSpread: " + DoubleToString(spreadPips, 4)
 		+ "\nTake profit / Spread (best from average): " + DoubleToString(TP/spreadPips,4)
 		+ "\nStop loss / Spread (best from average): " + DoubleToString(SL/spreadPips,4);
-	GlobalContext.DatabaseLog.DataLog("TestIndicator3MA on " + _Symbol, summary);
+	GlobalContext.DatabaseLog.DataLog("TestIndicatorRSI on " + _Symbol, summary);
 	Comment(summary);
 	
 	
