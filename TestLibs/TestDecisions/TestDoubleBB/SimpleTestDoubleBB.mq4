@@ -49,7 +49,7 @@ void OnTick()
 	DecisionDoubleBB decision;
 	ScreenInfo screen;
 	
-	double SL = 0.0, TP = 0.0, spread = MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID), spreadPips = spread/GlobalContext.Money.Pip();
+	double SL = 0.0, TP = 0.0, spread = MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID), spreadPips = spread/Pip();
 	
 	//decision.SetVerboseLevel(1);
 	//transaction.SetVerboseLevel(1);
@@ -59,7 +59,7 @@ void OnTick()
 	
 	transaction.AutoAddTransactionData(spreadPips);
 	
-	double d = decision.GetDecision(SL, TP);
+	double d = decision.GetDecision2(SL, TP);
 	
 	if((d != IncertitudeDecision) && (d == lastDecision))
 		nrDecisions++;

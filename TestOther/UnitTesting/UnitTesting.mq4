@@ -352,4 +352,5 @@ void OnInit()
 	config.Initialize();
 	config.ChangeSymbol();
 	wslog.EndTradingSession();
+	
 }

@@ -8,8 +8,8 @@
 #property version   "1.00"
 #property strict
 
-#include <MyMql/MoneyManagement/BaseMoneyManagement.mqh>
-#include <MyMql/Symbols/BaseSymbol.mqh>
+#include <MyMql/Global/Money/BaseMoneyManagement.mqh>
+#include <MyMql/Global/Symbols/BaseSymbol.mqh>
 #include <MyMql/Simulation/BaseSimulatedOrder.mqh>
 
 //+------------------------------------------------------------------+
@@ -59,12 +59,12 @@ int OnInit()
 		printf("[%d]: realProfit=%f calculatedProfit=%f calculatedProfitStopLoss=%f calculatedProfitTakeProfit=%f", i, OrderProfit(), orderProfitTest, orderProfitStopLossTest, orderProfitTakeProfitTest);
 		
 		printf("[%d]: pipValue=%f point=%f pipValueChangeRate=%f", i,
-			money.Pip(),
+			Pip(),
 			Point(),
 			money.PipChangeRate());
 			
 		printf("[%d]: pips=%f profitPerPip(based on lots)=%f finalProfitCalculated=%f", i,
-			(orderType == "sell" ? (openPrice - stopLoss) : (stopLoss - openPrice))/money.Pip(), 
+			(orderType == "sell" ? (openPrice - stopLoss) : (stopLoss - openPrice))/Pip(), 
 			(orderLots * money.PipChangeRate()),
 			(orderType == "sell" ? (openPrice - stopLoss) : (stopLoss - openPrice))/(orderLots * money.PipChangeRate(true,true,closeTime)));
 		

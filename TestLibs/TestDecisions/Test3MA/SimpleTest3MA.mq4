@@ -42,7 +42,7 @@ void OnTick() {
 	//decision.SetVerboseLevel(1);
 	//transaction.SetVerboseLevel(1);
 	
-	double SL = 0.0, TP = 0.0, spread = MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID), spreadPips = spread/GlobalContext.Money.Pip();
+	double SL = 0.0, TP = 0.0, spread = MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID), spreadPips = spread/Pip();
 	
 	transaction.SetSimulatedOrderObjectName("SimulatedOrder3MA");
 	transaction.SetSimulatedStopLossObjectName("SimulatedStopLoss3MA");
@@ -62,7 +62,7 @@ void OnTick() {
 	{
 		if(d > 0.0) { // Buy
 			double price = MarketInfo(Symbol(), MODE_ASK); // Ask
-			GlobalContext.Money.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_BUY, price, false, spread);
+			GlobalContext.Limit.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_BUY, price, false, spread);
 			if((TP != 0.0) || (SL != 0.0))
 				GlobalContext.Limit.ValidateAndFixTPandSL(TP, SL, price, OP_BUY, spread, false);
 			transaction.SimulateOrderSend(Symbol(), OP_BUY, lots, price, 0, SL, TP, NULL, 0, 0, clrNONE);
@@ -75,7 +75,7 @@ void OnTick() {
 			wsLog.DataLog("OrdersToString", transaction.OrdersToString(true));
 		} else { // Sell
 			double price = MarketInfo(Symbol(), MODE_BID); // Bid
-			GlobalContext.Money.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_SELL, price, false, spread);
+			GlobalContext.Limit.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_SELL, price, false, spread);
 			if((TP != 0.0) || (SL != 0.0))
 				GlobalContext.Limit.ValidateAndFixTPandSL(TP, SL, price, OP_SELL, spread, false);
 			transaction.SimulateOrderSend(Symbol(), OP_SELL, lots, price, 0, SL, TP, NULL, 0, 0, clrNONE);

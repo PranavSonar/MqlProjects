@@ -8,12 +8,12 @@
 #property version   "1.00"
 #property strict
 
-#include <MyMql/MoneyManagement/BaseMoneyManagement.mqh>
-#include <MyMql/Generator/GenerateTPandSL.mqh>
+#include <MyMql/Global/Money/BaseMoneyManagement.mqh>
+#include <MyMql/Global/Money/Generator/LimitGenerator.mqh>
 
 void OnTick()
 {
-	GenerateTPandSL generator;
+	LimitGenerator generator;
 	BaseMoneyManagement money;
 	double price = MarketInfo(Symbol(), MODE_BID);
 	double SL = 0.0, TP = 0.0, spread = MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID), spreadPips = spread/money.Pip();

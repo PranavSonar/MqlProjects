@@ -8,14 +8,14 @@
 #property version   "1.00"
 #property strict
 
-#include <MyMql\Generator\GenerateTPandSL.mqh>
+#include <MyMql\Global\Money\Generator\LimitGenerator.mqh>
 
 void OnStart()
 {
 	//RefreshRates();
 	double spread = 4.3; // Ask - Bid;
 	
-	GenerateTPandSL generator;
+	LimitGenerator generator;
 	TransactionData data;
 	generator.GetFirstTransactionData(data, false, Ask, OP_BUY, 0.5*spread, 4.0*spread, 0.5);
 	

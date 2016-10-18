@@ -8,8 +8,8 @@
 #property version   "1.00"
 #property strict
 
-#include <MyMql/MoneyManagement/BaseMoneyManagement.mqh>
-#include <MyMql/Symbols/BaseSymbol.mqh>
+#include <MyMql/Global/Money/BaseMoneyManagement.mqh>
+#include <MyMql/Global/Symbols/BaseSymbol.mqh>
 #include <MyMql/Simulation/BaseSimulatedOrder.mqh>
 
 //+------------------------------------------------------------------+

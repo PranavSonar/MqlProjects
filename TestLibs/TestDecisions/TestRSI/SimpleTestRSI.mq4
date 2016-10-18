@@ -41,7 +41,7 @@ void OnTick()
 	//WebServiceLog wsLog(false);
 	BaseWebServiceLog wsLog();
 	
-	double SL = 0.0, TP = 0.0, spread = MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID), spreadPips = spread/GlobalContext.Money.Pip();
+	double SL = 0.0, TP = 0.0, spread = MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID), spreadPips = spread/Pip();
 	
 	//decision.SetVerboseLevel(1);
 	//transaction.SetVerboseLevel(1);
@@ -61,7 +61,7 @@ void OnTick()
 	{
 		if(d > 0) { // Buy
 			double price = MarketInfo(Symbol(),MODE_ASK); // Ask
-			GlobalContext.Money.CalculateTP_SL(TP, SL, 8*spreadPips, 13*spreadPips, OP_BUY, price, false, spread);
+			GlobalContext.Limit.CalculateTP_SL(TP, SL, 8*spreadPips, 13*spreadPips, OP_BUY, price, false, spread);
 			if((TP != 0.0) || (SL != 0.0))
 				GlobalContext.Limit.ValidateAndFixTPandSL(TP, SL, price, OP_BUY, spread, false);
 			
@@ -75,7 +75,7 @@ void OnTick()
 			wsLog.DataLog("OrdersToString", transaction.OrdersToString(true));
 		} else { // Sell
 			double price = MarketInfo(Symbol(), MODE_BID); // Bid
-			GlobalContext.Money.CalculateTP_SL(TP, SL, 8*spreadPips, 13*spreadPips, OP_SELL, price, false, spread);
+			GlobalContext.Limit.CalculateTP_SL(TP, SL, 8*spreadPips, 13*spreadPips, OP_SELL, price, false, spread);
 			if((TP != 0.0) || (SL != 0.0))
 				GlobalContext.Limit.ValidateAndFixTPandSL(TP, SL, price, OP_SELL, spread, false);
 			

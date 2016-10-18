@@ -8,7 +8,7 @@
 #property version   "1.00"
 #property strict
 
-#include <MyMql\Simulation\SimulateTranSystem.mqh>
+#include <MyMql\System\SimulateTranSystem.mqh>
 
 static SimulateTranSystem system(DECISION_TYPE_ALL, MONEY_MANAGEMENT_ALL, TRANSACTION_MANAGEMENT_ALL);
 

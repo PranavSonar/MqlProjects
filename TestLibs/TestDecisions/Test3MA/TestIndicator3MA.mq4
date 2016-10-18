@@ -117,7 +117,7 @@ int start()
 	//decision.SetVerboseLevel(1);
 	//transaction.SetVerboseLevel(1);
 	int i = Bars - IndicatorCounted() - 1;
-	double SL = 0.0, TP = 0.0, spread = MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID), spreadPips = spread/GlobalContext.Money.Pip();
+	double SL = 0.0, TP = 0.0, spread = MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID), spreadPips = spread/Pip();
 	
 	transaction.SetSimulatedOrderObjectName("SimulatedOrder3MA");
 	transaction.SetSimulatedTransactionWholeName("SimulatedTransactionWhole3MA");
@@ -143,7 +143,7 @@ int start()
 		
 		if(d > 0.0) { // Buy
 			double price = Close[i] + spread; // Ask
-			GlobalContext.Money.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_BUY, price, false, spread);
+			GlobalContext.Limit.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_BUY, price, false, spread);
 			GlobalContext.Limit.ValidateAndFixTPandSL(TP, SL, price, OP_BUY, spread, false);
 			transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.1, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
 			
@@ -156,7 +156,7 @@ int start()
 			////Print("");
 		} else if(d < 0.0) { // Sell
 			double price = Close[i]; // Bid
-			GlobalContext.Money.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_SELL, price, false, spread);
+			GlobalContext.Limit.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_SELL, price, false, spread);
 			GlobalContext.Limit.ValidateAndFixTPandSL(TP, SL, price, OP_SELL, spread, false);
 			transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.1, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
 			

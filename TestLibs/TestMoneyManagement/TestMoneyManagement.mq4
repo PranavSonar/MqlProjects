@@ -8,7 +8,8 @@
 #property version   "1.00"
 #property strict
 
-#include <MyMql/MoneyManagement/BaseMoneyManagement.mqh>
+#include <MyMql/Global/Money/BaseMoneyManagement.mqh>
+#include <MyMql/Global/Money/Generator/LimitGenerator.mqh>
 
 //+------------------------------------------------------------------+
 //| Expert initialization function (used for testing)                |
@@ -16,6 +17,8 @@
 int OnInit()
 {
 	BaseMoneyManagement money;
+	LimitGenerator limit;
+	
 	//--- CalculatePriceForUSD
 	//printf("CalculatePriceForUSD(isOrderSymbol = false, isBaseCurrency = false): %f", money.CalculateCurrencyPriceForUSD(false, false));
 	printf("CalculateCurrencyPrice(isOrderSymbol = false, isBaseCurrency = false): %f", money.CalculateCurrencyPrice(false,false));
@@ -26,13 +29,13 @@ int OnInit()
 	//--- CalculateTP_SL
 	double TP, SL, TPpips, SLpips, openPrice, spread;
 	TPpips = 20.0; SLpips = 10.0; openPrice = 1.253212; spread = 0.02;
-	money.CalculateTP_SL(TP,SL,TPpips,SLpips,OP_BUY,openPrice,spread); printf("CalculateTP_SL: TP = %f, SL = %f, TPpips = %f SLpips = %f, price = %f", TP, SL, TPpips, SLpips, openPrice);
-	money.DeCalculateTP_SL(TP,SL,TPpips,SLpips,OP_BUY,openPrice,spread); printf("CalculateTP_SL: TP = %f, SL = %f, TPpips = %f SLpips = %f, price = %f", TP, SL, TPpips, SLpips, openPrice);
+	limit.CalculateTP_SL(TP,SL,TPpips,SLpips,OP_BUY,openPrice,spread); printf("CalculateTP_SL: TP = %f, SL = %f, TPpips = %f SLpips = %f, price = %f", TP, SL, TPpips, SLpips, openPrice);
+	limit.DeCalculateTP_SL(TP,SL,TPpips,SLpips,OP_BUY,openPrice,spread); printf("CalculateTP_SL: TP = %f, SL = %f, TPpips = %f SLpips = %f, price = %f", TP, SL, TPpips, SLpips, openPrice);
 	
 	
 	TPpips = 20.0; SLpips = 10.0; openPrice = 1.253212; spread = 0.02;
-	money.CalculateTP_SL(TP,SL,TPpips,SLpips,OP_SELL,openPrice,spread); printf("CalculateTP_SL: sell: TP = %f, SL = %f, TPpips = %f SLpips = %f, price = %f", TP, SL, TPpips, SLpips, openPrice);
-	money.DeCalculateTP_SL(TP,SL,TPpips,SLpips,OP_SELL,openPrice,spread); printf("CalculateTP_SL: sell: TP = %f, SL = %f, TPpips = %f SLpips = %f, price = %f", TP, SL, TPpips, SLpips, openPrice);
+	limit.CalculateTP_SL(TP,SL,TPpips,SLpips,OP_SELL,openPrice,spread); printf("CalculateTP_SL: sell: TP = %f, SL = %f, TPpips = %f SLpips = %f, price = %f", TP, SL, TPpips, SLpips, openPrice);
+	limit.DeCalculateTP_SL(TP,SL,TPpips,SLpips,OP_SELL,openPrice,spread); printf("CalculateTP_SL: sell: TP = %f, SL = %f, TPpips = %f SLpips = %f, price = %f", TP, SL, TPpips, SLpips, openPrice);
 	
 	//--- CheckPriceGoesOurWay (obsolete; removed)
 	//printf("CheckPriceGoesOurWay: %f", money.CheckPriceGoesOurWay());

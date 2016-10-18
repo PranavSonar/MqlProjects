@@ -16,13 +16,13 @@
 #property indicator_color2 Red      // Color of the 2nd line
 
 #include <MyMql/DecisionMaking/DecisionDoubleBB.mqh>
-#include <MyMql/DecisionMaking/Decision3MA.mqh>
+#include <MyMql/DecisionMaking/Decision3CombinedMA.mqh>
 #include <MyMql/DecisionMaking/DecisionRSI.mqh>
 #include <MyMql/Global/Money/MoneyBetOnDecision.mqh>
 #include <MyMql/TransactionManagement/FlowWithTrendTranMan.mqh>
-#include <MyMql/Generator/GenerateTPandSL.mqh>
-#include <MyMql/Info/ScreenInfo.mqh>
-#include <MyMql/Info/VerboseInfo.mqh>
+#include <MyMql/Global/Money/Generator/LimitGenerator.mqh>
+#include <MyMql/Global/Info/ScreenInfo.mqh>
+#include <MyMql/Global/Info/VerboseInfo.mqh>
 #include <Files/FileTxt.mqh>
 #include <MyMql/Global/Log/WebServiceLog.mqh>
 
@@ -50,7 +50,7 @@ int start()
 {
 	// Decisions:
 	DecisionRSI rsiDecision;
-	Decision3MA maDecision;
+	Decision3CombinedMA maDecision;
 	DecisionDoubleBB bbDecision;
 	
 	// Transaction management (send/etc)
@@ -68,13 +68,13 @@ int start()
 	
 	while(i >= 0)
 	{
-		double decision = bbDecision.GetDecision(SL, TP, 1.0, i) + rsiDecision.GetDecision(i) + maDecision.GetDecision(i);
+		double decision = bbDecision.GetDecision2(SL, TP, 1.0, i) + rsiDecision.GetDecision(i) + maDecision.GetDecision(i);
 		int DecisionOrderType = (int)(decision > 0.0 ? BuyDecision : IncertitudeDecision) + 
 			(int)(decision < 0.0 ? SellDecision : IncertitudeDecision);
 		double price = money.GetPriceBasedOnDecision(decision, false);
 		
 		if((SL == 0.0) || (TP == 0.0))
-			money.CalculateTP_SL(TP, SL, 30.0, 50.0, DecisionOrderType, price); // TP and SL cannot be calculated well without the price
+			GlobalContext.Limit.CalculateTP_SL(TP, SL, 30.0, 50.0, DecisionOrderType, price); // TP and SL cannot be calculated well without the price
 		
 		if(decision != IncertitudeDecision)
 		{

@@ -8,7 +8,7 @@
 #property version   "1.00"
 #property strict
 
-#include <MyMql/MoneyManagement/BaseMoneyManagement.mqh>
+#include <MyMql/Global/Money/BaseMoneyManagement.mqh>
 
 
 void OnStart()
