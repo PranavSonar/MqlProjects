@@ -9,7 +9,7 @@
 #property version   "1.00"
 #property strict
 
-#include <MyMql/Info/VerboseInfo.mqh>
+#include <MyMql/Global/Info/VerboseInfo.mqh>
 
 
 int init()
