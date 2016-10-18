@@ -9,7 +9,7 @@
 #property strict
 
 #include <MyMql\DecisionMaking\DecisionDoubleBB.mqh>
-#include <MyMql\DecisionMaking\Decision3MA.mqh>
+#include <MyMql\DecisionMaking\Decision3CombinedMA.mqh>
 #include <MyMql\DecisionMaking\DecisionRSI.mqh>
 #include <MyMql\DecisionMaking\DecisionCandle.mqh>
 
@@ -34,7 +34,7 @@ void OnStart()
 	// List
 	CArrayObj* ListOfDecisions = new CArrayObj();
 	ListOfDecisions.Add(new DecisionDoubleBB());
-	ListOfDecisions.Add(new Decision3MA());
+	ListOfDecisions.Add(new Decision3CombinedMA());
 	ListOfDecisions.Add(new DecisionRSI());
 	ListOfDecisions.Add(new DecisionCandle());
 	
@@ -51,7 +51,7 @@ void OnStart()
 	BaseDecision *decisions[];
 	ArrayResize(decisions,4);
 	decisions[0] = new DecisionDoubleBB();
-	decisions[1] = new Decision3MA();
+	decisions[1] = new Decision3CombinedMA();
 	decisions[2] = new DecisionRSI();
 	decisions[3] = new DecisionCandle();
 	

@@ -8,8 +8,8 @@
 #property version   "1.00"
 #property strict
 
-#include <MyMql\Config\GlobalConfig.mqh>
-#include <MyMql\Log\WebServiceLog.mqh>
+#include <MyMql\Global\Config\GlobalConfig.mqh>
+#include <MyMql\Global\Log\WebServiceLog.mqh>
 
 int OnInit()
 {
@@ -45,7 +45,7 @@ int OnInit()
 		+ " LotStep:" + DoubleToString(LotStep)
 	);
 	
-	config.InitializeConfig();
+	config.Initialize();
 	config.ChangeSymbol();
 	wslog.EndTradingSession();
 	return(INIT_SUCCEEDED);
