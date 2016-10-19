@@ -8,13 +8,12 @@
 #property version   "1.00"
 #property strict
 
-#include <MyMql\Global\Config\GlobalConfig.mqh>
+#include <MyMql\Global\Global.mqh>
 #include <MyMql\Global\Log\WebServiceLog.mqh>
 
 int OnInit()
 {
 	WebServiceLog wslog(true);
-	GlobalConfig config(true, true, false, true);
 	if(FirstSymbol == NULL)
 		wslog.NewTradingSession();
 	
@@ -35,18 +34,18 @@ int OnInit()
 		"CanTradeOnThis:" + BoolToString(CanTradeOnThis)
 		+ " CanTradeOnThis2:" + BoolToString(CanTradeOnThis2)
 		+ " CanTradeOnThis5:" + BoolToString(CanTradeOnThis5)
-		+ " OneLotMargin:" + DoubleToString(OneLotMargin)
-		+ " MinLotMargin:" + DoubleToString(MinLotMargin)
-		+ " MaxLotMargin:" + DoubleToString(MaxLotMargin)
-		+ " MarginAmount:" + DoubleToString(MarginAmount)
-		+ " MinLot:" + DoubleToString(MarketInfo(_Symbol,MODE_MINLOT))
-		+ " MaxLot:" + DoubleToString(MarketInfo(_Symbol,MODE_MAXLOT))
-		+ " lotMM:" + DoubleToString(lotMM)
-		+ " LotStep:" + DoubleToString(LotStep)
+		+ " OneLotMargin:" + DoubleToString(OneLotMargin,3)
+		+ " MinLotMargin:" + DoubleToString(MinLotMargin,3)
+		+ " MaxLotMargin:" + DoubleToString(MaxLotMargin,3)
+		+ " MarginAmount:" + DoubleToString(MarginAmount,3)
+		+ " MinLot:" + DoubleToString(MarketInfo(_Symbol,MODE_MINLOT),3)
+		+ " MaxLot:" + DoubleToString(MarketInfo(_Symbol,MODE_MAXLOT),3)
+		+ " lotMM:" + DoubleToString(lotMM,3)
+		+ " LotStep:" + DoubleToString(LotStep,3)
 	);
 	
-	config.Initialize();
-	config.ChangeSymbol();
+	GlobalContext.Config.Initialize(true, true, false, true);
+	GlobalContext.Config.ChangeSymbol();
 	wslog.EndTradingSession();
 	return(INIT_SUCCEEDED);
 }

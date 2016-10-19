@@ -10,29 +10,23 @@
 
 #include <MyMql\System\SimulateTranSystem.mqh>
 
-static SimulateTranSystem system(DECISION_TYPE_ALL, MONEY_MANAGEMENT_ALL, TRANSACTION_MANAGEMENT_ALL);
+static SimulateTranSystem system(DECISION_TYPE_ALL, LOT_MANAGEMENT_ALL, TRANSACTION_MANAGEMENT_ALL);
 
 int OnInit()
 {
-	int len = SymbolsTotal(false);
-	
-	for(int i=0;i<len;i++)
+	if(FirstSymbol == NULL)
 	{
-		string symbolName = SymbolName(i,false);
-		system.SetupTransactionSystem(symbolName,0);
-		system.TestEachTransactionSystem();
+		GlobalContext.DatabaseLog.Initialize(true);
+		GlobalContext.DatabaseLog.NewTradingSession();
 	}
 	
+	system.SetupTransactionSystem(_Symbol);
+	system.TestEachTransactionSystem();
+	
+	GlobalContext.Config.Initialize(true, true, false, true);
+	GlobalContext.Config.ChangeSymbol();
+	
+	GlobalContext.DatabaseLog.EndTradingSession();
+	
 	return(INIT_SUCCEEDED);
-}
-
-
-void OnDeinit(const int reason)
-{
-	
-}
-
-void OnTick()
-{
-	
 }
