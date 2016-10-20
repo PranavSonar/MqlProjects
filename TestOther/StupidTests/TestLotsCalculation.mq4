@@ -31,9 +31,9 @@ int OnInit()
 	bool CanTradeOnThis5 = MinLotMargin < MarginAmount*5;
 	
 	wslog.DataLog("MarginRequired on symbol " + _Symbol,
-		"CanTradeOnThis:" + BoolToString(CanTradeOnThis)
-		+ " CanTradeOnThis2:" + BoolToString(CanTradeOnThis2)
-		+ " CanTradeOnThis5:" + BoolToString(CanTradeOnThis5)
+		"CanTrade100:" + BoolToString(CanTradeOnThis)
+		+ " CanTrade200:" + BoolToString(CanTradeOnThis2)
+		+ " CanTrade500:" + BoolToString(CanTradeOnThis5)
 		+ " OneLotMargin:" + DoubleToString(OneLotMargin,3)
 		+ " MinLotMargin:" + DoubleToString(MinLotMargin,3)
 		+ " MaxLotMargin:" + DoubleToString(MaxLotMargin,3)
