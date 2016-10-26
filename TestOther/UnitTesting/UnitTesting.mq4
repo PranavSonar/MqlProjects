@@ -22,7 +22,7 @@ bool TestWebService(string &errors)
    errors = ""; 
 	WebServiceLog wslog(true);
 	
-	wslog.NewTradingSession();
+	wslog.NewTradingSession("test");
 	
 	bool isOk = true;
 	string param1, param2;
@@ -73,7 +73,7 @@ bool TestWebService(string &errors)
 	//SafePrintString(wslog.Result);
 	
 	
-	wslog.EndTradingSession();
+	wslog.EndTradingSession("test");
 	isOk = isOk && AssertEqual(errors, wslog.Result, XmlEncodingString + BeginString + "EndTradingSession; Rows affected: 1" + EndString, WSAssertErrorString);
 	//SafePrintString(wslog.Result);
 	
@@ -135,36 +135,35 @@ bool TestOrderLimits(string &errors, int orderType = OP_BUY)
    _SW
    errors = "";
 	bool isOk = true;
-	BaseMoneyManagement money;
 	
 	int digits = 5;
 	double price = MarketInfo(Symbol(), MODE_BID);
-	double SL = 0.0, TP = 0.0, SL2 = 0.0, TP2 = 0.0, SlLimitPips = 0.0, TpLimitPips = 0.0, SlLimitPips2 = 0.0, TpLimitPips2 = 0.0, spread = MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID), spreadPips = spread/money.Pip();
+	double SL = 0.0, TP = 0.0, SL2 = 0.0, TP2 = 0.0, SlLimitPips = 0.0, TpLimitPips = 0.0, SlLimitPips2 = 0.0, TpLimitPips2 = 0.0, spread = MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID), spreadPips = spread/Pip();
 	
 	TpLimitPips = 2.6 * spreadPips;
 	SlLimitPips = 1.6 * spreadPips;
-	money.CalculateTP_SL(TP, SL, TpLimitPips, SlLimitPips, orderType, price, false, spread);
+	GlobalContext.Limit.CalculateTP_SL(TP, SL, TpLimitPips, SlLimitPips, orderType, price, false, spread);
    if((TP == 0.0) || (SL == 0.0))
    {
       isOk = false;
       errors += "CalculateTP_SL(" + IntegerToString(orderType) + "; " + DoubleToString(NormalizeDouble(TP, digits)) + "==0.0 || " + DoubleToString(NormalizeDouble(SL, digits)) + "==0.0) ";
    }
 
-	money.CalculateSL(SL2, SlLimitPips, orderType, price, false, spread);
+	GlobalContext.Limit.CalculateSL(SL2, SlLimitPips, orderType, price, false, spread);
 	if(NormalizeDouble(SL2, digits) != NormalizeDouble(SL, digits))
    {
       isOk = false;
       errors += "CalculateSL(" + IntegerToString(orderType) + "; " + DoubleToString(NormalizeDouble(SL2, digits)) + "!=" + DoubleToString(NormalizeDouble(SL, digits)) + ") ";
    }
 	
-	money.CalculateTP(TP2, TpLimitPips, orderType, price, false, spread);
+	GlobalContext.Limit.CalculateTP(TP2, TpLimitPips, orderType, price, false, spread);
 	if(NormalizeDouble(TP2, digits) != NormalizeDouble(TP, digits))
    {
       isOk = false;
       errors += "CalculateTP(" + IntegerToString(orderType) + "; " + DoubleToString(NormalizeDouble(TP2, digits)) + "!=" + DoubleToString(NormalizeDouble(TP, digits)) + ") ";
    }
    
-	money.DeCalculateTP_SL(TP, SL, TpLimitPips2, SlLimitPips2, orderType, price, false, spread);
+	GlobalContext.Limit.DeCalculateTP_SL(TP, SL, TpLimitPips2, SlLimitPips2, orderType, price, false, spread);
 	if(NormalizeDouble(TpLimitPips2, digits) != NormalizeDouble(TpLimitPips, digits))
    {
       isOk = false;
@@ -177,7 +176,7 @@ bool TestOrderLimits(string &errors, int orderType = OP_BUY)
    }
    
 	TpLimitPips2 = 0.0;
-	money.DeCalculateTP(TP, TpLimitPips2, orderType, price, false, spread);
+	GlobalContext.Limit.DeCalculateTP(TP, TpLimitPips2, orderType, price, false, spread);
 	if(NormalizeDouble(TpLimitPips2, digits) != NormalizeDouble(TpLimitPips, digits))
    {
       isOk = false;
@@ -185,7 +184,7 @@ bool TestOrderLimits(string &errors, int orderType = OP_BUY)
    }
    
 	SlLimitPips2 = 0.0;
-	money.DeCalculateSL(SL, SlLimitPips2, orderType, price, false, spread);
+	GlobalContext.Limit.DeCalculateSL(SL, SlLimitPips2, orderType, price, false, spread);
 	
    if(NormalizeDouble(SlLimitPips2, digits) != NormalizeDouble(SlLimitPips, digits))
    {
@@ -308,12 +307,12 @@ bool TestSymbolsLibrary(string &errors)
 void OnInit()
 {
 	// Log with WebService
-	WebServiceLog wslog(true);
+	GlobalContext.DatabaseLog.Initialize(true);
 	
-   if(FirstSymbol == NULL)
-      wslog.NewTradingSession();
+	if(FirstSymbol == NULL)
+		GlobalContext.DatabaseLog.NewTradingSession("test");
 	
-	GlobalConfig config(true, true, false, false);
+	GlobalContext.Config.Initialize(true, true, false, false);
 	
 	string finalText = "", errors = "";
 	if(!TestWebService(errors))
@@ -344,13 +343,12 @@ void OnInit()
 	
 	if(!MarketInfo(_Symbol, MODE_TRADEALLOWED))
 	   finalText += "; Trade not allowed";
-	wslog.DataLog("UnitTest on " + Symbol(), finalText);
+	GlobalContext.DatabaseLog.DataLog("UnitTest on " + Symbol(), finalText);
 	
 	SafePrintString(finalText);
 	
 	// Navigate next
-	config.Initialize();
-	config.ChangeSymbol();
-	wslog.EndTradingSession();
+	GlobalContext.Config.ChangeSymbol(); // initialized before
 	
+	GlobalContext.DatabaseLog.EndTradingSession("test");
 }

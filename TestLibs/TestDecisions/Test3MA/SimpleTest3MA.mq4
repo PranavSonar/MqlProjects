@@ -21,6 +21,9 @@ int OnInit()
 	//vi.ClientAndTerminalInfo();
 	//vi.PrintMarketInfo();
 	
+	GlobalContext.DatabaseLog.Initialize(true);
+	GlobalContext.DatabaseLog.NewTradingSession("SimpleTest3MA");
+	
 	if(IsTesting())
 		return INIT_SUCCEEDED;
 	return ExpertValidationsTest(Symbol());
@@ -35,9 +38,6 @@ static FlowWithTrendTranMan transaction;
 
 void OnTick() {
 	Decision3CombinedMA decision;
-	ScreenInfo screen;
-	//WebServiceLog wsLog(false);
-	BaseWebServiceLog wsLog();
 	
 	//decision.SetVerboseLevel(1);
 	//transaction.SetVerboseLevel(1);
@@ -54,7 +54,7 @@ void OnTick() {
 	transaction.CalculateData();
 	double lots = MarketInfo(_Symbol, MODE_MINLOT); //GlobalContext.Money.GetLotsBasedOnDecision(d, false); -> to be moved
 	
-	wsLog.DataLog("OrdersToString", transaction.OrdersToString(true));
+	GlobalContext.DatabaseLog.DataLog("OrdersToString", transaction.OrdersToString(true));
 	
 	transaction.AutoAddTransactionData(spreadPips);
 	
@@ -71,8 +71,8 @@ void OnTick() {
 			if(tichet == -1)
 				Print("Failed! Reason: " + IntegerToString(GetLastError()));
 			
-			wsLog.DataLog("NewOrder", "New order buy " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
-			wsLog.DataLog("OrdersToString", transaction.OrdersToString(true));
+			//GlobalContext.DatabaseLog.DataLog("NewOrder", "New order buy " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
+			//GlobalContext.DatabaseLog.DataLog("OrdersToString", transaction.OrdersToString(true));
 		} else { // Sell
 			double price = MarketInfo(Symbol(), MODE_BID); // Bid
 			GlobalContext.Limit.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_SELL, price, false, spread);
@@ -84,13 +84,13 @@ void OnTick() {
 			if(tichet == -1)
 				Print("Failed! Reason: " + IntegerToString(GetLastError()));
 			
-			wsLog.DataLog("NewOrder", "New order sell " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
-			wsLog.DataLog("OrdersToString", transaction.OrdersToString(true));
+			//GlobalContext.DatabaseLog.DataLog("NewOrder", "New order sell " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
+			//GlobalContext.DatabaseLog.DataLog("OrdersToString", transaction.OrdersToString(true));
 		}
 		
-		screen.ShowTextValue("CurrentValue", "Number of decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(-1)),clrGray, 20, 0);
-		screen.ShowTextValue("CurrentValueSell", "Number of sell decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(OP_SELL)), clrGray, 20, 20);
-		screen.ShowTextValue("CurrentValueBuy", "Number of buy decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(OP_BUY)), clrGray, 20, 40);
+		GlobalContext.Screen.ShowTextValue("CurrentValue", "Number of decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(-1)),clrGray, 20, 0);
+		GlobalContext.Screen.ShowTextValue("CurrentValueSell", "Number of sell decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(OP_SELL)), clrGray, 20, 20);
+		GlobalContext.Screen.ShowTextValue("CurrentValueBuy", "Number of buy decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(OP_BUY)), clrGray, 20, 40);
 	}
 	
 	double profit;
@@ -113,5 +113,5 @@ void OnTick() {
 	
 	transaction.FlowWithTrend_UpdateSL_TP_UsingConstants(2.6*spreadPips, 1.6*spreadPips);
 	
-	wsLog.EndTradingSession();
+	GlobalContext.DatabaseLog.EndTradingSession("SimpleTest3MA");
 }	
