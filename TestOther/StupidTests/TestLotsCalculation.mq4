@@ -11,15 +11,44 @@
 #include <MyMql\Global\Global.mqh>
 #include <MyMql\Global\Log\WebServiceLog.mqh>
 
+double ValidateLot(double lot)
+{
+	double minLot = MarketInfo(_Symbol,MODE_MINLOT);
+	double maxLot = MarketInfo(_Symbol,MODE_MAXLOT);
+	
+	if(lot < minLot)
+		lot = minLot;
+	else if(lot > maxLot)
+		lot = maxLot;
+	
+	return lot;
+}
+
+double GetMarginFromLots(double lot)
+{
+	double validatedLot = ValidateLot(lot);
+	double oneLotMargin = MarketInfo(_Symbol,MODE_MARGINREQUIRED);
+	
+	return validatedLot * oneLotMargin;
+}
+
+
 int OnInit()
 {
-	WebServiceLog wslog(true);
 	if(FirstSymbol == NULL)
-		wslog.NewTradingSession();
+	{
+		GlobalContext.DatabaseLog.Initialize(true);
+		GlobalContext.DatabaseLog.NewTradingSession("TestLotsCalculation.mq4");
+	}
 	
 	double OneLotMargin = MarketInfo(_Symbol,MODE_MARGINREQUIRED);
 	double MinLotMargin = OneLotMargin*MarketInfo(_Symbol,MODE_MINLOT);
 	double MaxLotMargin = OneLotMargin*MarketInfo(_Symbol,MODE_MAXLOT);
+
+	//// same as:
+	//double MinLotMargin = GetMarginFromLots(MarketInfo(_Symbol,MODE_MINLOT));
+	//double MaxLotMargin = GetMarginFromLots(MarketInfo(_Symbol,MODE_MAXLOT));
+	
 	double MarginAmount = 100; //this means we want to use 200 ron for trade
 	double lotMM = MarginAmount / OneLotMargin;
 	double LotStep = MarketInfo(_Symbol,MODE_LOTSTEP);
@@ -30,7 +59,7 @@ int OnInit()
 	bool CanTradeOnThis2 = MinLotMargin < MarginAmount*2;
 	bool CanTradeOnThis5 = MinLotMargin < MarginAmount*5;
 	
-	wslog.DataLog("MarginRequired on symbol " + _Symbol,
+	GlobalContext.DatabaseLog.DataLog("MarginRequired on symbol " + _Symbol,
 		"CanTrade100:" + BoolToString(CanTradeOnThis)
 		+ " CanTrade200:" + BoolToString(CanTradeOnThis2)
 		+ " CanTrade500:" + BoolToString(CanTradeOnThis5)
@@ -46,6 +75,6 @@ int OnInit()
 	
 	GlobalContext.Config.Initialize(true, true, false, true);
 	GlobalContext.Config.ChangeSymbol();
-	wslog.EndTradingSession();
+	GlobalContext.DatabaseLog.EndTradingSession("TestLotsCalculation.mq4");
 	return(INIT_SUCCEEDED);
 }
