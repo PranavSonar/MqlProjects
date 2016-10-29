@@ -23,7 +23,7 @@ int OnInit()
 	//vi.PrintMarketInfo();
 	
 	GlobalContext.DatabaseLog.Initialize(true);
-	GlobalContext.DatabaseLog.NewTradingSession("SimpleTestDoubleBB");
+	GlobalContext.DatabaseLog.NewTradingSession(__FILE__);
 	
 	lastDecision = 0.0;
 	nrDecisions = 0;
@@ -35,6 +35,7 @@ int OnInit()
 
 void OnDeinit(const int reason)
 {
+	GlobalContext.DatabaseLog.EndTradingSession(__FILE__);
 }
 
 
@@ -132,6 +133,4 @@ void OnTick()
 	
 	//transaction.FlowWithTrend_UpdateSL_TP_UsingConstants(3*spreadPips, 2*spreadPips);
 	//transaction.FlowWithTrend_UpdateSL_TP();
-	
-	GlobalContext.DatabaseLog.EndTradingSession("SimpleTestDoubleBB");
 }

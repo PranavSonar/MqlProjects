@@ -86,16 +86,17 @@ int init()
 	//	logFile.Open("LogFile.txt", FILE_READ | FILE_WRITE | FILE_ANSI | FILE_REWRITE);
 	
 	GlobalContext.DatabaseLog.Initialize(false,false,false,"3MA.txt");
-	GlobalContext.DatabaseLog.NewTradingSession("TestIndicator3MA");
+	GlobalContext.DatabaseLog.NewTradingSession(__FILE__);
 	
 	return INIT_SUCCEEDED;
 }
 
-//void OnDeinit(const int reason)
-//{
+void OnDeinit(const int reason)
+{
 //	if(logToFile)
 //		logFile.Close();
-//}
+	GlobalContext.DatabaseLog.EndTradingSession(__FILE__);
+}
 
 //bool logToFile = false;
 //static CFileTxt logFile;
@@ -200,7 +201,6 @@ int start()
 		+ "\nStop loss / Spread (best from average): " + DoubleToString(SL/spreadPips,4);
 	GlobalContext.DatabaseLog.DataLog(decision.GetDecisionName() + " on " + _Symbol, summary);
 	Comment(summary);
-	
 	
 	_EW
 	return 0;

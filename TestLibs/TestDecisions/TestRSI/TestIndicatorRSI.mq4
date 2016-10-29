@@ -65,16 +65,18 @@ int OnInit()
 	//	logFile.Open("LogFile.txt", FILE_READ | FILE_WRITE | FILE_ANSI | FILE_REWRITE);
 	
 	GlobalContext.DatabaseLog.Initialize(false,false,false,"RSI.txt");
-	GlobalContext.DatabaseLog.NewTradingSession("TestIndicatorRSI");
+	GlobalContext.DatabaseLog.NewTradingSession(__FILE__);
 	
 	return INIT_SUCCEEDED;
 }
 
-//void OnDeinit(const int reason)
-//{
+void OnDeinit(const int reason)
+{
 //	if(logToFile)
 //		logFile.Close();
-//}
+	
+	GlobalContext.DatabaseLog.NewTradingSession(__FILE__);
+}
 
 //bool logToFile = false;
 //static CFileTxt logFile;

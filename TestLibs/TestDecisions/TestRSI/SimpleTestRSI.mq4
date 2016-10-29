@@ -23,7 +23,7 @@ int OnInit()
 	//vi.PrintMarketInfo();
 	
 	GlobalContext.DatabaseLog.Initialize(true);
-	GlobalContext.DatabaseLog.NewTradingSession("SimpleTestRSI");
+	GlobalContext.DatabaseLog.NewTradingSession(__FILE__);
 	
 	if(IsTesting())
 		return INIT_SUCCEEDED;
@@ -32,6 +32,7 @@ int OnInit()
 
 void OnDeinit(const int reason)
 {
+	GlobalContext.DatabaseLog.EndTradingSession(__FILE__);
 }
 
 

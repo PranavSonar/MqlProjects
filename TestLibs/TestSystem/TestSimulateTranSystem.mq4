@@ -18,7 +18,7 @@ int OnInit()
 	if(FirstSymbol == NULL)
 	{
 		GlobalContext.DatabaseLog.Initialize(true);
-		GlobalContext.DatabaseLog.NewTradingSession();
+		GlobalContext.DatabaseLog.NewTradingSession(__FILE__);
 	}
 	
 	system.SetupTransactionSystem(_Symbol);
@@ -27,7 +27,7 @@ int OnInit()
 	GlobalContext.Config.Initialize(true, true, false, true);
 	GlobalContext.Config.ChangeSymbol();
 	
-	GlobalContext.DatabaseLog.EndTradingSession();
+	GlobalContext.DatabaseLog.EndTradingSession(__FILE__);
 	
 	return(INIT_SUCCEEDED);
 }
