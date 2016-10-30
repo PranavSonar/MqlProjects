@@ -99,7 +99,7 @@ int start()
 	transaction.SetSimulatedTransactionWholeName("SimulatedTransactionWholeBB");
 	transaction.SetSimulatedStopLossObjectName("SimulatedStopLossBB");
 	transaction.SetSimulatedTakeProfitObjectName("SimulatedTakeProfitBB");
-	transaction.SetIsIrregularTransactionData(true);
+	transaction.SetIsIrregularTransactionData(decision.DecisionWithIrregularLimits());
 	transaction.SetIrregularLimitsType(1);
 	
 	transaction.AutoAddTransactionData(spreadPips);
@@ -116,9 +116,9 @@ int start()
 		//if(logToFile)
 		//	logFile.WriteString(transaction.OrdersToString(true));
 		
-		if(d > 0.0) { // Buy
+		if(d > IncertitudeDecision) { // Buy
 			double price = Close[i] + spread; // Ask
-			GlobalContext.Limit.CalculateTP_SL(TP, SL, OP_BUY, price, false, spread, 3*spread, spread);
+			//GlobalContext.Limit.CalculateTP_SL(TP, SL, OP_BUY, price, false, spread, 3*spread, spread);
 			GlobalContext.Limit.ValidateAndFixTPandSL(TP, SL, price, OP_BUY, spread, false);
 			
 			transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.1, price, 0, SL ,TP, NULL, 0, 0, clrNONE, i);
@@ -131,9 +131,9 @@ int start()
 			//	logFile.WriteString(transaction.OrdersToString(true));
 			//}
 			
-		} else if(d < 0.0) { // Sell
+		} else if(d < IncertitudeDecision) { // Sell
 			double price = Close[i]; // Bid
-			GlobalContext.Limit.CalculateTP_SL(TP, SL, OP_SELL, price, false, spread, 3*spread, spread);
+			//GlobalContext.Limit.CalculateTP_SL(TP, SL, OP_SELL, price, false, spread, 3*spread, spread);
 			GlobalContext.Limit.ValidateAndFixTPandSL(TP, SL, price, OP_SELL, spread, false);
 			transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.1, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
 			
