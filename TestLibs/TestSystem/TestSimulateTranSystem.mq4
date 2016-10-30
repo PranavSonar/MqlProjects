@@ -22,7 +22,7 @@ int OnInit()
 	}
 	
 	system.SetupTransactionSystem(_Symbol);
-	system.TestEachTransactionSystem();
+	system.TestTransactionSystemForCurrentSymbol();
 	
 	GlobalContext.Config.Initialize(true, true, false, true);
 	GlobalContext.Config.ChangeSymbol();
