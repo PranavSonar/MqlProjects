@@ -106,6 +106,8 @@ int start()
 	
 	while(i >= 0)
 	{
+		GlobalContext.Screen.PrintCurrentValue(i, "TimeIndex", clrNONE, 20, 20, 1);
+		
 		double d = decision.GetDecision2(SL, TP, 1.0, i);
 		decision.SetIndicatorData(Buf_BBs2, Buf_BBs1, Buf_BBm, Buf_BBd1, Buf_BBd2, i);
 		Buf_Decision[i] = d;

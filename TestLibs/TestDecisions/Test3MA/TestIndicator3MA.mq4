@@ -129,6 +129,8 @@ int start()
 	
 	while(i >= 0)
 	{
+		GlobalContext.Screen.PrintCurrentValue(i, "TimeIndex", clrNONE, 20, 20, 1);
+		
 		double d = decision.GetDecision(i);
 		decision.SetIndicatorData(Buf_CloseH1, Buf_MedianH1, Buf_CloseD1, Buf_MedianD1, Buf_CloseW1, Buf_MedianW1, i);
 		decision.SetIndicatorShiftedData(Buf_CloseShiftedH1, Buf_MedianShiftedH1, Buf_CloseShiftedD1, Buf_MedianShiftedD1, Buf_CloseShiftedW1, Buf_MedianShiftedW1, i);

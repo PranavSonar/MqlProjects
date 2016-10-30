@@ -103,6 +103,8 @@ int start()
 	
 	while(i >= 0)
 	{
+		GlobalContext.Screen.PrintCurrentValue(i, "TimeIndex", clrNONE, 20, 20, 1);
+		
 		double d = decision.GetDecision(i);
 		decision.SetIndicatorData(Buf_CloseH1, Buf_MedianH1, Buf_CloseD1, Buf_MedianD1, Buf_CloseW1, Buf_MedianW1, i);
 		Buf_Decision[i] = d;
