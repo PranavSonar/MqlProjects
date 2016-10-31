@@ -95,6 +95,7 @@ void OnDeinit(const int reason)
 {
 //	if(logToFile)
 //		logFile.Close();
+	transaction.LogAllOrders();
 	GlobalContext.DatabaseLog.EndTradingSession(__FILE__);
 }
 
