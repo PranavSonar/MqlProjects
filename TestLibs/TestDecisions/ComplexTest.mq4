@@ -82,13 +82,13 @@ int start()
 			if(DecisionOrderType > 0) { // Buy
 				
 				//if(IsDemo())
-					ticket = ticket * transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.1, price,0,SL,TP,NULL, 0, 0, clrNONE, i);
+					ticket = ticket * transaction.SimulateOrderSend(_Symbol, OP_BUY, 0.1, price,0,SL,TP,NULL, 0, 0, clrNONE, i);
 				//else
 				//	ticket = ticket * OrderSend(Symbol(), OP_BUY, 0.1, price,0,SL,TP,NULL, 0, 0, clrNONE);
 				
 			} else { // Sell
 				//if(IsDemo())
-					ticket = ticket * transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.1, price,0,SL,TP,NULL, 0, 0, clrNONE, i);
+					ticket = ticket * transaction.SimulateOrderSend(_Symbol, OP_SELL, 0.1, price,0,SL,TP,NULL, 0, 0, clrNONE, i);
 				//else
 				//	ticket = ticket * OrderSend(Symbol(), OP_SELL, 0.1, price,0,SL,TP,NULL, 0, 0, clrNONE);
 				

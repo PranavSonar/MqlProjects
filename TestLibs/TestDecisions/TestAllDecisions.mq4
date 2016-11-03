@@ -90,18 +90,18 @@ int OnInit()
 	
 	if(FirstSymbol == NULL)
 	{
-		wslog.NewTradingSession();
-	   //StartCustomIndicator2(hWnd,"Projects\\TestLibs\\TestDecisions\\Test3MA\\TestIndicator3MA\0", true);
-	   //StartCustomIndicator2(hWnd,"Projects\\TestLibs\\TestDecisions\\TestDoubleBB\\TestIndicatorDoubleBB\0", true);
-	   //StartCustomIndicator2(hWnd,"Projects\\TestLibs\\TestDecisions\\TestRSI\\TestIndicatorRSI\0", true);
+		wslog.NewTradingSession(__FILE__);
+		//StartCustomIndicator2(hWnd,"Projects\\TestLibs\\TestDecisions\\Test3MA\\TestIndicator3MA\0", true);
+		//StartCustomIndicator2(hWnd,"Projects\\TestLibs\\TestDecisions\\TestDoubleBB\\TestIndicatorDoubleBB\0", true);
+		//StartCustomIndicator2(hWnd,"Projects\\TestLibs\\TestDecisions\\TestRSI\\TestIndicatorRSI\0", true);
 		config.Initialize();
-   }
-   
+	}
+
 	// Navigate next
 	Sleep(400); // Wait for indicators to get to end
 	config.ChangeSymbol();
 	
-	wslog.EndTradingSession();
+	wslog.EndTradingSession(__FILE__);
 	
 	return(INIT_SUCCEEDED);
 }

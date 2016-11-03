@@ -27,7 +27,7 @@ int OnInit()
 	
 	if(IsTesting())
 		return INIT_SUCCEEDED;
-	return ExpertValidationsTest(Symbol());
+	return ExpertValidationsTest(_Symbol);
 }
 
 void OnDeinit(const int reason)
@@ -42,7 +42,7 @@ void OnTick()
 {
 	DecisionRSI decision;
 	
-	double SL = 0.0, TP = 0.0, spread = MarketInfo(Symbol(),MODE_ASK) - MarketInfo(Symbol(),MODE_BID), spreadPips = spread/Pip();
+	double SL = 0.0, TP = 0.0, spread = MarketInfo(_Symbol,MODE_ASK) - MarketInfo(_Symbol,MODE_BID), spreadPips = spread/Pip();
 	
 	//decision.SetVerboseLevel(1);
 	//transaction.SetVerboseLevel(1);
@@ -61,13 +61,13 @@ void OnTick()
 	if(d != IncertitudeDecision)
 	{
 		if(d > 0) { // Buy
-			double price = MarketInfo(Symbol(),MODE_ASK); // Ask
+			double price = MarketInfo(_Symbol,MODE_ASK); // Ask
 			GlobalContext.Limit.CalculateTP_SL(TP, SL, 8*spreadPips, 13*spreadPips, OP_BUY, price, false, spread);
 			if((TP != 0.0) || (SL != 0.0))
 				GlobalContext.Limit.ValidateAndFixTPandSL(TP, SL, price, OP_BUY, spread, false);
 			
-			transaction.SimulateOrderSend(Symbol(), OP_BUY, 0.01, price, 0, SL, TP, NULL, 0, 0, clrNONE);
-			int tichet = OrderSend(Symbol(), OP_BUY, 0.01, price, 0, SL, TP, NULL, 0, 0, clrAqua);
+			transaction.SimulateOrderSend(_Symbol, OP_BUY, 0.01, price, 0, SL, TP, NULL, 0, 0, clrNONE);
+			int tichet = OrderSend(_Symbol, OP_BUY, 0.01, price, 0, SL, TP, NULL, 0, 0, clrAqua);
 			
 			if(tichet == -1)
 				Print("Failed! Reason: " + IntegerToString(GetLastError()));
@@ -75,13 +75,13 @@ void OnTick()
 			//GlobalContext.DatabaseLog.DataLogDetail("NewOrder", "New order buy " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
 			//GlobalContext.DatabaseLog.DataLogDetail("OrdersToString", transaction.OrdersToString(true));
 		} else { // Sell
-			double price = MarketInfo(Symbol(), MODE_BID); // Bid
+			double price = MarketInfo(_Symbol, MODE_BID); // Bid
 			GlobalContext.Limit.CalculateTP_SL(TP, SL, 8*spreadPips, 13*spreadPips, OP_SELL, price, false, spread);
 			if((TP != 0.0) || (SL != 0.0))
 				GlobalContext.Limit.ValidateAndFixTPandSL(TP, SL, price, OP_SELL, spread, false);
 			
-			transaction.SimulateOrderSend(Symbol(), OP_SELL, 0.01, price, 0, SL, TP, NULL, 0, 0, clrNONE);
-			int tichet = OrderSend(Symbol(), OP_SELL, 0.01, price, 0, SL, TP, NULL, 0, 0, clrChocolate);
+			transaction.SimulateOrderSend(_Symbol, OP_SELL, 0.01, price, 0, SL, TP, NULL, 0, 0, clrNONE);
+			int tichet = OrderSend(_Symbol, OP_SELL, 0.01, price, 0, SL, TP, NULL, 0, 0, clrChocolate);
 			
 			if(tichet == -1)
 				Print("Failed! Reason: " + IntegerToString(GetLastError()));
@@ -97,9 +97,9 @@ void OnTick()
 	
 	double profit, inverseProfit;
 	int count, countNegative, countPositive, countInverseNegative, countInversePositive, irregularLimitsType;
-	bool irregularLimits;
-	transaction.GetBestTPandSL(TP, SL, profit, inverseProfit, count, countNegative, countPositive, countInverseNegative, countInversePositive, irregularLimits, irregularLimitsType);
-	string summary = "Best profit: " + DoubleToString(profit,2)
+	bool irregularLimits, isInverseDecision;
+	transaction.GetBestTPandSL(TP, SL, profit, inverseProfit, count, countNegative, countPositive, countInverseNegative, countInversePositive, isInverseDecision, irregularLimits, irregularLimitsType);
+	string summary = "Best profit: " + DoubleToString(profit,2) + " [IsInverseDecision: " + BoolToString(isInverseDecision) + "]"
 		+ "\nBest Take profit: " + DoubleToString(TP,4) + " (spreadPips * " + DoubleToString(TP/spreadPips,2) + ")" 
 		+ "\nBest Stop loss: " + DoubleToString(SL,4) + " (spreadPips * " + DoubleToString(SL/spreadPips,2) + ")"
 		+ "\nIrregular Limits: " + BoolToString(irregularLimits) + " Type: " + IntegerToString(irregularLimitsType)
