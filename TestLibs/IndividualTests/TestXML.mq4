@@ -14,6 +14,8 @@ int OnInit()
 {
 	XmlElement element;
 	
+	element.SetVerboseLevel(1);
+	
 	element.ParseXml("<element/>");
 	Print(element.GetElementName());
 	element.Clear();
