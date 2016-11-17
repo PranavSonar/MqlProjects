@@ -16,6 +16,11 @@ int OnInit()
 	
 	element.SetVerboseLevel(1);
 	
+	element.ParseXml("<element a=\"b\"/>");
+	if(element.GetXmlFromElement() != "<element a=\"b\"/>")
+		Print(element.GetXmlFromElement());
+	element.Clear();
+	
 	element.ParseXml("<element/>");
 	if(element.GetXmlFromElement() != "<element/>")
 		Print(element.GetXmlFromElement());
@@ -52,34 +57,26 @@ int OnInit()
 	element.Clear();
 	
 	element.ParseXml("<element>\n<e1/><e2><e3/></e2>\n</element>");
-	//Print(element.GetFullElementData());
-	if(element.GetXmlFromElement() != "<element><e1/><e2><e3/></e2></element>") {
-		SafePrintString("1:" + element.GetXmlFromElement());
-		SafePrintString("1:" + "Real: <element><e1/><e2><e3/></e2></element>");
-	}
+	if(element.GetXmlFromElement() != "<element><e1/><e2><e3/></e2></element>")
+		SafePrintString(element.GetXmlFromElement());
 	element.Clear();
 	
 	
-	element.ParseXml("<element><e0><e3/><e3/><e1><e3/><e3/><e2><e3/><e3/><e3/></e2><e3/><e3/></e1><e3/><e3/></e0><e3/><e3/></element>");
-	//Print(element.GetFullElementData());
-	if(element.GetXmlFromElement() != "<element><e0><e3/><e3/><e1><e3/><e3/><e2><e3/><e3/><e3/></e2><e3/><e3/></e1><e3/><e3/></e0><e3/><e3/></element>")
-		SafePrintString(element.GetXmlFromElement());
+	element.ParseXml("<element><e0><e3/><es/><e1><ex/><eb/><e2><ev/><xa/><f3/></e2><ef/><ek/></e1><ec/><e5/></e0><fs/><2d/></element>");
+	if(element.GetXmlFromElement() != "<element><e0><e3/><es/><e1><ex/><eb/><e2><ev/><xa/><f3/></e2><ef/><ek/></e1><ec/><e5/></e0><fs/><2d/></element>")
+		SafePrintString(element.GetXmlFromElement() + " != <element><e0><e3/><es/><e1><ex/><eb/><e2><ev/><xa/><f3/></e2><ef/><ek/></e1><ec/><e5/></e0><fs/><2d/></element>");
 	element.Clear();
 	
 	
 	element.ParseXml("<element>\n<e0><e1><e2><e3/></e2></e1></e0>\n</element>");
-	//Print(element.GetFullElementData());
 	if(element.GetXmlFromElement() != "<element><e0><e1><e2><e3/></e2></e1></e0></element>")
-		SafePrintString(element.GetXmlFromElement());
+		SafePrintString(element.GetXmlFromElement() + " != <element><e0><e1><e2><e3/></e2></e1></e0></element>");
 	element.Clear();
 	
 
 	element.ParseXml("<element>\n<e1/><e0/><e2><e3/><e4/></e2>\n<e5/></element>");
-	//Print(element.GetFullElementData());
-	if(element.GetXmlFromElement() != "<element><e1/><e0/><e2><e3/><e4/></e2><e5/></element>") {
-		SafePrintString("2:" + element.GetXmlFromElement());
-		SafePrintString("2:" + "Real: <element><e1/><e0/><e2><e3/><e4/></e2><e5/></element>");
-	}
+	if(element.GetXmlFromElement() != "<element><e1/><e0/><e2><e3/><e4/></e2><e5/></element>")
+		SafePrintString(element.GetXmlFromElement() + " != <element><e1/><e0/><e2><e3/><e4/></e2><e5/></element>" );
 	element.Clear();
 	
 	return(INIT_SUCCEEDED);
