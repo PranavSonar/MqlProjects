@@ -9,7 +9,6 @@
 #property strict
 
 #include <MyMql\Global\Log\OnlineWebServiceLog.mqh>
-#include <MyMql\Global\Log\Xml\XmlElement.mqh>
 
 int OnInit()
 {
@@ -18,19 +17,14 @@ int OnInit()
 	wsLog.ReadLastDataLogAndDetail("TestSimulateTranSystem.mq4");
 	SafePrintString(wsLog.Result);
 	
-	XmlElement element;
-	element.ParseXml(wsLog.UnEscapeString(wsLog.Result));
+	wsLog.ReadLastDataLogDetail("TestSimulateTranSystem.mq4");
+	SafePrintString(wsLog.Result);
 	
-	SafePrintString(element.GetXmlFromElement());
+	wsLog.ReadLastDataLog("TestSimulateTranSystem.mq4");
+	SafePrintString(wsLog.Result);
 	
-//	wsLog.ReadLastDataLogDetail("TestSimulateTranSystem.mq4");
-//	SafePrintString(wsLog.Result);
-//	
-//	wsLog.ReadLastDataLog("TestSimulateTranSystem.mq4");
-//	SafePrintString(wsLog.Result);
-//	
-//	wsLog.ReadLastProcedureLog("TestSimulateTranSystem.mq4");
-//	SafePrintString(wsLog.Result);
+	wsLog.ReadLastProcedureLog("TestSimulateTranSystem.mq4");
+	SafePrintString(wsLog.Result);
 	
 	return(INIT_SUCCEEDED);
 }
