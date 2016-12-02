@@ -15,16 +15,16 @@ int OnInit()
 	OnlineWebServiceLog wsLog(true);
 	
 	wsLog.ReadLastDataLogAndDetail("TestSimulateTranSystem.mq4");
-	SafePrintString(wsLog.Result);
+	SafePrintString(wsLog.GetResult());
 	
 	wsLog.ReadLastDataLogDetail("TestSimulateTranSystem.mq4");
-	SafePrintString(wsLog.Result);
+	SafePrintString(wsLog.GetResult());
 	
 	wsLog.ReadLastDataLog("TestSimulateTranSystem.mq4");
-	SafePrintString(wsLog.Result);
+	SafePrintString(wsLog.GetResult());
 	
 	wsLog.ReadLastProcedureLog("TestSimulateTranSystem.mq4");
-	SafePrintString(wsLog.Result);
+	SafePrintString(wsLog.GetResult());
 	
 	return(INIT_SUCCEEDED);
 }

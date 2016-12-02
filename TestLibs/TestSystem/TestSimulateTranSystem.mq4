@@ -25,9 +25,9 @@ int OnInit()
 	system.TestTransactionSystemForCurrentSymbol();
 	
 	GlobalContext.Config.Initialize(true, true, false, true);
-	GlobalContext.Config.ChangeSymbol();
 	
-	GlobalContext.DatabaseLog.EndTradingSession(__FILE__);
+	if(!GlobalContext.Config.ChangeSymbol())
+		GlobalContext.DatabaseLog.EndTradingSession(__FILE__);
 	
 	return(INIT_SUCCEEDED);
 }
