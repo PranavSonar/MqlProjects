@@ -17,26 +17,22 @@ int OnInit()
 	XmlElement element;
 	
 	wsLog.ReadLastDataLogAndDetail("TestSimulateTranSystem.mq4");
-	//SafePrintString(wsLog.Result);
-	element.ParseXml(wsLog.GetResult());
+	element.ParseXml(wsLog.GetResult()); // wsLog.Result
 	SafePrintString("1:" + element.GetXmlFromElement());
 	element.Clear();
-	
+
 //	wsLog.ReadLastDataLogDetail("TestSimulateTranSystem.mq4");
-//	//SafePrintString(wsLog.Result);
-//	element.ParseXml(wsLog.GetResult());
+//	element.ParseXml(wsLog.GetResult()); // wsLog.Result
 //	SafePrintString("2:" + element.GetXmlFromElement());
 //	element.Clear();
 //	
 //	wsLog.ReadLastDataLog("TestSimulateTranSystem.mq4");
-//	//SafePrintString(wsLog.Result);
-//	element.ParseXml(wsLog.GetResult());
+//	element.ParseXml(wsLog.GetResult()); // wsLog.Result
 //	SafePrintString("3:" + element.GetXmlFromElement());
 //	element.Clear();
 //	
 //	wsLog.ReadLastProcedureLog("TestSimulateTranSystem.mq4");
-//	//SafePrintString(wsLog.Result);
-//	element.ParseXml(wsLog.GetResult());
+//	element.ParseXml(wsLog.GetResult()); // wsLog.Result
 //	SafePrintString("4:" + element.GetXmlFromElement());
 //	element.Clear();
 	
