@@ -12,7 +12,8 @@
 #include <MyMql/TransactionManagement/FlowWithTrendTranMan.mqh>
 #include <Files/FileTxt.mqh>
 #include <MyMql/Global/Global.mqh>
-
+#include <stderror.mqh>
+#include <stdlib.mqh>
 
 int OnInit()
 {
@@ -27,6 +28,8 @@ int OnInit()
 	
 	lastDecision = 0.0;
 	nrDecisions = 0;
+	
+	return INIT_SUCCEEDED;
 	
 	if(IsTesting())
 		return INIT_SUCCEEDED;
@@ -46,10 +49,14 @@ static int nrDecisions;
 
 void OnTick()
 {
+	GlobalContext.Config.AllowTrades();
+	GlobalContext.Config.Initialize(true, true, true, true);
+	
 	
 	DecisionDoubleBB decision;
 	
 	double SL = 0.0, TP = 0.0, spread = MarketInfo(_Symbol,MODE_ASK) - MarketInfo(_Symbol,MODE_BID), spreadPips = spread/Pip();
+	unsigned long type;
 	
 	//decision.SetVerboseLevel(1);
 	//transaction.SetVerboseLevel(1);
@@ -59,7 +66,7 @@ void OnTick()
 	
 	transaction.AutoAddTransactionData(spreadPips);
 	
-	double d = decision.GetDecision2(SL, TP);
+	double d = decision.GetDecision2(SL, TP, type);
 	
 	if((d != IncertitudeDecision) && (d == lastDecision))
 		nrDecisions++;
@@ -74,33 +81,31 @@ void OnTick()
 	
 	if((d != IncertitudeDecision) && (nrDecisions == 0))
 	{
-		Print(DoubleToStr(d,2));
-		if(d > 0) { // Buy
-			double price = MarketInfo(_Symbol,MODE_ASK); // Ask
+		Print("Decision: " + DoubleToStr(d,2));
+		if(d < 0) { // Sell - inverse decision
+			double price = MarketInfo(_Symbol,MODE_BID); // Bid
 			//GlobalContext.Money.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_BUY, price, false, spread);
 			
 			if((TP != 0.0) || (SL != 0.0))
-				GlobalContext.Limit.ValidateAndFixTPandSL(TP, SL, price, OP_BUY, spread, false);
-			int tichet = OrderSend(_Symbol, OP_BUY, lots, price, 0, SL, TP, NULL, 0, 0, clrAqua);
+				GlobalContext.Limit.ValidateAndFixTPandSL(TP, SL, price, OP_SELL, spread, false);
+			
+			int tichet = transaction.SimulateOrderSend(_Symbol, OP_SELL, lots, price, 0, SL ,TP, NULL, 0, 0, clrAqua);
 			
 			if(tichet == -1)
-				Print("Failed! Reason: " + IntegerToString(GetLastError()));
-			else	
-				transaction.SimulateOrderSend(_Symbol, OP_BUY, lots, price, 0, SL ,TP, NULL, 0, 0, clrNONE, 0, tichet);
+				Print("Failed! Reason[" + IntegerToString(_LastError) + "]: " + ErrorDescription(_LastError));
 			
 			//GlobalContext.DatabaseLog.DataLogDetail("NewOrder", "New order buy " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
 			//GlobalContext.DatabaseLog.DataLogDetail("OrdersToString", transaction.OrdersToString(true));
-		} else { // Sell
-			double price = MarketInfo(_Symbol,MODE_BID); // Bid
+		} else { // Buy - inverse decision
+			double price = MarketInfo(_Symbol,MODE_ASK); // Ask
 			//GlobalContext.Money.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_SELL, price, false, spread);
 			
 			if((TP != 0.0) || (SL != 0.0))
-				GlobalContext.Limit.ValidateAndFixTPandSL(TP, SL, price, OP_SELL, spread, false);
-			transaction.SimulateOrderSend(_Symbol, OP_SELL, lots, price, 0, SL, TP, NULL, 0, 0, clrNONE);
-			int tichet = OrderSend(_Symbol, OP_SELL, lots, price, 0, SL, TP, NULL, 0, 0, clrChocolate);
+				GlobalContext.Limit.ValidateAndFixTPandSL(TP, SL, price, OP_BUY, spread, false);
+			int tichet = transaction.SimulateOrderSend(_Symbol, OP_BUY, lots, price, 0, SL, TP, NULL, 0, 0, clrChocolate);
 			
 			if(tichet == -1)
-				Print("Failed! Reason: " + IntegerToString(GetLastError()));
+				Print("Failed! Reason[" + IntegerToString(_LastError) + "]: " + ErrorDescription(_LastError));
 			
 			//GlobalContext.DatabaseLog.DataLogDetail("NewOrder", "New order sell " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
 			//GlobalContext.DatabaseLog.DataLogDetail("OrdersToString", transaction.OrdersToString(true));
