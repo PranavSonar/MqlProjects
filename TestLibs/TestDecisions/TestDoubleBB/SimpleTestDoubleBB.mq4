@@ -29,7 +29,7 @@ int OnInit()
 	lastDecision = 0.0;
 	nrDecisions = 0;
 	
-	return INIT_SUCCEEDED;
+	//return INIT_SUCCEEDED;
 	
 	if(IsTesting())
 		return INIT_SUCCEEDED;
