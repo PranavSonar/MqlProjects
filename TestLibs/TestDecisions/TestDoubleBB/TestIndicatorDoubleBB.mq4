@@ -107,8 +107,8 @@ int start()
 	while(i >= 0)
 	{
 		GlobalContext.Screen.PrintCurrentValue(i, "TimeIndex", clrNONE, 20, 20, 1);
-		
-		double d = decision.GetDecision2(SL, TP, 1.0, i);
+		unsigned long type;
+		double d = decision.GetDecision2(SL, TP, type, 1.0, i);
 		decision.SetIndicatorData(Buf_BBs2, Buf_BBs1, Buf_BBm, Buf_BBd1, Buf_BBd2, i);
 		Buf_Decision[i] = d;
 		
@@ -123,7 +123,7 @@ int start()
 			//GlobalContext.Limit.CalculateTP_SL(TP, SL, OP_BUY, price, false, spread, 3*spread, spread);
 			GlobalContext.Limit.ValidateAndFixTPandSL(TP, SL, price, OP_BUY, spread, false);
 			
-			transaction.SimulateOrderSend(_Symbol, OP_BUY, 0.1, price, 0, SL ,TP, NULL, 0, 0, clrNONE, i);
+			transaction.SimulateOrderSend(_Symbol, OP_BUY, MarketInfo(_Symbol,MODE_MINLOT), price, 0, SL ,TP, NULL, 0, 0, clrNONE, i);
 			
 			//GlobalContext.DatabaseLog.DataLogDetail("NewOrder", "New order buy " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
 			//GlobalContext.DatabaseLog.DataLogDetail("OrdersToString", transaction.OrdersToString(true));
@@ -137,7 +137,7 @@ int start()
 			double price = Close[i]; // Bid
 			//GlobalContext.Limit.CalculateTP_SL(TP, SL, OP_SELL, price, false, spread, 3*spread, spread);
 			GlobalContext.Limit.ValidateAndFixTPandSL(TP, SL, price, OP_SELL, spread, false);
-			transaction.SimulateOrderSend(_Symbol, OP_SELL, 0.1, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
+			transaction.SimulateOrderSend(_Symbol, OP_SELL, MarketInfo(_Symbol,MODE_MINLOT), price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
 			
 			//GlobalContext.DatabaseLog.DataLogDetail("NewOrder", "New order sell " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
 			//GlobalContext.DatabaseLog.DataLogDetail("OrdersToString", transaction.OrdersToString(true));
