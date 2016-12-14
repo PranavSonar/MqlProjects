@@ -49,7 +49,8 @@ void OnTick() {
 	transaction.SetSimulatedStopLossObjectName("SimulatedStopLoss3MA");
 	transaction.SetSimulatedTakeProfitObjectName("SimulatedTakeProfit3MA");
 	
-	double d = decision.GetDecision();
+	unsigned long type;
+	double d = decision.GetDecision(0, type);
 
 	// calculate profit/loss, TPs, SLs, etc
 	transaction.CalculateData();
@@ -104,9 +105,9 @@ void OnTick() {
 		+ "\nIrregular Limits: " + BoolToString(irregularLimits) + " Type: " + IntegerToString(irregularLimitsType)
 		+ "\nCount orders: " + IntegerToString(count) + " (" + IntegerToString(countPositive) + " positive orders & " + IntegerToString(countNegative) + " negative orders); Procentual profit: " + DoubleToString((double)countPositive*100/(count>0?(double)count:100),3) + "%"
 		+ "\nCount inverse orders: " + IntegerToString(count) + " (" + IntegerToString(countInversePositive) + " inverse positive orders & " + IntegerToString(countInverseNegative) + " inverse negative orders); Procentual profit: " + DoubleToString((double)countInversePositive*100/(count>0?(double)count:100),3) + "%"
-		+ "\n\nMaximum profit (sum): " + DoubleToString(transaction.GetTotalMaximumProfitFromOrders(),2)
-		+ "\nMinimum profit (sum): " + DoubleToString(transaction.GetTotalMinimumProfitFromOrders(),2)
-		+ "\nMedium profit (avg): " + DoubleToString(transaction.GetTotalMediumProfitFromOrders(),2)
+		//+ "\n\nMaximum profit (sum): " + DoubleToString(transaction.GetTotalMaximumProfitFromOrders(),2)
+		//+ "\nMinimum profit (sum): " + DoubleToString(transaction.GetTotalMinimumProfitFromOrders(),2)
+		//+ "\nMedium profit (avg): " + DoubleToString(transaction.GetTotalMediumProfitFromOrders(),2)
 		+ "\n\nSpread: " + DoubleToString(spreadPips, 4)
 		+ "\nTake profit / Spread (best from average): " + DoubleToString(TP/spreadPips,4)
 		+ "\nStop loss / Spread (best from average): " + DoubleToString(SL/spreadPips,4);

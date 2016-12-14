@@ -7,7 +7,6 @@
 #property link      "https://www.mql5.com"
 #property version   "1.00"
 #property strict
-
 #include <MyMql\Global\Log\OnlineWebServiceLog.mqh>
 #include <MyMql\Global\Log\Xml\XmlElement.mqh>
 
@@ -15,9 +14,12 @@ int OnInit()
 {
 	OnlineWebServiceLog wsLog(true);
 	XmlElement element;
+	string result = NULL;
 	
 	wsLog.ReadLastDataLogAndDetail("TestSimulateTranSystem.mq4");
-	element.ParseXml(wsLog.GetResult()); // wsLog.Result
+	result = wsLog.GetResult(); // wsLog.Result
+	
+	element.ParseXml(result);
 	SafePrintString("1:" + element.GetXmlFromElement());
 	element.Clear();
 
