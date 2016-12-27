@@ -17,9 +17,23 @@ int OnInit()
 	string result = NULL;
 	string parameters[];
 	
+	
 	ResizeAndSet(parameters, "TestSimulateTranSystem.mq4");
-	wsLog.CallWebServiceProcedure("ReadLastDataLogAndDetail", parameters);
+	wsLog.CallWebServiceProcedure("NewTradingSession", parameters);
 	result = wsLog.GetResult(); // wsLog.Result
+	SafePrintString(result);
+	
+	
+	
+	ResizeAndSet(parameters, "TestSimulateTranSystem.mq4");
+	wsLog.CallWebServiceProcedure("EndTradingSession", parameters);
+	result = wsLog.GetResult(); // wsLog.Result
+	SafePrintString(result);
+	
+	//ResizeAndSet(parameters, "TestSimulateTranSystem.mq4");
+	//wsLog.CallWebServiceProcedure("ReadLastDataLogAndDetail", parameters);
+	//result = wsLog.GetResult(); // wsLog.Result
+	//SafePrintString(result);
 	
 	element.ParseXml(result);
 	SafePrintString("1:" + element.GetXmlFromElement());
