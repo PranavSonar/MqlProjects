@@ -23,7 +23,8 @@ int OnInit()
 	//vi.PrintMarketInfo();
 	
 	GlobalContext.DatabaseLog.Initialize(true);
-	GlobalContext.DatabaseLog.NewTradingSession(__FILE__);
+	ResizeAndSet(parameters, __FILE__);
+	GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession", parameters);
 	
 	if(IsTesting())
 		return INIT_SUCCEEDED;
@@ -32,7 +33,8 @@ int OnInit()
 
 void OnDeinit(const int reason)
 {
-	GlobalContext.DatabaseLog.EndTradingSession(__FILE__);
+	ResizeAndSet(parameters, __FILE__);
+	GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession", parameters);
 }
 
 
@@ -117,5 +119,6 @@ void OnTick()
 	
 	
 	transaction.FlowWithTrend_UpdateSL_TP_UsingConstants(8*spreadPips, 13*spreadPips);
-	GlobalContext.DatabaseLog.EndTradingSession("SimpleTestRSI");
+	ResizeAndSet(parameters, __FILE__);
+	GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession", parameters);
 }

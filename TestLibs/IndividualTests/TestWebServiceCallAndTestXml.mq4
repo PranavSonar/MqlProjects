@@ -12,18 +12,24 @@
 
 int OnInit()
 {
+	string parameters[];
 	OnlineWebServiceLog wsLog(true);
 	
-	wsLog.ReadLastDataLogAndDetail("TestSimulateTranSystem.mq4");
+	ResizeAndSet(parameters, "TestSimulateTranSystem.mq4");
+	wsLog.CallWebServiceProcedure("ReadLastDataLogAndDetail", parameters);
 	SafePrintString(wsLog.GetResult());
 	
-	wsLog.ReadLastDataLogDetail("TestSimulateTranSystem.mq4");
+	
+	ResizeAndSet(parameters, "TestSimulateTranSystem.mq4");
+	wsLog.CallWebServiceProcedure("ReadLastDataLogDetail", parameters);
 	SafePrintString(wsLog.GetResult());
 	
-	wsLog.ReadLastDataLog("TestSimulateTranSystem.mq4");
+	ResizeAndSet(parameters, "TestSimulateTranSystem.mq4");
+	wsLog.CallWebServiceProcedure("ReadLastDataLog", parameters);
 	SafePrintString(wsLog.GetResult());
 	
-	wsLog.ReadLastProcedureLog("TestSimulateTranSystem.mq4");
+	ResizeAndSet(parameters, "TestSimulateTranSystem.mq4");
+	wsLog.CallWebServiceProcedure("ReadLastProcedureLog", parameters);
 	SafePrintString(wsLog.GetResult());
 	
 	return(INIT_SUCCEEDED);

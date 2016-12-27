@@ -8,16 +8,27 @@
 #property version   "1.00"
 #property strict
 
-void OnStart()
+#include <MyMql\Global\Global.mqh>
+
+int OnStart()
 {
-	string str = "";
-	for(int i=0; i<230; i++)
+	ResetLastError();
+	if(FirstSymbol == NULL)
 	{
-		str += "*";
-		if(i > 228)
-			Print("|" + str + "|");
+		GlobalContext.DatabaseLog.Initialize(true);
+		ResizeAndSet(parameters, __FILE__);
+		GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession", parameters);
+	}
+	Print("Symbol:" + _Symbol + " IsTradeAllowed:" + BoolToString(GlobalContext.Library.IsTradeAllowedOnSymbol()));
+	
+	GlobalContext.Config.Initialize(true, true, false, true);
+	
+	if(!GlobalContext.Config.ChangeSymbol())
+	{
+		ResizeAndSet(parameters, __FILE__);
+		GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession", parameters);
 	}
 	
-	Print("String lenght: " + IntegerToString(StringLen(str)));
+	return(INIT_SUCCEEDED);
 }
 

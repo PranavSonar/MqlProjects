@@ -22,7 +22,8 @@ int OnInit()
 	//vi.PrintMarketInfo();
 	
 	GlobalContext.DatabaseLog.Initialize(true);
-	GlobalContext.DatabaseLog.NewTradingSession(__FILE__);
+	ResizeAndSet(parameters, __FILE__);
+	GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession", parameters);
 	
 	if(IsTesting())
 		return INIT_SUCCEEDED;
@@ -31,7 +32,8 @@ int OnInit()
 
 void OnDeinit(const int reason)
 {
-	GlobalContext.DatabaseLog.EndTradingSession(__FILE__);
+	ResizeAndSet(parameters, __FILE__);
+	GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession", parameters);
 }
 
 
@@ -56,7 +58,8 @@ void OnTick() {
 	transaction.CalculateData();
 	double lots = MarketInfo(_Symbol, MODE_MINLOT); //GlobalContext.Money.GetLotsBasedOnDecision(d, false); -> to be moved
 	
-	GlobalContext.DatabaseLog.DataLog("OrdersToString", transaction.OrdersToString(true));
+	ResizeAndSet(parameters, "OrdersToString", transaction.OrdersToString(true));
+	GlobalContext.DatabaseLog.CallWebServiceProcedure("DataLog", parameters);
 	
 	transaction.AutoAddTransactionData(spreadPips);
 	
@@ -116,5 +119,6 @@ void OnTick() {
 	
 	transaction.FlowWithTrend_UpdateSL_TP_UsingConstants(2.6*spreadPips, 1.6*spreadPips);
 	
-	GlobalContext.DatabaseLog.EndTradingSession("SimpleTest3MA");
+	ResizeAndSet(parameters, __FILE__);
+	GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession", parameters);
 }	

@@ -60,7 +60,8 @@ int OnInit()
 	//	logFile.Open("LogFile.txt", FILE_READ | FILE_WRITE | FILE_ANSI | FILE_REWRITE);
 	
 	GlobalContext.DatabaseLog.Initialize(false,false,false,"2BB.txt");
-	GlobalContext.DatabaseLog.NewTradingSession(__FILE__);
+	ResizeAndSet(parameters, __FILE__);
+	GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession", parameters);
 	
 	return INIT_SUCCEEDED;
 }
@@ -70,7 +71,8 @@ void OnDeinit(const int reason)
 	//if(logToFile)
 	//	logFile.Close();
 	transaction.LogAllOrders();
-	GlobalContext.DatabaseLog.EndTradingSession(__FILE__);
+	ResizeAndSet(parameters, __FILE__);
+	GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession", parameters);
 }
 
 //bool logToFile = false;
@@ -176,7 +178,8 @@ int start()
 		+ "\n\nSpread: " + DoubleToString(spreadPips, 4)
 		+ "\nTake profit / Spread (best from average): " + DoubleToString(TP/spreadPips,4)
 		+ "\nStop loss / Spread (best from average): " + DoubleToString(SL/spreadPips,4);
-	GlobalContext.DatabaseLog.DataLog(decision.GetDecisionName() + " on " + _Symbol, summary);
+	ResizeAndSet(parameters, decision.GetDecisionName() + " on " + _Symbol, summary);
+	GlobalContext.DatabaseLog.CallWebServiceProcedure("DataLog", parameters);
 	Comment(summary);
 	
 	

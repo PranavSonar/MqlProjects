@@ -24,7 +24,9 @@ int OnInit()
 	//vi.PrintMarketInfo();
 	
 	GlobalContext.DatabaseLog.Initialize(true);
-	GlobalContext.DatabaseLog.NewTradingSession(__FILE__);
+	ResizeAndSet(parameters, __FILE__);
+	GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession", parameters);
+	
 	
 	lastDecision = 0.0;
 	nrDecisions = 0;
@@ -38,7 +40,8 @@ int OnInit()
 
 void OnDeinit(const int reason)
 {
-	GlobalContext.DatabaseLog.EndTradingSession(__FILE__);
+	ResizeAndSet(parameters, __FILE__);
+	GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession", parameters);
 }
 
 
@@ -77,7 +80,8 @@ void OnTick()
 	//transaction.CalculateData();
 	double lots = MarketInfo(_Symbol, MODE_MINLOT); //GlobalContext.Money.GetLotsBasedOnDecision(d, false); -> to be moved
 	
-	GlobalContext.DatabaseLog.DataLog("OrdersToString", transaction.OrdersToString(true));
+	ResizeAndSet(parameters, "OrdersToString", transaction.OrdersToString(true));
+	GlobalContext.DatabaseLog.CallWebServiceProcedure("DataLog", parameters);
 	
 	if((d != IncertitudeDecision) && (nrDecisions == 0))
 	{

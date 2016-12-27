@@ -20,7 +20,9 @@ int OnInit()
 	if(FirstSymbol == NULL)
 	{
 		GlobalContext.DatabaseLog.Initialize(true);
-		GlobalContext.DatabaseLog.NewTradingSession(__FILE__);
+		string parameters[];
+		ResizeAndSet(parameters, __FILE__);
+		GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession", parameters);
 
 		GlobalContext.Config.Initialize(true, true, false, true);
 		GlobalContext.Config.AllowTrades();
@@ -35,7 +37,11 @@ int OnInit()
 	system.RunTransactionSystemForCurrentSymbol(); // run EA
 	
 	if(!GlobalContext.Config.ChangeSymbol())
-		GlobalContext.DatabaseLog.EndTradingSession(__FILE__);
+	{
+		string parameters[];
+		ResizeAndSet(parameters, __FILE__);
+		GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession", parameters);
+	}
 	
 	return(INIT_SUCCEEDED);
 }
