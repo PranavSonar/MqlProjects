@@ -21,14 +21,18 @@ int OnInit()
 	{
 		GlobalContext.DatabaseLog.Initialize(true);
 		GlobalContext.DatabaseLog.NewTradingSession(__FILE__);
-		
+
 		GlobalContext.Config.Initialize(true, true, false, true);
-		
+		GlobalContext.Config.AllowTrades();
+
 		// Setup system only at the beginning:
 		system.SetupTransactionSystem(_Symbol);
+
+		// Add manual config only at the beginning:
+		system.AddChartTransactionData("", PeriodValue(_Period), 0/*decisionIndex*/, 0 /*lotIndex*/, 0 /*transactionIndex*/);
 	}
 	
-	system.TestTransactionSystemForCurrentSymbol();
+	system.RunTransactionSystemForCurrentSymbol(); // run EA
 	
 	if(!GlobalContext.Config.ChangeSymbol())
 		GlobalContext.DatabaseLog.EndTradingSession(__FILE__);
