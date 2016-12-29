@@ -20,7 +20,6 @@ int OnInit()
 	if(FirstSymbol == NULL)
 	{
 		GlobalContext.DatabaseLog.Initialize(true);
-		string parameters[];
 		ResizeAndSet(parameters, __FILE__);
 		GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession", parameters);
 
@@ -31,16 +30,18 @@ int OnInit()
 		system.SetupTransactionSystem(_Symbol);
 
 		// Add manual config only at the beginning:
-		system.AddChartTransactionData("AUDCHF", PERIOD_H1, 0/*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/);
-		system.AddChartTransactionData("AUDCAD", PERIOD_H1, 0/*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/);
-		system.AddChartTransactionData("AUDJPY", PERIOD_H1, 0/*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/);
+		system.AddChartTransactionData("AUDCHF", PERIOD_H1, 0/*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
+		system.AddChartTransactionData("AUDCAD", PERIOD_H1, 0/*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
+		system.AddChartTransactionData("AUDJPY", PERIOD_H1, 0/*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
+		system.AddChartTransactionData("USDBRL", PERIOD_M15, 0/*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
+		system.AddChartTransactionData("USDINR", PERIOD_M15, 0/*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
+		system.AddChartTransactionData("USDCNY", PERIOD_M15, 0/*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
 	}
 	
 	system.RunTransactionSystemForCurrentSymbol(); // run EA
 	
 	if(!GlobalContext.Config.ChangeSymbol())
 	{
-		string parameters[];
 		ResizeAndSet(parameters, __FILE__);
 		GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession", parameters);
 	}
