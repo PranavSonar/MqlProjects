@@ -12,7 +12,7 @@
 #include <stdlib.mqh>
 #include <stderror.mqh>
 
-static SimulateTranSystem system(DECISION_TYPE_ALL, LOT_MANAGEMENT_ALL, TRANSACTION_MANAGEMENT_ALL);
+static SimulateTranSystem system(DECISION_TYPE_2BB, LOT_MANAGEMENT_ALL, TRANSACTION_MANAGEMENT_ALL);
 
 int OnInit()
 {
@@ -31,7 +31,9 @@ int OnInit()
 		system.SetupTransactionSystem(_Symbol);
 
 		// Add manual config only at the beginning:
-		system.AddChartTransactionData("", PeriodValue(_Period), 0/*decisionIndex*/, 0 /*lotIndex*/, 0 /*transactionIndex*/);
+		system.AddChartTransactionData("AUDCHF", PERIOD_H1, 0/*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/);
+		system.AddChartTransactionData("AUDCAD", PERIOD_H1, 0/*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/);
+		system.AddChartTransactionData("AUDJPY", PERIOD_H1, 0/*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/);
 	}
 	
 	system.RunTransactionSystemForCurrentSymbol(); // run EA
