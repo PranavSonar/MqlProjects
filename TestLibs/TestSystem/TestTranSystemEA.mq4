@@ -30,23 +30,28 @@ int OnInit()
 		system.SetupTransactionSystem(_Symbol);
 
 		// Add manual config only at the beginning:
-		system.AddChartTransactionData("AUDCHF", PERIOD_H1, 0/*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
-		system.AddChartTransactionData("AUDCAD", PERIOD_H1, 0/*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
-		system.AddChartTransactionData("AUDJPY", PERIOD_H1, 0/*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
-		system.AddChartTransactionData("USDBRL", PERIOD_M15, 0/*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
-		system.AddChartTransactionData("USDINR", PERIOD_M15, 0/*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
-		system.AddChartTransactionData("USDCNY", PERIOD_M15, 0/*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
+		system.AddChartTransactionData("AUDCHF", PERIOD_H1, 0 /*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
+		system.AddChartTransactionData("AUDCAD", PERIOD_H1, 0 /*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
+		system.AddChartTransactionData("AUDJPY", PERIOD_H1, 0 /*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
+		system.AddChartTransactionData("USDBRL", PERIOD_M15, 0 /*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
+		system.AddChartTransactionData("USDINR", PERIOD_M15, 0 /*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
+		system.AddChartTransactionData("USDCNY", PERIOD_M15, 0 /*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
 	}
 	
-	system.RunTransactionSystemForCurrentSymbol(); // run EA
-	
-	if(!GlobalContext.Config.ChangeSymbol())
-	{
-		ResizeAndSet(parameters, __FILE__);
-		GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession", parameters);
-	}
+	// not changing symbols for now	
+//	if(!GlobalContext.Config.ChangeSymbol())
+//	{
+//		ResizeAndSet(parameters, __FILE__);
+//		GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession", parameters);
+//	}
 	
 	return(INIT_SUCCEEDED);
+}
+
+void OnTick()
+{
+	// run EA (maybe it can trade even on symbols which are not current, which means refactor & fix)
+	system.RunTransactionSystemForCurrentSymbol(); // run EA
 }
 
 void OnDeinit(const int reason)
