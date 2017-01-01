@@ -33,17 +33,17 @@ int OnInit()
 		system.AddChartTransactionData("AUDCHF", PERIOD_H1, 0 /*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
 		system.AddChartTransactionData("AUDCAD", PERIOD_H1, 0 /*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
 		system.AddChartTransactionData("AUDJPY", PERIOD_H1, 0 /*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
-		//system.AddChartTransactionData("USDBRL", PERIOD_M15, 0 /*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
-		//system.AddChartTransactionData("USDINR", PERIOD_M15, 0 /*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
-		//system.AddChartTransactionData("USDCNY", PERIOD_M15, 0 /*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
-		system.AddChartTransactionData("BTCEUR", PERIOD_M15, 0 /*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
+		system.AddChartTransactionData("USDBRL", PERIOD_M15, 0 /*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
+		system.AddChartTransactionData("USDINR", PERIOD_M15, 0 /*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
+		system.AddChartTransactionData("USDCNY", PERIOD_M15, 0 /*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
 	}
 	
 	// not changing symbols for now	
-	////if(!GlobalContext.Config.ChangeSymbol())
-	if((!GlobalContext.Config.IsTradeAllowedOnEA()) ||
-	(!system.ExistsChartTransactionData(_Symbol,PERIOD_CURRENT, 0, 0, 0)))
-		GlobalContext.Config.ChangeSymbol(system.NextTransactionData().TranSymbol, system.NextTransactionData().TimeFrame);
+//	if(!GlobalContext.Config.ChangeSymbol())
+//	{
+//		ResizeAndSet(parameters, __FILE__);
+//		GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession", parameters);
+//	}
 	
 	return(INIT_SUCCEEDED);
 }
@@ -52,24 +52,12 @@ void OnTick()
 {
 	// run EA (maybe it can trade even on symbols which are not current, which means refactor & fix)
 	system.RunTransactionSystemForCurrentSymbol(); // run EA
-	
-	Print("After tick calc.");
-	
-	if(!GlobalContext.Config.ChangeSymbol(system.NextTransactionData().TranSymbol, system.NextTransactionData().TimeFrame))
-	{
-		Print("Symbol change!");
-		ResizeAndSet(parameters, __FILE__);
-		GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession", parameters);
-	}
 }
 
 void OnDeinit(const int reason)
 {
-	ResizeAndSet(parameters, __FILE__);
-	GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession", parameters);
-	
-	Print("ErrorDescription(reason): " + ErrorDescription(reason) +
-		" reason: " + IntegerToString(reason) +
-	 	" ErrorDescription(_LastError): " + ErrorDescription(_LastError) + 
-	 	" _LastError: " + IntegerToString(_LastError));
+   Print("ErrorDescription(reason): " + ErrorDescription(reason) +
+   	" reason: " + IntegerToString(reason) +
+   	" ErrorDescription(_LastError): " + ErrorDescription(_LastError) + 
+   	" _LastError: " + IntegerToString(_LastError));
 }

@@ -39,9 +39,9 @@ int init()
 	//vi.ClientAndTerminalInfo();
 	//vi.PrintMarketInfo();
 	
-	if(IsTesting())
+	//if(IsTesting())
 		return INIT_SUCCEEDED;
-	return ExpertValidationsTest(Symbol());
+	//return ExpertValidationsTest(_Symbol);
 }
 
 // UNFINISHED!! WEIRD STUFF HERE!!

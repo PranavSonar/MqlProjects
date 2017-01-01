@@ -31,11 +31,9 @@ int OnInit()
 	lastDecision = 0.0;
 	nrDecisions = 0;
 	
-	//return INIT_SUCCEEDED;
-	
-	if(IsTesting())
+	//if(IsTesting())
 		return INIT_SUCCEEDED;
-	return ExpertValidationsTest(_Symbol);
+	//return ExpertValidationsTest(_Symbol);
 }
 
 void OnDeinit(const int reason)

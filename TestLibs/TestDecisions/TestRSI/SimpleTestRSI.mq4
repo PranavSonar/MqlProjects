@@ -26,9 +26,9 @@ int OnInit()
 	ResizeAndSet(parameters, __FILE__);
 	GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession", parameters);
 	
-	if(IsTesting())
+	//if(IsTesting())
 		return INIT_SUCCEEDED;
-	return ExpertValidationsTest(_Symbol);
+	//return ExpertValidationsTest(_Symbol);
 }
 
 void OnDeinit(const int reason)
