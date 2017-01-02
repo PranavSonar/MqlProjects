@@ -43,6 +43,5 @@ int OnInit()
 
 void OnDeinit(const int reason)
 {
-	Print("UninitDescription(reason=" + IntegerToString(reason) + "): " + UninitDescription(reason));
-	Print("ErrorDescription(_LastError=" + IntegerToString(_LastError) + "): " + ErrorDescription(_LastError));
+	system.PrintDeInitReason(reason);
 }
