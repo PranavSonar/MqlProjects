@@ -30,7 +30,7 @@ int OnInit()
 		system.SetupTransactionSystem(_Symbol);
 	}
 	
-	system.TestTransactionSystemForCurrentSymbol();
+	system.TestTransactionSystemForCurrentSymbol(true, true, false);
 	
 	if(!GlobalContext.Config.ChangeSymbol())
 	{
