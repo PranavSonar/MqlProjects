@@ -68,7 +68,7 @@ void OnDeinit(const int reason)
 	ResizeAndSet(parameters, __FILE__);
 	GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession", parameters);
 	
-	Print("ErrorDescription(reason): " + ErrorDescription(reason) +
+	Print("ErrorDescription(reason): " + UninitDescription(reason) +
 		" reason: " + IntegerToString(reason) +
 	 	" ErrorDescription(_LastError): " + ErrorDescription(_LastError) + 
 	 	" _LastError: " + IntegerToString(_LastError));
