@@ -43,6 +43,6 @@ int OnInit()
 
 void OnDeinit(const int reason)
 {
-	Print("ErrorDescription(reason=" + IntegerToString(reason) + "): " + UninitDescription(reason) +
-		" ErrorDescription(_LastError=" + IntegerToString(_LastError) + "): " + ErrorDescription(_LastError));
+	Print("UninitDescription(reason=" + IntegerToString(reason) + "): " + UninitDescription(reason));
+	Print("ErrorDescription(_LastError=" + IntegerToString(_LastError) + "): " + ErrorDescription(_LastError));
 }
