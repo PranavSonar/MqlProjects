@@ -86,8 +86,8 @@ int init()
 	//	logFile.Open("LogFile.txt", FILE_READ | FILE_WRITE | FILE_ANSI | FILE_REWRITE);
 	
 	GlobalContext.DatabaseLog.Initialize(false,false,false,"3MA.txt");
-	ResizeAndSet(parameters, __FILE__);
-	GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession", parameters);
+	GlobalContext.DatabaseLog.ParametersSet(__FILE__);
+	GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession");
 	
 	return INIT_SUCCEEDED;
 }
@@ -97,8 +97,8 @@ void OnDeinit(const int reason)
 //	if(logToFile)
 //		logFile.Close();
 	transaction.LogAllOrders();
-	ResizeAndSet(parameters, __FILE__);
-	GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession", parameters);
+	GlobalContext.DatabaseLog.ParametersSet(__FILE__);
+	GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
 	
 }
 
@@ -207,8 +207,8 @@ int start()
 		+ "\n\nSpread: " + DoubleToString(spreadPips, 4)
 		+ "\nTake profit / Spread (best from average): " + DoubleToString(TP/spreadPips,4)
 		+ "\nStop loss / Spread (best from average): " + DoubleToString(SL/spreadPips,4);
-	ResizeAndSet(parameters, decision.GetDecisionName() + " on " + _Symbol, summary);
-	GlobalContext.DatabaseLog.CallWebServiceProcedure("DataLog", parameters);
+	GlobalContext.DatabaseLog.ParametersSet(decision.GetDecisionName() + " on " + _Symbol, summary);
+	GlobalContext.DatabaseLog.CallWebServiceProcedure("DataLog");
 	
 	Comment(summary);
 	

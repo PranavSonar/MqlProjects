@@ -20,8 +20,8 @@ int OnInit()
 	if(FirstSymbol == NULL)
 	{
 		GlobalContext.DatabaseLog.Initialize(true);
-		ResizeAndSet(parameters, __FILE__);
-		GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession", parameters);
+		GlobalContext.DatabaseLog.ParametersSet(__FILE__);
+		GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession");
 
 		GlobalContext.Config.Initialize(true, true, false, true);
 		GlobalContext.Config.AllowTrades();
@@ -58,15 +58,15 @@ void OnTick()
 	if(!GlobalContext.Config.ChangeSymbol(system.NextTransactionData().TranSymbol, system.NextTransactionData().TimeFrame))
 	{
 		Print("Symbol change!");
-		ResizeAndSet(parameters, __FILE__);
-		GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession", parameters);
+		GlobalContext.DatabaseLog.ParametersSet(__FILE__);
+		GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
 	}
 }
 
 void OnDeinit(const int reason)
 {
-	ResizeAndSet(parameters, __FILE__);
-	GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession", parameters);
+	GlobalContext.DatabaseLog.ParametersSet(__FILE__);
+	GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
 	
 	system.PrintDeInitReason(reason);
 }

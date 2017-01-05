@@ -66,8 +66,8 @@ int OnInit()
 	
 	GlobalContext.DatabaseLog.Initialize(false,false,false,"RSI.txt");
 	
-	ResizeAndSet(parameters, __FILE__);
-	GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession", parameters);
+	GlobalContext.DatabaseLog.ParametersSet(__FILE__);
+	GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession");
 	
 	return INIT_SUCCEEDED;
 }
@@ -78,8 +78,8 @@ void OnDeinit(const int reason)
 //		logFile.Close();
 	transaction.LogAllOrders();
 	
-	ResizeAndSet(parameters, __FILE__);
-	GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession", parameters);
+	GlobalContext.DatabaseLog.ParametersSet(__FILE__);
+	GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
 }
 
 //bool logToFile = false;
@@ -175,8 +175,8 @@ int start()
 		+ "\nTake profit / Spread (best from average): " + DoubleToString(TP/spreadPips,4)
 		+ "\nStop loss / Spread (best from average): " + DoubleToString(SL/spreadPips,4);
 	
-	ResizeAndSet(parameters, decision.GetDecisionName() + " on " + _Symbol, summary);
-	GlobalContext.DatabaseLog.CallWebServiceProcedure("DataLog", parameters);
+	GlobalContext.DatabaseLog.ParametersSet(decision.GetDecisionName() + " on " + _Symbol, summary);
+	GlobalContext.DatabaseLog.CallWebServiceProcedure("DataLog");
 	Comment(summary);
 	
 	

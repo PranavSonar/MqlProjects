@@ -22,63 +22,75 @@ bool TestWebService(string &errors)
    errors = ""; 
 	WebServiceLog wslog(true);
 	
-	wslog.NewTradingSession("test");
+	wslog.ParametersSet("test");
+	wslog.CallWebServiceProcedure("NewTradingSession");
 	
 	bool isOk = true;
 	string param1, param2;
 	
 	param1 = "name2";
 	param2 = "parameasdasdters234234 ";
-	wslog.StartProcedureLog(param1, param2);
+	
+	wslog.ParametersSet(param1, param2);
+	wslog.CallWebServiceProcedure("StartProcedureLog");
 	isOk = isOk && AssertEqual(errors, wslog.Result, XmlEncodingString + BeginString + "StartProcedureLog(" + param1 + "," + param2 + "); " + RowsAffectedString + EndString, WSAssertErrorString);
 	//SafePrintString(wslog.Result);
 	
-	wslog.EndProcedureLog(param1);
+	wslog.ParametersSet(param1);
+	wslog.CallWebServiceProcedure("EndProcedureLog");
 	isOk = isOk && AssertEqual(errors, wslog.Result, XmlEncodingString + BeginString + "EndProcedureLog(" + param1 + "); " + RowsAffectedString + EndString, WSAssertErrorString);
 	//SafePrintString(wslog.Result);
 	
 	
 	param1 = "as234 2 43d";
 	param2 = "p234 arameas 2345 2345 2345dasdters2342345 2345234 ";
-	wslog.StartProcedureLog(param1, param2);
+	wslog.ParametersSet(param1, param2);
+	wslog.CallWebServiceProcedure("StartProcedureLog");
 	isOk = isOk && AssertEqual(errors, wslog.Result, XmlEncodingString + BeginString + "StartProcedureLog(" + param1 + "," + param2 + "); " + RowsAffectedString + EndString, WSAssertErrorString);
 	//SafePrintString(wslog.Result);
 	
-	wslog.EndProcedureLog(param1);
+	wslog.ParametersSet(param1);
+	wslog.CallWebServiceProcedure("EndProcedureLog");
 	isOk = isOk && AssertEqual(errors, wslog.Result, XmlEncodingString + BeginString + "EndProcedureLog(" + param1 + "); " + RowsAffectedString + EndString, WSAssertErrorString);
 	//SafePrintString(wslog.Result);
 	
 	
 	param1 = "234asdftest test";
 	param2 = "parameasd21 5234 5234 52345 asdters234234 ";
-	wslog.StartProcedureLog(param1, param2);
+	wslog.ParametersSet(param1, param2);
+	wslog.CallWebServiceProcedure("StartProcedureLog");
 	isOk = isOk && AssertEqual(errors, wslog.Result, XmlEncodingString + BeginString + "StartProcedureLog(" + param1 + "," + param2 + "); " + RowsAffectedString + EndString, WSAssertErrorString);
 	//SafePrintString(wslog.Result);
 	
-	wslog.EndProcedureLog(param1);
+	wslog.ParametersSet(param1);
+	wslog.CallWebServiceProcedure("EndProcedureLog");
 	isOk = isOk && AssertEqual(errors, wslog.Result, XmlEncodingString + BeginString + "EndProcedureLog(" + param1 + "); " + RowsAffectedString + EndString, WSAssertErrorString);
 	//SafePrintString(wslog.Result);
 	
 	
 	param1 = "234asdftest test";
 	param2 = "w345cw34";
-	wslog.DataLog(param1, param2);
+	wslog.ParametersSet(param1, param2);
+	wslog.CallWebServiceProcedure("DataLog");
 	isOk = isOk && AssertEqual(errors, wslog.Result, XmlEncodingString + BeginString + "DataLog(" + param1 + "," + param2 + "); Rows affected: 1" + EndString, WSAssertErrorString);
 	//SafePrintString(wslog.Result);
 	
 	param1 = " 23 test";
 	param2 = "24 57 w345cw34";
-	wslog.DataLog(param1, param2);
+	wslog.ParametersSet(param1, param2);
+	wslog.CallWebServiceProcedure("DataLog");
 	isOk = isOk && AssertEqual(errors, wslog.Result, XmlEncodingString + BeginString + "DataLog(" + param1 + "," + param2 + "); Rows affected: 1" + EndString, WSAssertErrorString);
 	//SafePrintString(wslog.Result);
 	
 	
-	wslog.EndTradingSession("test");
+	wslog.ParametersSet("test");
+	wslog.CallWebServiceProcedure("EndProcedureLog");
 	isOk = isOk && AssertEqual(errors, wslog.Result, XmlEncodingString + BeginString + "EndTradingSession; Rows affected: 1" + EndString, WSAssertErrorString);
 	//SafePrintString(wslog.Result);
 	
 	// Clean the database; if everything worked until now, it should work now too
-	wslog.DeleteLastSession();
+	wslog.ParametersSet();
+	wslog.CallWebServiceProcedure("DeleteLastSession");
 	
    _EW
 	return isOk;
@@ -310,7 +322,10 @@ void OnInit()
 	GlobalContext.DatabaseLog.Initialize(true);
 	
 	if(FirstSymbol == NULL)
-		GlobalContext.DatabaseLog.NewTradingSession("test");
+	{
+		GlobalContext.DatabaseLog.ParametersSet("test");
+		GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession");
+	}
 	
 	GlobalContext.Config.Initialize(true, true, false, false);
 	
@@ -342,13 +357,16 @@ void OnInit()
 		finalText = "All green";
 	
 	if(!MarketInfo(_Symbol, MODE_TRADEALLOWED))
-	   finalText += "; Trade not allowed";
-	GlobalContext.DatabaseLog.DataLog("UnitTest on " + Symbol(), finalText);
+		finalText += "; Trade not allowed";
+	
+	GlobalContext.DatabaseLog.ParametersSet("UnitTest on " + Symbol(), finalText);
+	GlobalContext.DatabaseLog.CallWebServiceProcedure("DataLog");
 	
 	SafePrintString(finalText);
 	
 	// Navigate next
 	GlobalContext.Config.ChangeSymbol(); // initialized before
 	
-	GlobalContext.DatabaseLog.EndTradingSession("test");
+	GlobalContext.DatabaseLog.ParametersSet(__FILE__);
+	GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
 }

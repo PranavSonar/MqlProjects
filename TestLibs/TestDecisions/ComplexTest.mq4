@@ -65,10 +65,11 @@ int start()
 	
 	int i = Bars - IndicatorCounted() - 1;
 	double SL = 0.0, TP = 0.0;
+	unsigned long type;
 	
 	while(i >= 0)
 	{
-		double decision = bbDecision.GetDecision2(SL, TP, 1.0, i) + rsiDecision.GetDecision(i) + maDecision.GetDecision(i);
+		double decision = bbDecision.GetDecision2(SL, TP, type, 1.0, i) + rsiDecision.GetDecision(i, type) + maDecision.GetDecision(i, type);
 		int DecisionOrderType = (int)(decision > 0.0 ? BuyDecision : IncertitudeDecision) + 
 			(int)(decision < 0.0 ? SellDecision : IncertitudeDecision);
 		double price = money.GetPriceBasedOnDecision(decision, false);

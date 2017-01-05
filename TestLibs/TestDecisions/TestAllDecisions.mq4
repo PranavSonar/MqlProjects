@@ -90,8 +90,8 @@ int OnInit()
 	
 	if(FirstSymbol == NULL)
 	{
-		ResizeAndSet(parameters, __FILE__);
-		wslog.CallWebServiceProcedure("NewTradingSession", parameters);
+		GlobalContext.DatabaseLog.ParametersSet(__FILE__);
+		wslog.CallWebServiceProcedure("NewTradingSession");
 		//StartCustomIndicator2(hWnd,"Projects\\TestLibs\\TestDecisions\\Test3MA\\TestIndicator3MA\0", true);
 		//StartCustomIndicator2(hWnd,"Projects\\TestLibs\\TestDecisions\\TestDoubleBB\\TestIndicatorDoubleBB\0", true);
 		//StartCustomIndicator2(hWnd,"Projects\\TestLibs\\TestDecisions\\TestRSI\\TestIndicatorRSI\0", true);
@@ -102,8 +102,8 @@ int OnInit()
 	Sleep(400); // Wait for indicators to get to end
 	config.ChangeSymbol();
 	
-	ResizeAndSet(parameters, __FILE__);
-	wslog.CallWebServiceProcedure("EndTradingSession", parameters);
+	GlobalContext.DatabaseLog.ParametersSet(__FILE__);
+	wslog.CallWebServiceProcedure("EndTradingSession");
 	
 	return(INIT_SUCCEEDED);
 }

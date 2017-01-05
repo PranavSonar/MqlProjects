@@ -20,8 +20,8 @@ int OnInit()
 	if(FirstSymbol == NULL)
 	{
 		GlobalContext.DatabaseLog.Initialize(true);
-		ResizeAndSet(parameters, __FILE__);
-		GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession", parameters);
+		GlobalContext.DatabaseLog.ParametersSet(__FILE__);
+		GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession");
 
 		GlobalContext.Config.Initialize(true, true, false, true);
 		GlobalContext.Config.AllowTrades();
@@ -41,8 +41,8 @@ int OnInit()
 	// not changing symbols for now	
 //	if(!GlobalContext.Config.ChangeSymbol())
 //	{
-//		ResizeAndSet(parameters, __FILE__);
-//		GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession", parameters);
+//		GlobalContext.DatabaseLog.ParametersSet(__FILE__);
+//		GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
 //	}
 	
 	return(INIT_SUCCEEDED);

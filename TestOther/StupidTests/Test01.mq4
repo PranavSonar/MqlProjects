@@ -16,8 +16,8 @@ int OnStart()
 	if(FirstSymbol == NULL)
 	{
 		GlobalContext.DatabaseLog.Initialize(true);
-		ResizeAndSet(parameters, __FILE__);
-		GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession", parameters);
+		GlobalContext.DatabaseLog.ParametersSet(__FILE__);
+		GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession");
 	}
 	Print("Symbol:" + _Symbol + " IsTradeAllowed:" + BoolToString(GlobalContext.Library.IsTradeAllowedOnSymbol()));
 	
@@ -25,8 +25,8 @@ int OnStart()
 	
 	if(!GlobalContext.Config.ChangeSymbol())
 	{
-		ResizeAndSet(parameters, __FILE__);
-		GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession", parameters);
+		GlobalContext.DatabaseLog.ParametersSet(__FILE__);
+		GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
 	}
 	
 	return(INIT_SUCCEEDED);

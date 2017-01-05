@@ -18,20 +18,20 @@ int OnInit()
 	string parameters[];
 	
 	
-	ResizeAndSet(parameters, "TestSimulateTranSystem.mq4");
-	wsLog.CallWebServiceProcedure("NewTradingSession", parameters);
+	GlobalContext.DatabaseLog.ParametersSet( "TestSimulateTranSystem.mq4");
+	wsLog.CallWebServiceProcedure("NewTradingSession");
 	result = wsLog.GetResult(); // wsLog.Result
 	SafePrintString(result);
 	
 	
 	
-	ResizeAndSet(parameters, "TestSimulateTranSystem.mq4");
-	wsLog.CallWebServiceProcedure("EndTradingSession", parameters);
+	GlobalContext.DatabaseLog.ParametersSet( "TestSimulateTranSystem.mq4");
+	wsLog.CallWebServiceProcedure("EndTradingSession");
 	result = wsLog.GetResult(); // wsLog.Result
 	SafePrintString(result);
 	
-	//ResizeAndSet(parameters, "TestSimulateTranSystem.mq4");
-	//wsLog.CallWebServiceProcedure("ReadLastDataLogAndDetail", parameters);
+	//GlobalContext.DatabaseLog.ParametersSet( "TestSimulateTranSystem.mq4");
+	//wsLog.CallWebServiceProcedure("ReadLastDataLogAndDetail");
 	//result = wsLog.GetResult(); // wsLog.Result
 	//SafePrintString(result);
 	
@@ -39,20 +39,20 @@ int OnInit()
 	SafePrintString("1:" + element.GetXmlFromElement());
 	element.Clear();
 
-//	ResizeAndSet(parameters, "TestSimulateTranSystem.mq4");
-//	wsLog.CallWebServiceProcedure("ReadLastDataLogDetail", parameters);
+//	GlobalContext.DatabaseLog.ParametersSet( "TestSimulateTranSystem.mq4");
+//	wsLog.CallWebServiceProcedure("ReadLastDataLogDetail");
 //	element.ParseXml(wsLog.GetResult()); // wsLog.Result
 //	SafePrintString("2:" + element.GetXmlFromElement());
 //	element.Clear();
 //	
-//	ResizeAndSet(parameters, "TestSimulateTranSystem.mq4");
-//	wsLog.CallWebServiceProcedure("ReadLastDataLog", parameters);
+//	GlobalContext.DatabaseLog.ParametersSet( "TestSimulateTranSystem.mq4");
+//	wsLog.CallWebServiceProcedure("ReadLastDataLog");
 //	element.ParseXml(wsLog.GetResult()); // wsLog.Result
 //	SafePrintString("3:" + element.GetXmlFromElement());
 //	element.Clear();
 //	
-//	ResizeAndSet(parameters, "TestSimulateTranSystem.mq4");
-//	wsLog.CallWebServiceProcedure("ReadLastProcedureLog", parameters);
+//	GlobalContext.DatabaseLog.ParametersSet( "TestSimulateTranSystem.mq4");
+//	wsLog.CallWebServiceProcedure("ReadLastProcedureLog");
 //	element.ParseXml(wsLog.GetResult()); // wsLog.Result
 //	SafePrintString("4:" + element.GetXmlFromElement());
 //	element.Clear();
