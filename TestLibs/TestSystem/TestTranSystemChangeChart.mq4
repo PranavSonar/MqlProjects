@@ -12,7 +12,7 @@
 #include <stdlib.mqh>
 #include <stderror.mqh>
 
-static SimulateTranSystem system(DECISION_TYPE_2BB, LOT_MANAGEMENT_ALL, TRANSACTION_MANAGEMENT_ALL);
+static SimulateTranSystem system(DECISION_TYPE_ALL, LOT_MANAGEMENT_ALL, TRANSACTION_MANAGEMENT_ALL);
 
 int OnInit()
 {

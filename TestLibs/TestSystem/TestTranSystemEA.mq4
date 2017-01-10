@@ -12,7 +12,7 @@
 #include <stdlib.mqh>
 #include <stderror.mqh>
 
-static SimulateTranSystem system(DECISION_TYPE_2BB, LOT_MANAGEMENT_ALL, TRANSACTION_MANAGEMENT_ALL);
+static SimulateTranSystem system(DECISION_TYPE_ALL, LOT_MANAGEMENT_ALL, TRANSACTION_MANAGEMENT_ALL);
 
 int OnInit()
 {
@@ -30,19 +30,15 @@ int OnInit()
 		system.SetupTransactionSystem(_Symbol);
 
 		// Add manual config only at the beginning:
-		system.AddChartTransactionData("AUDCHF", PERIOD_H1, 0 /*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
-		system.AddChartTransactionData("AUDCAD", PERIOD_H1, 0 /*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
-		system.AddChartTransactionData("AUDJPY", PERIOD_H1, 0 /*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
-		//system.AddChartTransactionData("USDBRL", PERIOD_M15, 0 /*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
-		//system.AddChartTransactionData("USDINR", PERIOD_M15, 0 /*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
-		//system.AddChartTransactionData("USDCNY", PERIOD_M15, 0 /*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
-		system.AddChartTransactionData("BTCEUR", PERIOD_M15, 0 /*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
+		system.AddChartTransactionData("ETCETH", PERIOD_H1, 0, 0, 0, true);
+		system.AddChartTransactionData("BFXUSD", PERIOD_H1, 0, 0, 0, true);
+		system.AddChartTransactionData("USDTRY", PERIOD_H1, 0, 0, 0, false);
 	}
 	
 	// not changing symbols for now	
 	////if(!GlobalContext.Config.ChangeSymbol())
 	if((!GlobalContext.Config.IsTradeAllowedOnEA()) ||
-	(!system.ExistsChartTransactionData(_Symbol,PERIOD_CURRENT, 0, 0, 0)))
+	(!system.ExistsChartTransactionData(_Symbol, PERIOD_CURRENT, 0, 0, 0)))
 		GlobalContext.Config.ChangeSymbol(system.NextTransactionData().TranSymbol, system.NextTransactionData().TimeFrame);
 	
 	return(INIT_SUCCEEDED);

@@ -78,7 +78,7 @@ void OnTick()
 	//transaction.CalculateData();
 	double lots = MarketInfo(_Symbol, MODE_MINLOT); //GlobalContext.Money.GetLotsBasedOnDecision(d, false); -> to be moved
 	
-	GlobalContext.DatabaseLog.ParametersSet("OrdersToString", transaction.OrdersToString(true));
+	//GlobalContext.DatabaseLog.ParametersSet("OrdersToString", transaction.OrdersToString(true));
 	GlobalContext.DatabaseLog.CallWebServiceProcedure("DataLog");
 	
 	if((d != IncertitudeDecision) && (nrDecisions == 0))
