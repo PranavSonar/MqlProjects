@@ -31,7 +31,7 @@ int OnInit()
 		system.SetupTransactionSystem(_Symbol);
 
 		// Add manual config only at the beginning:
-		system.AddChartTransactionData("ETCETH", PERIOD_H1, 0, 0, 0, true);
+		//system.AddChartTransactionData("ETCETH", PERIOD_H1, 0, 0, 0, true);
 		//system.AddChartTransactionData("BFXUSD", PERIOD_H1, 0, 0, 0, true);
 		//system.AddChartTransactionData("USDTRY", PERIOD_H1, 0, 0, 0, false);
 		system.AddChartTransactionData("BTCUSD", PERIOD_H1, 0, 0, 0, false);
@@ -48,7 +48,7 @@ int OnInit()
 	
 	if((!isTradeAllowedOnEA) || (!existsChartTransactionData))
 	{
-		ChartTransactionData nextChartTranData = system.NextTransactionData();
+		ChartTransactionData nextChartTranData = system.NextPositionTransactionData();
 		GlobalContext.Config.ChangeSymbol(nextChartTranData.TranSymbol, nextChartTranData.TimeFrame);
 	}
 	
@@ -58,17 +58,18 @@ int OnInit()
 void OnTick()
 {
 	if(!GlobalContext.Config.IsNewBar())
-		Sleep(100);
-	//return;
+	{
+		RefreshRates();
+		return;
+	}
 	
-	RefreshRates();
 	// run EA (maybe it can trade even on symbols which are not current, which means refactor & fix)
 	system.RunTransactionSystemForCurrentSymbol(); // run EA
 	
 	Print("After tick calc.");
 	
-	ChartTransactionData chartTranData = system.CurrentTransactionData();
-	ChartTransactionData nextChartTranData = system.NextTransactionData();
+	ChartTransactionData chartTranData = system.CurrentPositionTransactionData();
+	ChartTransactionData nextChartTranData = system.NextPositionTransactionData();
 	
 	if(chartTranData != nextChartTranData)
 	{
