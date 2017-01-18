@@ -33,10 +33,18 @@ int OnInit()
 	//wsLog.CallWebServiceProcedure("ReadLastDataLogAndDetail");
 	//result = wsLog.GetResult(); // wsLog.Result
 	//SafePrintString(result);
-	
+
+	wsLog.ParametersSet(__FILE__);
+	wsLog.CallWebServiceProcedure("GetResults");
+	result = wsLog.GetResult(); // wsLog.Result
+	element.ParseXml(result);
+	SafePrintString("2:" + element.GetXmlFromElement());
+	element.Clear();
+		
 	element.ParseXml(result);
 	SafePrintString("1:" + element.GetXmlFromElement());
 	element.Clear();
+
 
 //	wsLog.ParametersSet( "TestSimulateTranSystem.mq4");
 //	wsLog.CallWebServiceProcedure("ReadLastDataLogDetail");
