@@ -29,7 +29,7 @@ int OnInit()
 	result = wsLog.GetResult(); // wsLog.Result
 	SafePrintString(result);
 	
-	//GlobalContext.DatabaseLog.ParametersSet( "TestSimulateTranSystem.mq4");
+	//wsLog.ParametersSet( "TestSimulateTranSystem.mq4");
 	//wsLog.CallWebServiceProcedure("ReadLastDataLogAndDetail");
 	//result = wsLog.GetResult(); // wsLog.Result
 	//SafePrintString(result);
@@ -38,19 +38,19 @@ int OnInit()
 	SafePrintString("1:" + element.GetXmlFromElement());
 	element.Clear();
 
-//	GlobalContext.DatabaseLog.ParametersSet( "TestSimulateTranSystem.mq4");
+//	wsLog.ParametersSet( "TestSimulateTranSystem.mq4");
 //	wsLog.CallWebServiceProcedure("ReadLastDataLogDetail");
 //	element.ParseXml(wsLog.GetResult()); // wsLog.Result
 //	SafePrintString("2:" + element.GetXmlFromElement());
 //	element.Clear();
 //	
-//	GlobalContext.DatabaseLog.ParametersSet( "TestSimulateTranSystem.mq4");
+//	wsLog.ParametersSet( "TestSimulateTranSystem.mq4");
 //	wsLog.CallWebServiceProcedure("ReadLastDataLog");
 //	element.ParseXml(wsLog.GetResult()); // wsLog.Result
 //	SafePrintString("3:" + element.GetXmlFromElement());
 //	element.Clear();
 //	
-//	GlobalContext.DatabaseLog.ParametersSet( "TestSimulateTranSystem.mq4");
+//	wsLog.ParametersSet( "TestSimulateTranSystem.mq4");
 //	wsLog.CallWebServiceProcedure("ReadLastProcedureLog");
 //	element.ParseXml(wsLog.GetResult()); // wsLog.Result
 //	SafePrintString("4:" + element.GetXmlFromElement());
