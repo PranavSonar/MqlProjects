@@ -7,7 +7,7 @@
 #property link      "https://www.mql5.com"
 #property version   "1.00"
 #property strict
-#include <MyMql\Global\Log\OnlineWebServiceLog.mqh>
+#include <MyMql\Global\Global.mqh>
 #include <MyMql\Global\Log\Xml\XmlElement.mqh>
 
 int OnInit()
@@ -15,17 +15,16 @@ int OnInit()
 	OnlineWebServiceLog wsLog(true);
 	XmlElement element;
 	string result = NULL;
-	string parameters[];
 	
 	
-	GlobalContext.DatabaseLog.ParametersSet( "TestSimulateTranSystem.mq4");
+	GlobalContext.DatabaseLog.ParametersSet(__FILE__);
 	wsLog.CallWebServiceProcedure("NewTradingSession");
 	result = wsLog.GetResult(); // wsLog.Result
 	SafePrintString(result);
 	
 	
 	
-	GlobalContext.DatabaseLog.ParametersSet( "TestSimulateTranSystem.mq4");
+	GlobalContext.DatabaseLog.ParametersSet(__FILE__);
 	wsLog.CallWebServiceProcedure("EndTradingSession");
 	result = wsLog.GetResult(); // wsLog.Result
 	SafePrintString(result);
