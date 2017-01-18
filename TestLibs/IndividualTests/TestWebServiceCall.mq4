@@ -17,14 +17,14 @@ int OnInit()
 	string result = NULL;
 	
 	
-	GlobalContext.DatabaseLog.ParametersSet(__FILE__);
+	wsLog.ParametersSet(__FILE__);
 	wsLog.CallWebServiceProcedure("NewTradingSession");
 	result = wsLog.GetResult(); // wsLog.Result
 	SafePrintString(result);
 	
 	
 	
-	GlobalContext.DatabaseLog.ParametersSet(__FILE__);
+	wsLog.ParametersSet(__FILE__);
 	wsLog.CallWebServiceProcedure("EndTradingSession");
 	result = wsLog.GetResult(); // wsLog.Result
 	SafePrintString(result);
