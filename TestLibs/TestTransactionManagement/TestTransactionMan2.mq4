@@ -8,7 +8,7 @@
 #property version   "1.00"
 #property strict
 
-#include <MyMql/TransactionManagement/FlowWithTrendTranMan.mqh>
+#include <MyMql/UnOwnedTransactionManagement/FlowWithTrendTranMan.mqh>
 #include <MyMql/Global/Money/Generator/LimitGenerator.mqh>
 
 int OnInit()

@@ -73,7 +73,7 @@ int OnInit()
 		+ " LotStep:" + DoubleToString(LotStep,3)
 	);
 	
-	GlobalContext.Config.Initialize(true, true, false, true);
+	GlobalContext.Config.Initialize(true, true, false, true, __FILE__);
 	GlobalContext.Config.ChangeSymbol();
 	GlobalContext.DatabaseLog.EndTradingSession("TestLotsCalculation.mq4");
 	return(INIT_SUCCEEDED);

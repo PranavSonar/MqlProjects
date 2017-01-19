@@ -21,7 +21,7 @@ int OnStart()
 	}
 	Print("Symbol:" + _Symbol + " IsTradeAllowed:" + BoolToString(GlobalContext.Library.IsTradeAllowedOnSymbol()));
 	
-	GlobalContext.Config.Initialize(true, true, false, true);
+	GlobalContext.Config.Initialize(true, true, false, true, __FILE__);
 	
 	if(!GlobalContext.Config.ChangeSymbol())
 	{

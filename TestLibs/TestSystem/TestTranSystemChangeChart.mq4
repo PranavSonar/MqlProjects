@@ -23,7 +23,7 @@ int OnInit()
 		GlobalContext.DatabaseLog.ParametersSet(__FILE__);
 		GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession");
 
-		GlobalContext.Config.Initialize(true, true, false, true);
+		GlobalContext.Config.Initialize(true, true, false, true, __FILE__);
 		GlobalContext.Config.AllowTrades();
 
 		// Setup system only at the beginning:

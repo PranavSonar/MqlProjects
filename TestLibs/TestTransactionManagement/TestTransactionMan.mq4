@@ -8,8 +8,8 @@
 #property version   "1.00"
 #property strict
 
-#include <MyMql/TransactionManagement/CrappyTranManagement.mqh>
-#include <MyMql/TransactionManagement/FlowWithTrendTranMan.mqh>
+#include <MyMql/UnOwnedTransactionManagement/CrappyTranManagement.mqh>
+#include <MyMql/UnOwnedTransactionManagement/FlowWithTrendTranMan.mqh>
 
 int OnInit()
 {

@@ -18,7 +18,7 @@
 #property indicator_color6 clrMidnightBlue
 
 #include <MyMql/DecisionMaking/DecisionRSI.mqh>
-#include <MyMql/TransactionManagement/FlowWithTrendTranMan.mqh>
+#include <MyMql/UnOwnedTransactionManagement/FlowWithTrendTranMan.mqh>
 #include <Files/FileTxt.mqh>
 #include <MyMql/Global/Global.mqh>
 
@@ -175,7 +175,7 @@ int start()
 		+ "\nTake profit / Spread (best from average): " + DoubleToString(TP/spreadPips,4)
 		+ "\nStop loss / Spread (best from average): " + DoubleToString(SL/spreadPips,4);
 	
-	GlobalContext.DatabaseLog.ParametersSet(decision.GetDecisionName() + " on " + _Symbol, summary);
+	GlobalContext.DatabaseLog.ParametersSet(__FILE__, decision.GetDecisionName() + " on " + _Symbol, summary);
 	GlobalContext.DatabaseLog.CallWebServiceProcedure("DataLog");
 	Comment(summary);
 	

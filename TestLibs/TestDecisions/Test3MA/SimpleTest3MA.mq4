@@ -9,7 +9,8 @@
 #property strict
 
 #include <MyMql/DecisionMaking/Decision3CombinedMA.mqh>
-#include <MyMql/TransactionManagement/FlowWithTrendTranMan.mqh>
+//#include <MyMql/TransactionManagement/BaseTransactionManagement.mqh>
+#include <MyMql/UnOwnedTransactionManagement/FlowWithTrendTranMan.mqh>
 #include <Files/FileTxt.mqh>
 #include <MyMql/Global/Global.mqh>
 
@@ -24,6 +25,7 @@ int OnInit()
 	GlobalContext.DatabaseLog.Initialize(true);
 	GlobalContext.DatabaseLog.ParametersSet(__FILE__);
 	GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession");
+	GlobalContext.Config.Initialize(true, true, false, false, __FILE__);
 	
 	//if(IsTesting())
 		return INIT_SUCCEEDED;
@@ -58,7 +60,7 @@ void OnTick() {
 	transaction.CalculateData();
 	double lots = MarketInfo(_Symbol, MODE_MINLOT); //GlobalContext.Money.GetLotsBasedOnDecision(d, false); -> to be moved
 	
-	GlobalContext.DatabaseLog.ParametersSet("OrdersToString", transaction.OrdersToString(true));
+	GlobalContext.DatabaseLog.ParametersSet(__FILE__, "OrdersToString", transaction.OrdersToString(true));
 	GlobalContext.DatabaseLog.CallWebServiceProcedure("DataLog");
 	
 	transaction.AutoAddTransactionData(spreadPips);

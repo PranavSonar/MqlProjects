@@ -19,7 +19,7 @@
 #include <MyMql/DecisionMaking/Decision3CombinedMA.mqh>
 #include <MyMql/DecisionMaking/DecisionRSI.mqh>
 #include <MyMql/Global/Money/MoneyBetOnDecision.mqh>
-#include <MyMql/TransactionManagement/FlowWithTrendTranMan.mqh>
+#include <MyMql/UnOwnedTransactionManagement/FlowWithTrendTranMan.mqh>
 #include <MyMql/Global/Money/Generator/LimitGenerator.mqh>
 #include <MyMql/Global/Info/ScreenInfo.mqh>
 #include <MyMql/Global/Info/VerboseInfo.mqh>

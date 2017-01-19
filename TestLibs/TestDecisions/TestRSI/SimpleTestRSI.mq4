@@ -9,7 +9,7 @@
 #property strict
 
 #include <MyMql/DecisionMaking/DecisionRSI.mqh>
-#include <MyMql/TransactionManagement/FlowWithTrendTranMan.mqh>
+#include <MyMql/UnOwnedTransactionManagement/FlowWithTrendTranMan.mqh>
 #include <Files/FileTxt.mqh>
 #include <MyMql/Global/Global.mqh>
 

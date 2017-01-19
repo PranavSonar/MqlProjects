@@ -23,8 +23,8 @@ int OnInit()
 		GlobalContext.DatabaseLog.ParametersSet(__FILE__);
 		GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession");
 		
-		GlobalContext.Config.Initialize(true, true, false, true);
-		
+		GlobalContext.Config.Initialize(true, true, false, true, __FILE__);
+		Print(GlobalContext.Config.GetConfigFile());
 		// Setup system only at the beginning:
 		system.SetupTransactionSystem(_Symbol);
 	}

@@ -9,7 +9,7 @@
 #property strict
 
 #include <MyMql/DecisionMaking/DecisionDoubleBB.mqh>
-#include <MyMql/TransactionManagement/FlowWithTrendTranMan.mqh>
+#include <MyMql/UnOwnedTransactionManagement/FlowWithTrendTranMan.mqh>
 #include <Files/FileTxt.mqh>
 #include <MyMql/Global/Global.mqh>
 #include <stderror.mqh>
@@ -26,6 +26,7 @@ int OnInit()
 	GlobalContext.DatabaseLog.Initialize(true);
 	GlobalContext.DatabaseLog.ParametersSet(__FILE__);
 	GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession");
+	GlobalContext.Config.Initialize(true, true, false, false, __FILE__);
 	
 	
 	lastDecision = 0.0;
@@ -78,7 +79,7 @@ void OnTick()
 	//transaction.CalculateData();
 	double lots = MarketInfo(_Symbol, MODE_MINLOT); //GlobalContext.Money.GetLotsBasedOnDecision(d, false); -> to be moved
 	
-	//GlobalContext.DatabaseLog.ParametersSet("OrdersToString", transaction.OrdersToString(true));
+	GlobalContext.DatabaseLog.ParametersSet(__FILE__, "OrdersToString", transaction.OrdersToString(true));
 	GlobalContext.DatabaseLog.CallWebServiceProcedure("DataLog");
 	
 	if((d != IncertitudeDecision) && (nrDecisions == 0))

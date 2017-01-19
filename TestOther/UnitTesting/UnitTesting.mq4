@@ -31,20 +31,20 @@ bool TestWebService(string &errors)
 	param1 = "name2";
 	param2 = "parameasdasdters234234 ";
 	
-	wslog.ParametersSet(param1, param2);
+	wslog.ParametersSet("test", param1, param2);
 	wslog.CallWebServiceProcedure("StartProcedureLog");
 	isOk = isOk && AssertEqual(errors, wslog.Result, XmlEncodingString + BeginString + "StartProcedureLog(" + param1 + "," + param2 + "); " + RowsAffectedString + EndString, WSAssertErrorString);
 	//SafePrintString(wslog.Result);
 	
 	wslog.ParametersSet(param1);
-	wslog.CallWebServiceProcedure("EndProcedureLog");
+	wslog.CallWebServiceProcedure("test", "EndProcedureLog");
 	isOk = isOk && AssertEqual(errors, wslog.Result, XmlEncodingString + BeginString + "EndProcedureLog(" + param1 + "); " + RowsAffectedString + EndString, WSAssertErrorString);
 	//SafePrintString(wslog.Result);
 	
 	
 	param1 = "as234 2 43d";
 	param2 = "p234 arameas 2345 2345 2345dasdters2342345 2345234 ";
-	wslog.ParametersSet(param1, param2);
+	wslog.ParametersSet("test", param1, param2);
 	wslog.CallWebServiceProcedure("StartProcedureLog");
 	isOk = isOk && AssertEqual(errors, wslog.Result, XmlEncodingString + BeginString + "StartProcedureLog(" + param1 + "," + param2 + "); " + RowsAffectedString + EndString, WSAssertErrorString);
 	//SafePrintString(wslog.Result);
@@ -57,7 +57,7 @@ bool TestWebService(string &errors)
 	
 	param1 = "234asdftest test";
 	param2 = "parameasd21 5234 5234 52345 asdters234234 ";
-	wslog.ParametersSet(param1, param2);
+	wslog.ParametersSet("test", param1, param2);
 	wslog.CallWebServiceProcedure("StartProcedureLog");
 	isOk = isOk && AssertEqual(errors, wslog.Result, XmlEncodingString + BeginString + "StartProcedureLog(" + param1 + "," + param2 + "); " + RowsAffectedString + EndString, WSAssertErrorString);
 	//SafePrintString(wslog.Result);
@@ -70,14 +70,14 @@ bool TestWebService(string &errors)
 	
 	param1 = "234asdftest test";
 	param2 = "w345cw34";
-	wslog.ParametersSet(param1, param2);
+	wslog.ParametersSet("test", param1, param2);
 	wslog.CallWebServiceProcedure("DataLog");
 	isOk = isOk && AssertEqual(errors, wslog.Result, XmlEncodingString + BeginString + "DataLog(" + param1 + "," + param2 + "); Rows affected: 1" + EndString, WSAssertErrorString);
 	//SafePrintString(wslog.Result);
 	
 	param1 = " 23 test";
 	param2 = "24 57 w345cw34";
-	wslog.ParametersSet(param1, param2);
+	wslog.ParametersSet("test", param1, param2);
 	wslog.CallWebServiceProcedure("DataLog");
 	isOk = isOk && AssertEqual(errors, wslog.Result, XmlEncodingString + BeginString + "DataLog(" + param1 + "," + param2 + "); Rows affected: 1" + EndString, WSAssertErrorString);
 	//SafePrintString(wslog.Result);
@@ -359,7 +359,7 @@ void OnInit()
 	if(!MarketInfo(_Symbol, MODE_TRADEALLOWED))
 		finalText += "; Trade not allowed";
 	
-	GlobalContext.DatabaseLog.ParametersSet("UnitTest on " + Symbol(), finalText);
+	GlobalContext.DatabaseLog.ParametersSet(__FILE__, "UnitTest on " + Symbol(), finalText);
 	GlobalContext.DatabaseLog.CallWebServiceProcedure("DataLog");
 	
 	SafePrintString(finalText);

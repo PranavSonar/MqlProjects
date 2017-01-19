@@ -24,7 +24,7 @@
 //#property indicator_color12 clrMidnightBlue
 
 #include <MyMql/DecisionMaking/Decision3CombinedMA.mqh>
-#include <MyMql/TransactionManagement/FlowWithTrendTranMan.mqh>
+#include <MyMql/UnOwnedTransactionManagement/FlowWithTrendTranMan.mqh>
 #include <Files/FileTxt.mqh>
 #include <MyMql/Global/Global.mqh>
 
@@ -86,6 +86,7 @@ int init()
 	//	logFile.Open("LogFile.txt", FILE_READ | FILE_WRITE | FILE_ANSI | FILE_REWRITE);
 	
 	GlobalContext.DatabaseLog.Initialize(false,false,false,"3MA.txt");
+	GlobalContext.Config.Initialize(false, true, false, false, __FILE__);
 	GlobalContext.DatabaseLog.ParametersSet(__FILE__);
 	GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession");
 	
@@ -207,7 +208,8 @@ int start()
 		+ "\n\nSpread: " + DoubleToString(spreadPips, 4)
 		+ "\nTake profit / Spread (best from average): " + DoubleToString(TP/spreadPips,4)
 		+ "\nStop loss / Spread (best from average): " + DoubleToString(SL/spreadPips,4);
-	GlobalContext.DatabaseLog.ParametersSet(decision.GetDecisionName() + " on " + _Symbol, summary);
+	
+	GlobalContext.DatabaseLog.ParametersSet(__FILE__, decision.GetDecisionName() + " on " + _Symbol, summary);
 	GlobalContext.DatabaseLog.CallWebServiceProcedure("DataLog");
 	
 	Comment(summary);
