@@ -34,8 +34,8 @@ int OnInit()
 	//result = wsLog.GetResult(); // wsLog.Result
 	//SafePrintString(result);
 
-	wsLog.ParametersSet();
-	wsLog.CallWebServiceProcedure("ReadResults");
+	wsLog.ParametersSet("1");
+	wsLog.CallWebServiceProcedure("ReadResult");
 	result = wsLog.GetResult(); // wsLog.Result
 	element.ParseXml(result);
 	SafePrintString("2:" + element.GetXmlFromElement());
