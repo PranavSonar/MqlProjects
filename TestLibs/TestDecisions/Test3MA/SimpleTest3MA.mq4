@@ -78,8 +78,10 @@ void OnTick() {
 			if(tichet == -1)
 				Print("Failed! Reason: " + IntegerToString(GetLastError()));
 			
-			//GlobalContext.DatabaseLog.DataLogDetail("NewOrder", "New order buy " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
-			//GlobalContext.DatabaseLog.DataLogDetail("OrdersToString", transaction.OrdersToString(true));
+			//GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile(), "NewOrder", "New order buy " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
+			//GlobalContext.DatabaseLog.CallWebServiceProcedure("DataLogDetail");
+			//GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile(), "OrdersToString", transaction.OrdersToString(true));
+			//GlobalContext.DatabaseLog.CallWebServiceProcedure("DataLogDetail");
 		} else { // Sell
 			double price = MarketInfo(_Symbol, MODE_BID); // Bid
 			GlobalContext.Limit.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_SELL, price, false, spread);
@@ -91,8 +93,10 @@ void OnTick() {
 			if(tichet == -1)
 				Print("Failed! Reason: " + IntegerToString(GetLastError()));
 			
-			//GlobalContext.DatabaseLog.DataLogDetail("NewOrder", "New order sell " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
-			//GlobalContext.DatabaseLog.DataLogDetail("OrdersToString", transaction.OrdersToString(true));
+			//GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile(), "NewOrder", "New order sell " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
+			//GlobalContext.DatabaseLog.CallWebServiceProcedure("DataLogDetail");
+			//GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile(), "OrdersToString", transaction.OrdersToString(true));
+			//GlobalContext.DatabaseLog.CallWebServiceProcedure("DataLogDetail");
 		}
 		
 		GlobalContext.Screen.ShowTextValue("CurrentValue", "Number of decisions: " + IntegerToString(transaction.GetNumberOfSimulatedOrders(-1)),clrGray, 20, 0);

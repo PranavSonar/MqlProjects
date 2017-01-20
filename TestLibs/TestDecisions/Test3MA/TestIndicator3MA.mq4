@@ -156,8 +156,10 @@ int start()
 			GlobalContext.Limit.ValidateAndFixTPandSL(TP, SL, price, OP_BUY, spread, false);
 			transaction.SimulateOrderSend(_Symbol, OP_BUY, 0.1, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
 			
-			//GlobalContext.DatabaseLog.DataLogDetail("NewOrder", "New order buy " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
-			//GlobalContext.DatabaseLog.DataLogDetail("OrdersToString", transaction.OrdersToString(true));
+			//GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile(), "NewOrder", "New order buy " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
+			//GlobalContext.DatabaseLog.CallWebServiceProcedure("DataLogDetail");
+			//GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile(), "OrdersToString", transaction.OrdersToString(true));
+			//GlobalContext.DatabaseLog.CallWebServiceProcedure("DataLogDetail");
 			
 			//if(logToFile) {
 			//	logFile.WriteString("[" + IntegerToString(i) + "] New order buy " + DoubleToString(price) + " " + DoubleToString(SL) + " " + DoubleToString(TP));
@@ -171,9 +173,10 @@ int start()
 			GlobalContext.Limit.ValidateAndFixTPandSL(TP, SL, price, OP_SELL, spread, false);
 			transaction.SimulateOrderSend(_Symbol, OP_SELL, 0.1, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
 			
-			
-			//GlobalContext.DatabaseLog.DataLogDetail("NewOrder", "New order sell " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
-			//GlobalContext.DatabaseLog.DataLogDetail("OrdersToString", transaction.OrdersToString(true));
+			//GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile(), "NewOrder", "New order sell " + DoubleToStr(price) + " " + DoubleToStr(SL) + " " + DoubleToStr(TP));
+			//GlobalContext.DatabaseLog.CallWebServiceProcedure("DataLogDetail");
+			//GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile(), "OrdersToString", transaction.OrdersToString(true));
+			//GlobalContext.DatabaseLog.CallWebServiceProcedure("DataLogDetail");
 			
 			//if(logToFile) {
 			//	logFile.WriteString("[" + IntegerToString(i) + "] New order sell " + DoubleToString(price) + " " + DoubleToString(SL) + " " + DoubleToString(TP));
