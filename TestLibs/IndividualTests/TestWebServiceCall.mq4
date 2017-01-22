@@ -40,7 +40,7 @@ int OnInit()
 	element.ParseXml(result);
 	SafePrintString("2:" + element.GetXmlFromElement());
 	element.Clear();
-		
+	
 	element.ParseXml(result);
 	SafePrintString("1:" + element.GetXmlFromElement());
 	element.Clear();
