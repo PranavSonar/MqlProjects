@@ -10,6 +10,41 @@
 #include <MyMql\Global\Global.mqh>
 #include <MyMql\Global\Log\Xml\XmlElement.mqh>
 
+
+class XmlResult {
+	public:
+		string Symbol, DecisionName, TransactionName;
+		ENUM_TIMEFRAMES Period;
+		bool IsInverseDecision, IrregularLimits;
+		int BarsPerOrders, PositiveOrdersCount, NegativeOrdersCount, SumClosedOrders;
+		double ProcentualProfitResult;
+		
+		XmlResult()
+		{
+			Symbol = NULL; DecisionName = NULL; TransactionName = NULL;
+			Period = PERIOD_CURRENT;
+			IsInverseDecision = false; IrregularLimits = false;
+			BarsPerOrders = 0; PositiveOrdersCount = 0; NegativeOrdersCount = 0; SumClosedOrders = 0;
+			ProcentualProfitResult = 0.0f;
+		}
+		
+		
+		void FillDataFromXmlElement(XmlElement *element)
+		{
+			this.Symbol = element.GetChildTagDataByParentElementName("Symbol");
+			this.DecisionName = element.GetChildTagDataByParentElementName("DecisionName");
+			this.TransactionName = element.GetChildTagDataByParentElementName("TransactionName");
+			this.Period = StringToTimeFrame(element.GetChildTagDataByParentElementName("Period"));
+			this.IsInverseDecision = StringToBool(element.GetChildTagDataByParentElementName("IsInverseDecision"));
+			this.IrregularLimits = StringToBool(element.GetChildTagDataByParentElementName("IrregularLimits"));
+			this.BarsPerOrders = (int)StringToInteger(element.GetChildTagDataByParentElementName("BarsPerOrders"));
+			this.NegativeOrdersCount = (int)StringToInteger(element.GetChildTagDataByParentElementName("NegativeOrdersCount"));
+			this.PositiveOrdersCount = (int)StringToInteger(element.GetChildTagDataByParentElementName("PositiveOrdersCount"));
+			this.SumClosedOrders = (int)StringToInteger(element.GetChildTagDataByParentElementName("SumClosedOrders"));
+			this.ProcentualProfitResult = StringToDouble(element.GetChildTagDataByParentElementName("ProcentualProfitResult"));
+		}
+};
+
 int OnInit()
 {
 	OnlineWebServiceLog wsLog(true);
@@ -39,9 +74,13 @@ int OnInit()
 	result = wsLog.GetResult(); // wsLog.Result
 	element.ParseXml(result);
 	SafePrintString("2:" + element.GetXmlFromElement());
+	
+	XmlResult res;
+	res.FillDataFromXmlElement(&element);
+	
+	
 	element.Clear();
 	
-	element.ParseXml(result);
 	SafePrintString("1:" + element.GetXmlFromElement());
 	element.Clear();
 
