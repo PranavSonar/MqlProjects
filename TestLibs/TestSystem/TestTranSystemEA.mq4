@@ -57,8 +57,9 @@ int OnInit()
 	
 	if((!isTradeAllowedOnEA) || (!existsChartTransactionData))
 	{
+		Print("Chart symbol should change!");
 		ChartTransactionData nextChartTranData = system.NextPositionTransactionData();
-		GlobalContext.Config.ChangeSymbol(nextChartTranData.TranSymbol, nextChartTranData.TimeFrame);
+		GlobalContext.Config.Change Symbol(nextChartTranData.TranSymbol, nextChartTranData.TimeFrame);
 	}
 	
 	return(INIT_SUCCEEDED);
@@ -73,16 +74,12 @@ void OnTick()
 		return;
 	}
 	
-	ChartTransactionData chartTranData = system.CurrentPositionTransactionData();
-	
-	if(!system.ExistsChartTransactionData(chartTranData))
-		GlobalContext.Config.ChangeSymbol(system.FirstPositionTransactionData().TranSymbol, system.FirstPositionTransactionData().TimeFrame);
-	
 	// run EA (maybe it can trade even on symbols which are not current, which means refactor & fix)
 	system.RunTransactionSystemForCurrentSymbol(); // run EA
 	
 	Print("After tick calc.");
 	
+	ChartTransactionData chartTranData = system.CurrentPositionTransactionData();
 	ChartTransactionData nextChartTranData = system.NextPositionTransactionData();
 	
 	if(chartTranData != nextChartTranData)
