@@ -36,11 +36,11 @@ int OnInit()
 		//system.AddChartTransactionData("USDTRY", PERIOD_H1, 0, 0, 0, false);
 		//system.AddChartTransactionData("BTCUSD", PERIOD_H1, 0, 0, 0, false);
 		
+		
 		// Or auto add using WebService
+		XmlElement *element = new XmlElement();
 		GlobalContext.DatabaseLog.ParametersSet("1"); // OrderNo
 		GlobalContext.DatabaseLog.CallWebServiceProcedure("ReadResult");
-		
-		XmlElement *element = new XmlElement();
 		element.ParseXml(GlobalContext.DatabaseLog.Result);
 		system.AddChartTransactionData(element);
 		delete element;
@@ -73,12 +73,16 @@ void OnTick()
 		return;
 	}
 	
+	ChartTransactionData chartTranData = system.CurrentPositionTransactionData();
+	
+	if(!system.ExistsChartTransactionData(chartTranData))
+		GlobalContext.Config.ChangeSymbol(system.FirstPositionTransactionData().TranSymbol, system.FirstPositionTransactionData().TimeFrame);
+	
 	// run EA (maybe it can trade even on symbols which are not current, which means refactor & fix)
 	system.RunTransactionSystemForCurrentSymbol(); // run EA
 	
 	Print("After tick calc.");
 	
-	ChartTransactionData chartTranData = system.CurrentPositionTransactionData();
 	ChartTransactionData nextChartTranData = system.NextPositionTransactionData();
 	
 	if(chartTranData != nextChartTranData)
@@ -92,6 +96,5 @@ void OnDeinit(const int reason)
 {
 	GlobalContext.DatabaseLog.ParametersSet(__FILE__);
 	GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
-	
 	system.PrintDeInitReason(reason);
 }
