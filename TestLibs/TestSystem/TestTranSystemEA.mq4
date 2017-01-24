@@ -43,6 +43,7 @@ int OnInit()
 		XmlElement *element = new XmlElement();
 		element.ParseXml(GlobalContext.DatabaseLog.Result);
 		system.AddChartTransactionData(element);
+		delete element;
 	}
 	
 	// Load current orders once, to all transaction types; resets and loads oldDecision
@@ -65,6 +66,7 @@ int OnInit()
 
 void OnTick()
 {
+	// Run only on each new bar; even though the system has useOnlyFirstDecisionAndConfirmItWithOtherDecisions = true
 	if(!GlobalContext.Config.IsNewBar())
 	{
 		RefreshRates();
