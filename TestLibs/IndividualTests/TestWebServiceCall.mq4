@@ -16,7 +16,7 @@ class XmlResult {
 		string Symbol, DecisionName, TransactionName;
 		ENUM_TIMEFRAMES Period;
 		bool IsInverseDecision, IrregularLimits;
-		int BarsPerOrders, PositiveOrdersCount, NegativeOrdersCount, SumClosedOrders;
+		int OrderNo, BarsPerOrders, PositiveOrdersCount, NegativeOrdersCount, SumClosedOrders;
 		double ProcentualProfitResult;
 		
 		XmlResult()
@@ -24,7 +24,7 @@ class XmlResult {
 			Symbol = NULL; DecisionName = NULL; TransactionName = NULL;
 			Period = PERIOD_CURRENT;
 			IsInverseDecision = false; IrregularLimits = false;
-			BarsPerOrders = 0; PositiveOrdersCount = 0; NegativeOrdersCount = 0; SumClosedOrders = 0;
+			OrderNo = 0; BarsPerOrders = 0; PositiveOrdersCount = 0; NegativeOrdersCount = 0; SumClosedOrders = 0;
 			ProcentualProfitResult = 0.0f;
 		}
 		
@@ -37,6 +37,7 @@ class XmlResult {
 			this.Period = StringToTimeFrame(element.GetChildTagDataByParentElementName("Period"));
 			this.IsInverseDecision = StringToBool(element.GetChildTagDataByParentElementName("IsInverseDecision"));
 			this.IrregularLimits = StringToBool(element.GetChildTagDataByParentElementName("IrregularLimits"));
+			this.OrderNo = (int)StringToInteger(element.GetChildTagDataByParentElementName("OrderNo"));
 			this.BarsPerOrders = (int)StringToInteger(element.GetChildTagDataByParentElementName("BarsPerOrders"));
 			this.NegativeOrdersCount = (int)StringToInteger(element.GetChildTagDataByParentElementName("NegativeOrdersCount"));
 			this.PositiveOrdersCount = (int)StringToInteger(element.GetChildTagDataByParentElementName("PositiveOrdersCount"));

@@ -12,7 +12,7 @@
 #include <stdlib.mqh>
 #include <stderror.mqh>
 
-static SimulateTranSystem system(DECISION_TYPE_2BB, LOT_MANAGEMENT_ALL, TRANSACTION_MANAGEMENT_ALL);
+static SimulateTranSystem system(DECISION_TYPE_ALL, LOT_MANAGEMENT_ALL, TRANSACTION_MANAGEMENT_ALL);
 
 int OnInit()
 {
@@ -34,7 +34,15 @@ int OnInit()
 		//system.AddChartTransactionData("ETCETH", PERIOD_H1, 0, 0, 0, true);
 		//system.AddChartTransactionData("BFXUSD", PERIOD_H1, 0, 0, 0, true);
 		//system.AddChartTransactionData("USDTRY", PERIOD_H1, 0, 0, 0, false);
-		system.AddChartTransactionData("BTCUSD", PERIOD_H1, 0, 0, 0, false);
+		//system.AddChartTransactionData("BTCUSD", PERIOD_H1, 0, 0, 0, false);
+		
+		// Or auto add using WebService
+		GlobalContext.DatabaseLog.ParametersSet("1"); // OrderNo
+		GlobalContext.DatabaseLog.CallWebServiceProcedure("ReadResult");
+		
+		XmlElement *element = new XmlElement();
+		element.ParseXml(GlobalContext.DatabaseLog.Result);
+		system.AddChartTransactionData(element);
 	}
 	
 	// Load current orders once, to all transaction types; resets and loads oldDecision
