@@ -83,10 +83,8 @@ void OnTick()
 	
 	if(chartTranData != nextChartTranData)
 	{
+		Print("Symbol should change!");
 		GlobalContext.Config.ChangeSymbol(chartTranData.TranSymbol, chartTranData.TimeFrame);
-		Print("Symbol change!");
-		//GlobalContext.DatabaseLog.ParametersSet(__FILE__);
-		//GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
 	}
 }
 
