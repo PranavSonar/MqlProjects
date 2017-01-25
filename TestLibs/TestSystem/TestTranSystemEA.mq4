@@ -23,13 +23,13 @@ int OnInit()
 		GlobalContext.DatabaseLog.Initialize(true);
 		GlobalContext.DatabaseLog.ParametersSet(__FILE__);
 		GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession");
-
+		
 		GlobalContext.Config.Initialize(true, true, false, true, __FILE__);
 		GlobalContext.Config.AllowTrades();
-
+		
 		// Setup system only at the beginning:
 		system.SetupTransactionSystem(_Symbol);
-
+		
 		// Add manual config only at the beginning:
 		//system.AddChartTransactionData("ETCETH", PERIOD_H1, 0, 0, 0, true);
 		//system.AddChartTransactionData("BFXUSD", PERIOD_H1, 0, 0, 0, true);
@@ -59,7 +59,7 @@ int OnInit()
 	{
 		Print("Chart symbol should change!");
 		ChartTransactionData nextChartTranData = system.NextPositionTransactionData();
-		GlobalContext.Config.Change Symbol(nextChartTranData.TranSymbol, nextChartTranData.TimeFrame);
+		GlobalContext.Config.ChangeSymbol(nextChartTranData.TranSymbol, nextChartTranData.TimeFrame);
 	}
 	
 	return(INIT_SUCCEEDED);
