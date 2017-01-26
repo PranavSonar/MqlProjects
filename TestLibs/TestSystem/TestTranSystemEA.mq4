@@ -24,7 +24,7 @@ int OnInit()
 		GlobalContext.DatabaseLog.ParametersSet(__FILE__);
 		GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession");
 		
-		GlobalContext.Config.Initialize(true, true, false, true, __FILE__);
+		GlobalContext.Config.Initialize(true, true, false, false, __FILE__);
 		GlobalContext.Config.AllowTrades();
 		
 		// Setup system only at the beginning:
@@ -32,8 +32,6 @@ int OnInit()
 		
 		// Add manual config only at the beginning:
 		//system.AddChartTransactionData("ETCETH", PERIOD_H1, 0, 0, 0, true);
-		//system.AddChartTransactionData("BFXUSD", PERIOD_H1, 0, 0, 0, true);
-		//system.AddChartTransactionData("USDTRY", PERIOD_H1, 0, 0, 0, false);
 		//system.AddChartTransactionData("BTCUSD", PERIOD_H1, 0, 0, 0, false);
 		
 		
