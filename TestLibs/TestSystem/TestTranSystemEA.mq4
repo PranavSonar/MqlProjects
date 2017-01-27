@@ -31,8 +31,8 @@ int OnInit()
 		system.SetupTransactionSystem(_Symbol);
 		
 		// Add manual config only at the beginning:
-		//system.AddChartTransactionData("ETCETH", PERIOD_H1, 0, 0, 0, true);
-		system.AddChartTransactionData("BTCUSD", PERIOD_H1, 0, 0, 0, false);
+		//system.AddChartTransactionData("ETCETH", IntegerToTimeFrame(_Period), 0, 0, 0, true);
+		system.AddChartTransactionData("BTCUSD", IntegerToTimeFrame(_Period), 0, 0, 0, false);
 		
 		
 		//// Or auto add using WebService
