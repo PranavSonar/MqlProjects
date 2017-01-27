@@ -60,8 +60,8 @@ void OnTick() {
 	transaction.CalculateData();
 	double lots = MarketInfo(_Symbol, MODE_MINLOT); //GlobalContext.Money.GetLotsBasedOnDecision(d, false); -> to be moved
 	
-	GlobalContext.DatabaseLog.ParametersSet(__FILE__, "OrdersToString", transaction.OrdersToString(true));
-	GlobalContext.DatabaseLog.CallWebServiceProcedure("DataLog");
+	//GlobalContext.DatabaseLog.ParametersSet(__FILE__, "OrdersToString", transaction.OrdersToString(true));
+	//GlobalContext.DatabaseLog.CallWebServiceProcedure("DataLog");
 	
 	transaction.AutoAddTransactionData(spreadPips);
 	

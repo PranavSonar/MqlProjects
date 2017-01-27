@@ -32,16 +32,16 @@ int OnInit()
 		
 		// Add manual config only at the beginning:
 		//system.AddChartTransactionData("ETCETH", PERIOD_H1, 0, 0, 0, true);
-		//system.AddChartTransactionData("BTCUSD", PERIOD_H1, 0, 0, 0, false);
+		system.AddChartTransactionData("BTCUSD", PERIOD_H1, 0, 0, 0, false);
 		
 		
-		// Or auto add using WebService
-		XmlElement *element = new XmlElement();
-		GlobalContext.DatabaseLog.ParametersSet("1"); // OrderNo
-		GlobalContext.DatabaseLog.CallWebServiceProcedure("ReadResult");
-		element.ParseXml(GlobalContext.DatabaseLog.Result);
-		system.AddChartTransactionData(element);
-		delete element;
+		//// Or auto add using WebService
+		//XmlElement *element = new XmlElement();
+		//GlobalContext.DatabaseLog.ParametersSet("1"); // OrderNo
+		//GlobalContext.DatabaseLog.CallWebServiceProcedure("ReadResult");
+		//element.ParseXml(GlobalContext.DatabaseLog.Result);
+		//system.AddChartTransactionData(element);
+		//delete element;
 	}
 	
 	// Load current orders once, to all transaction types; resets and loads oldDecision
@@ -65,12 +65,12 @@ int OnInit()
 
 void OnTick()
 {
-	// Run only on each new bar; even though the system has useOnlyFirstDecisionAndConfirmItWithOtherDecisions = true
-	if(!GlobalContext.Config.IsNewBar())
-	{
-		RefreshRates();
-		return;
-	}
+	//// Run only on each new bar; even though the system has useOnlyFirstDecisionAndConfirmItWithOtherDecisions = true
+	//if(!GlobalContext.Config.IsNewBar())
+	//{
+	//	RefreshRates();
+	//	return;
+	//}
 	
 	// run EA (maybe it can trade even on symbols which are not current, which means refactor & fix)
 	system.RunTransactionSystemForCurrentSymbol(); // run EA
