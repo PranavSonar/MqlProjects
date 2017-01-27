@@ -65,12 +65,13 @@ int OnInit()
 
 void OnTick()
 {
-	//// Run only on each new bar; even though the system has useOnlyFirstDecisionAndConfirmItWithOtherDecisions = true
 	//if(!GlobalContext.Config.IsNewBar())
 	//{
 	//	RefreshRates();
 	//	return;
 	//}
+	
+	// To do: Load last decision by parsing graph once + new order at beginning, if the bars from the last decision & last bar are less than n(=4?)
 	
 	// run EA (maybe it can trade even on symbols which are not current, which means refactor & fix)
 	system.RunTransactionSystemForCurrentSymbol(); // run EA
@@ -85,6 +86,8 @@ void OnTick()
 		Print("Symbol should change!");
 		GlobalContext.Config.ChangeSymbol(chartTranData.TranSymbol, chartTranData.TimeFrame);
 	}
+	
+	Sleep(300);
 }
 
 void OnDeinit(const int reason)
