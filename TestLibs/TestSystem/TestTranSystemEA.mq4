@@ -32,7 +32,7 @@ int OnInit()
 		
 		// Add manual config only at the beginning:
 		//system.AddChartTransactionData("ETCETH", IntegerToTimeFrame(_Period), 0, 0, 0, true);
-		system.AddChartTransactionData("BTCUSD", IntegerToTimeFrame(_Period), 0, 0, 0, false);
+		system.AddChartTransactionData("BTCUSD", IntegerToTimeFrame(_Period), 0, 0, 0, true);
 		
 		
 		//// Or auto add using WebService
