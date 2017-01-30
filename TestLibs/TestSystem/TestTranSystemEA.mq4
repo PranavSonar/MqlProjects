@@ -31,8 +31,8 @@ int OnInit()
 		system.SetupTransactionSystem(_Symbol);
 		
 		// Add manual config only at the beginning:
-		//system.AddChartTransactionData("ETCETH", IntegerToTimeFrame(_Period), 0, 0, 0, true);
-		system.AddChartTransactionData("BTCUSD", IntegerToTimeFrame(_Period), 0, 0, 0, true);
+		//system.AddChartTransactionData("ETCETH", PERIOD_H1, typename(DecisionDoubleBB), typename(LotManagement), typename(BaseTransactionManagement), true);
+		system.AddChartTransactionData("BTCUSD", PERIOD_H1, typename(DecisionDoubleBB), typename(LotManagement), typename(BaseTransactionManagement), false);
 		
 		
 		//// Or auto add using WebService
@@ -51,7 +51,7 @@ int OnInit()
 	// not changing symbols for now	
 	////if(!GlobalContext.Config.ChangeSymbol())
 	bool isTradeAllowedOnEA = GlobalContext.Config.IsTradeAllowedOnEA(_Symbol);
-	bool existsChartTransactionData = system.ExistsChartTransactionData(_Symbol, PERIOD_CURRENT, 0, 0, 0);
+	bool existsChartTransactionData = system.ExistsChartTransactionData(_Symbol, PERIOD_CURRENT, typename(DecisionDoubleBB), typename(LotManagement), typename(BaseTransactionManagement));
 	
 	if((!isTradeAllowedOnEA) || (!existsChartTransactionData))
 	{
@@ -65,13 +65,12 @@ int OnInit()
 
 void OnTick()
 {
+	//// Run only on each new bar; even though the system has useOnlyFirstDecisionAndConfirmItWithOtherDecisions = true
 	//if(!GlobalContext.Config.IsNewBar())
 	//{
 	//	RefreshRates();
 	//	return;
 	//}
-	
-	// To do: Load last decision by parsing graph once + new order at beginning, if the bars from the last decision & last bar are less than n(=4?)
 	
 	// run EA (maybe it can trade even on symbols which are not current, which means refactor & fix)
 	system.RunTransactionSystemForCurrentSymbol(); // run EA
@@ -86,8 +85,6 @@ void OnTick()
 		Print("Symbol should change!");
 		GlobalContext.Config.ChangeSymbol(chartTranData.TranSymbol, chartTranData.TimeFrame);
 	}
-	
-	Sleep(300);
 }
 
 void OnDeinit(const int reason)
