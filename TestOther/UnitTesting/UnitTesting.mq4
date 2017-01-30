@@ -36,8 +36,8 @@ bool TestWebService(string &errors)
 	isOk = isOk && AssertEqual(errors, wslog.Result, XmlEncodingString + BeginString + "StartProcedureLog(" + param1 + "," + param2 + "); " + RowsAffectedString + EndString, WSAssertErrorString);
 	//SafePrintString(wslog.Result);
 	
-	wslog.ParametersSet(param1);
-	wslog.CallWebServiceProcedure("test", "EndProcedureLog");
+	wslog.ParametersSet("test", param1);
+	wslog.CallWebServiceProcedure("EndProcedureLog");
 	isOk = isOk && AssertEqual(errors, wslog.Result, XmlEncodingString + BeginString + "EndProcedureLog(" + param1 + "); " + RowsAffectedString + EndString, WSAssertErrorString);
 	//SafePrintString(wslog.Result);
 	
