@@ -32,16 +32,42 @@ int OnInit()
 		
 		// Add manual config only at the beginning:
 		//system.AddChartTransactionData("ETCETH", PERIOD_H1, typename(DecisionDoubleBB), typename(LotManagement), typename(BaseTransactionManagement), true);
-		system.AddChartTransactionData("BTCUSD", PERIOD_H1, typename(DecisionDoubleBB), typename(LotManagement), typename(BaseTransactionManagement), false);
+		//system.AddChartTransactionData("BTCUSD", PERIOD_H1, typename(DecisionDoubleBB), typename(LotManagement), typename(BaseTransactionManagement), false);
 		
 		
-		//// Or auto add using WebService
-		//XmlElement *element = new XmlElement();
-		//GlobalContext.DatabaseLog.ParametersSet("1"); // OrderNo
-		//GlobalContext.DatabaseLog.CallWebServiceProcedure("ReadResult");
-		//element.ParseXml(GlobalContext.DatabaseLog.Result);
-		//system.AddChartTransactionData(element);
-		//delete element;
+		// Or auto add using WebService
+		XmlElement *element = new XmlElement();
+		
+		bool isTransactionAllowedOnChartTransactionData = false;
+		int orderNo = 1;
+		
+		while(!isTransactionAllowedOnChartTransactionData)
+		{
+			GlobalContext.DatabaseLog.ParametersSet(IntegerToString(orderNo)); // OrderNo
+			GlobalContext.DatabaseLog.CallWebServiceProcedure("ReadResult");
+			
+			element.Clear();
+			element.ParseXml(GlobalContext.DatabaseLog.Result);
+			
+			if(element.GetChildByElementName("USP_ReadResult_Result") == NULL)//GlobalContext.DatabaseLog.Result == "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<string xmlns=\"http://tempuri.org/\" />")
+			{
+				Print("MaxOrderNo" + IntegerToString(orderNo));
+				break;
+			}
+			
+			string symbol = element.GetChildTagDataByParentElementName("Symbol");
+			LotManagement lots;
+			double minLots = MarketInfo(symbol, MODE_MINLOT);
+			
+			if(lots.IsMarginOk(symbol, minLots))
+			{
+				system.AddChartTransactionData(element);
+				break;
+			}
+			
+			orderNo++;
+		}
+		delete element;
 	}
 	
 	// Load current orders once, to all transaction types; resets and loads oldDecision
