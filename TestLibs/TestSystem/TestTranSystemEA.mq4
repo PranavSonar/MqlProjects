@@ -28,7 +28,6 @@ int OnInit()
 		GlobalContext.Config.AllowTrades();
 		
 		// Setup system only at the beginning:
-		system.SetupTransactionSystem(_Symbol);
 		
 		// Add manual config only at the beginning:
 		//system.AddChartTransactionData("ETCETH", PERIOD_H1, typename(DecisionDoubleBB), typename(LotManagement), typename(BaseTransactionManagement), true);
@@ -56,13 +55,18 @@ int OnInit()
 			}
 			
 			string symbol = element.GetChildTagDataByParentElementName("Symbol");
-			LotManagement lots;
+			BaseLotManagement lots;
 			double minLots = MarketInfo(symbol, MODE_MINLOT);
 			
 			if(lots.IsMarginOk(symbol, minLots))
 			{
+				system.CleanTranData();
 				system.AddChartTransactionData(element);
-				break;
+				system.InitializeFromFirstChartTranData();
+				system.SetupTransactionSystem(_Symbol);
+				system.RunTransactionSystemForCurrentSymbol();
+				if(system.chartTranData[0].LastDecisionBarShift < 3)
+					break;
 			}
 			
 			orderNo++;
@@ -77,7 +81,7 @@ int OnInit()
 	// not changing symbols for now	
 	////if(!GlobalContext.Config.ChangeSymbol())
 	bool isTradeAllowedOnEA = GlobalContext.Config.IsTradeAllowedOnEA(_Symbol);
-	bool existsChartTransactionData = system.ExistsChartTransactionData(_Symbol, PERIOD_CURRENT, typename(DecisionDoubleBB), typename(LotManagement), typename(BaseTransactionManagement));
+	bool existsChartTransactionData = system.ExistsChartTransactionData(_Symbol, PERIOD_CURRENT, typename(DecisionDoubleBB), typename(BaseLotManagement), typename(BaseTransactionManagement));
 	
 	if((!isTradeAllowedOnEA) || (!existsChartTransactionData))
 	{
