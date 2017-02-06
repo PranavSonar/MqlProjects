@@ -55,6 +55,7 @@ int OnInit()
 			}
 			
 			string symbol = element.GetChildTagDataByParentElementName("Symbol");
+			int maxOrderNo = (int) StringToInteger(element.GetChildTagDataByParentElementName("MaxOrderNo"));
 			BaseLotManagement lots;
 			double minLots = MarketInfo(symbol, MODE_MINLOT);
 			
@@ -70,6 +71,8 @@ int OnInit()
 			}
 			
 			orderNo++;
+			if(orderNo > maxOrderNo)
+				break;
 		}
 		delete element;
 	}
