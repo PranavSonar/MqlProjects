@@ -19,11 +19,12 @@ int OnInit()
 	ResetLastError();
 	if(FirstSymbol == NULL)
 	{
+		GlobalContext.Config.Initialize(true, true, false, true, __FILE__);
+		
 		GlobalContext.DatabaseLog.Initialize(true);
-		GlobalContext.DatabaseLog.ParametersSet(__FILE__);
+		GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile());
 		GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession");
 		
-		GlobalContext.Config.Initialize(true, true, false, true, __FILE__);
 		Print(GlobalContext.Config.GetConfigFile());
 		// Setup system only at the beginning:
 		system.SetupTransactionSystem(_Symbol);
@@ -33,7 +34,7 @@ int OnInit()
 	
 	if(!GlobalContext.Config.ChangeSymbol())
 	{
-		GlobalContext.DatabaseLog.ParametersSet(__FILE__);
+		GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile());
 		GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
 	}
 	
