@@ -46,4 +46,5 @@ void OnDeinit(const int reason)
 {
 	system.PrintDeInitReason(reason);
 	system.CleanTranData();
+	//system.RemoveUnusedDecisionsTransactionsAndLots();
 }
