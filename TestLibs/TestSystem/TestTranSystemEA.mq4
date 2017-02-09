@@ -125,4 +125,5 @@ void OnDeinit(const int reason)
 	GlobalContext.DatabaseLog.ParametersSet(__FILE__);
 	GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
 	system.PrintDeInitReason(reason);
+	system.RemoveUnusedDecisionsTransactionsAndLots();
 }
