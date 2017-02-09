@@ -26,6 +26,7 @@ int OnInit()
 		GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession");
 		
 		Print(GlobalContext.Config.GetConfigFile());
+		
 		// Setup system only at the beginning:
 		system.SetupTransactionSystem(_Symbol);
 	}
@@ -44,4 +45,5 @@ int OnInit()
 void OnDeinit(const int reason)
 {
 	system.PrintDeInitReason(reason);
+	system.CleanTranData();
 }
