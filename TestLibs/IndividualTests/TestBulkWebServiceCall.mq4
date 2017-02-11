@@ -101,10 +101,12 @@ int OnInit()
 	SafePrintString(result);
 	
 	
-	wsLog.ParametersSet("V", "X", timeFormat); timeFormat = GetXmlTimeFormat(TimeCurrent());
-	wsLog.ParametersSet("X", "N", timeFormat); timeFormat = GetXmlTimeFormat(TimeCurrent());
-	wsLog.ParametersSet("Y", "H", timeFormat); timeFormat = GetXmlTimeFormat(TimeCurrent());
-	wsLog.ParametersSet("A", "G", timeFormat);
+	// CallBulkWebServiceProcedure request
+	
+	wsLog.BulkParametersSet("BulkDebugLog", "V", "X", timeFormat); timeFormat = GetXmlTimeFormat(TimeCurrent());
+	wsLog.BulkParametersSet("BulkDebugLog", "X", "N", timeFormat); timeFormat = GetXmlTimeFormat(TimeCurrent());
+	wsLog.BulkParametersSet("BulkDebugLog", "Y", "H", timeFormat); timeFormat = GetXmlTimeFormat(TimeCurrent());
+	wsLog.BulkParametersSet("BulkDebugLog", "A", "G", timeFormat);
 	wsLog.CallBulkWebServiceProcedure("BulkDebugLog", true);
 	//wsLog.CallBulkWebServiceProcedure("TestMethod2", true);
 	
