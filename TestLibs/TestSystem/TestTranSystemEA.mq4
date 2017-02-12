@@ -16,8 +16,8 @@ static SimulateTranSystem system(DECISION_TYPE_ALL, LOT_MANAGEMENT_ALL, TRANSACT
 
 int OnInit()
 {
-	ResetLastError();
-	RefreshRates();
+	GlobalContext.InitRefresh();
+	
 	if(FirstSymbol == NULL)
 	{
 		GlobalContext.DatabaseLog.Initialize(true);

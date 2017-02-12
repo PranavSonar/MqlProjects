@@ -30,12 +30,12 @@ int OnInit()
 		system.SetupTransactionSystem(_Symbol);
 
 		// Add manual config only at the beginning:
-		system.AddChartTransactionData("AUDCHF", PERIOD_H1, 0 /*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
-		system.AddChartTransactionData("AUDCAD", PERIOD_H1, 0 /*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
-		system.AddChartTransactionData("AUDJPY", PERIOD_H1, 0 /*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
-		system.AddChartTransactionData("USDBRL", PERIOD_M15, 0 /*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
-		system.AddChartTransactionData("USDINR", PERIOD_M15, 0 /*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
-		system.AddChartTransactionData("USDCNY", PERIOD_M15, 0 /*because 2BB only*/, 0 /*lotIndex*/, 0 /*transactionIndex*/, true);
+		system.AddChartTransactionData("AUDCHF", PERIOD_H1, typename(DecisionDoubleBB) /*because 2BB only*/, typename(BaseLotManagement) /*lotIndex*/, typename(BaseTransactionManagement) /*transactionIndex*/, true);
+		system.AddChartTransactionData("AUDCAD", PERIOD_H1, typename(DecisionDoubleBB) /*because 2BB only*/, typename(BaseLotManagement) /*lotIndex*/, typename(BaseTransactionManagement) /*transactionIndex*/, true);
+		system.AddChartTransactionData("AUDJPY", PERIOD_H1, typename(DecisionDoubleBB) /*because 2BB only*/, typename(BaseLotManagement) /*lotIndex*/, typename(BaseTransactionManagement) /*transactionIndex*/, true);
+		system.AddChartTransactionData("USDBRL", PERIOD_M15, typename(DecisionDoubleBB) /*because 2BB only*/, typename(BaseLotManagement) /*lotIndex*/, typename(BaseTransactionManagement) /*transactionIndex*/, true);
+		system.AddChartTransactionData("USDINR", PERIOD_M15, typename(DecisionDoubleBB) /*because 2BB only*/, typename(BaseLotManagement) /*lotIndex*/, typename(BaseTransactionManagement) /*transactionIndex*/, true);
+		system.AddChartTransactionData("USDCNY", PERIOD_M15, typename(DecisionDoubleBB) /*because 2BB only*/, typename(BaseLotManagement) /*lotIndex*/, typename(BaseTransactionManagement) /*transactionIndex*/, true);
 	}
 	
 	// not changing symbols for now	

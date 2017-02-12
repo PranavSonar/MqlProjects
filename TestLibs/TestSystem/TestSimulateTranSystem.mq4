@@ -16,7 +16,8 @@ static SimulateTranSystem system(DECISION_TYPE_ALL, LOT_MANAGEMENT_ALL, TRANSACT
 
 int OnInit()
 {
-	ResetLastError();
+	GlobalContext.InitRefresh();
+	
 	if(FirstSymbol == NULL)
 	{
 		GlobalContext.Config.Initialize(true, true, false, true, __FILE__);
