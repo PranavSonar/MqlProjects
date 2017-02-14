@@ -16,7 +16,8 @@ static SimulateTranSystem system(DECISION_TYPE_ALL, LOT_MANAGEMENT_ALL, TRANSACT
 
 int OnInit()
 {
-	GlobalContext.InitRefresh();
+	//EventKillTimer();
+	ResetLastError();
 	
 	if(FirstSymbol == NULL)
 	{
@@ -40,12 +41,22 @@ int OnInit()
 		GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
 	}
 	
-	return(INIT_SUCCEEDED);
+	//EventSetTimer(4);
+	return (INIT_SUCCEEDED);
 }
+
+//void OnTimer()
+//{
+//	string txt = "5 seconds elapsed; program stopped without changing chart; auto removing";
+//	Print(txt);
+//	Alert(txt);
+//	ChartClose(); // auto remove
+//}
 
 void OnDeinit(const int reason)
 {
 	system.PrintDeInitReason(reason);
 	system.CleanTranData();
 	//system.RemoveUnusedDecisionsTransactionsAndLots();
+	//EventKillTimer();
 }
