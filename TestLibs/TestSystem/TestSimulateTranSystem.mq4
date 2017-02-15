@@ -24,13 +24,23 @@ int OnInit()
 		GlobalContext.Config.Initialize(true, true, false, true, __FILE__);
 		
 		GlobalContext.DatabaseLog.Initialize(true);
-		GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile());
-		GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession");
+		string lastSymbol = system.GetLastSymbol();
 		
-		Print(GlobalContext.Config.GetConfigFile());
+		if(StringIsNullOrEmpty(lastSymbol))
+		{
+			GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile());
+			GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession");
+			Print(GlobalContext.Config.GetConfigFile());
+			
+			system.SetupTransactionSystem(_Symbol);
+		}
+		else
+		{
+			GlobalContext.Config.ChangeSymbol(lastSymbol, PERIOD_CURRENT);
 		
-		// Setup system only at the beginning:
-		system.SetupTransactionSystem(_Symbol);
+			system.SetupTransactionSystem(lastSymbol);
+			return (INIT_SUCCEEDED);
+		}
 	}
 	
 	system.TestTransactionSystemForCurrentSymbol(true, true, false);

@@ -52,6 +52,14 @@ int OnInit()
 	XmlElement element;
 	string result = NULL;
 	
+	wsLog.ParametersSet("TestSimulateTranSystem.mq4");
+	wsLog.CallWebServiceProcedure("ReadLastSymbol");
+	result = wsLog.GetResult();
+	element.ParseXml(result);
+	string lastSymbol = element.GetChildByPosition(0).GetTagData();
+	
+	SafePrintString(result);
+	SafePrintString(lastSymbol);
 	
 	wsLog.ParametersSet(__FILE__);
 	wsLog.CallWebServiceProcedure("NewTradingSession");
