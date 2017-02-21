@@ -70,7 +70,7 @@ int OnInit()
 				system.InitializeFromFirstChartTranData();
 				system.SetupTransactionSystem(_Symbol);
 				system.RunTransactionSystemForCurrentSymbol();
-				if(system.chartTranData[0].LastDecisionBarShift < 3)
+				//if((system.chartTranData[0].LastDecisionBarShift < 3) && (system.chartTranData[0].LastDecisionBarShift != -1))
 					break;
 			}
 			
@@ -92,13 +92,14 @@ int OnInit()
 	bool isTradeAllowedOnEA = GlobalContext.Config.IsTradeAllowedOnEA(_Symbol);
 	bool existsChartTransactionData = system.ExistsChartTransactionData(_Symbol, PERIOD_CURRENT, typename(DecisionDoubleBB), typename(BaseLotManagement), typename(BaseTransactionManagement));
 	
-	if((!isTradeAllowedOnEA) || (!existsChartTransactionData))
+	if(((!isTradeAllowedOnEA) || (!existsChartTransactionData)) && (!StringIsNullOrEmpty(system.FirstPositionTransactionData().TranSymbol)))
 	{
 		Print("Chart symbol should change! From " + _Symbol + " to " + system.FirstPositionTransactionData().TranSymbol);
 		ChartTransactionData nextChartTranData = system.FirstPositionTransactionData(); //system.NextPositionTransactionData();
-		GlobalContext.Config.ChangeSymbol(nextChartTranData.TranSymbol, nextChartTranData.TimeFrame);
+		GlobalContext.Config.ChangeSymbol(nextChartTranData.TranSymbol, PERIOD_CURRENT);
 	}
 	
+	ChartRedraw();
 	return(INIT_SUCCEEDED);
 }
 
@@ -119,10 +120,10 @@ void OnTick()
 	ChartTransactionData chartTranData = system.CurrentPositionTransactionData();
 	ChartTransactionData nextChartTranData = system.NextPositionTransactionData();
 	
-	if(chartTranData != nextChartTranData)
+	if((chartTranData != nextChartTranData) && (!StringIsNullOrEmpty(chartTranData.TranSymbol)))
 	{
 		Print("Symbol should change!");
-		GlobalContext.Config.ChangeSymbol(chartTranData.TranSymbol, chartTranData.TimeFrame);
+		GlobalContext.Config.ChangeSymbol(chartTranData.TranSymbol, PERIOD_CURRENT /*chartTranData.TimeFrame*/);
 	}
 }
 
