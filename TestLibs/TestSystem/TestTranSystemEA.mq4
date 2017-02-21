@@ -77,6 +77,8 @@ int OnInit()
 			orderNo++;
 			if((orderNo > maxOrderNo) && (maxOrderNo != 0))
 				break;
+				
+			//change chart here?
 		}
 		delete element;
 	}
@@ -92,8 +94,8 @@ int OnInit()
 	
 	if((!isTradeAllowedOnEA) || (!existsChartTransactionData))
 	{
-		Print("Chart symbol should change!");
-		ChartTransactionData nextChartTranData = system.NextPositionTransactionData();
+		Print("Chart symbol should change! From " + _Symbol + " to " + system.FirstPositionTransactionData().TranSymbol);
+		ChartTransactionData nextChartTranData = system.FirstPositionTransactionData(); //system.NextPositionTransactionData();
 		GlobalContext.Config.ChangeSymbol(nextChartTranData.TranSymbol, nextChartTranData.TimeFrame);
 	}
 	
