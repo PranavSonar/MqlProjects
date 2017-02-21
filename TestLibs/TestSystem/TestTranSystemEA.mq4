@@ -48,6 +48,10 @@ int OnInit()
 			element.Clear();
 			element.ParseXml(GlobalContext.DatabaseLog.Result);
 			
+			if((element.GetTagType() == TagType_InvalidTag) ||
+			(element.GetTagType() == TagType_CleanTag))
+				break;
+			
 			if(element.GetChildByElementName("USP_ReadResult_Result") == NULL)//GlobalContext.DatabaseLog.Result == "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<string xmlns=\"http://tempuri.org/\" />")
 			{
 				Print("MaxOrderNo" + IntegerToString(orderNo));
@@ -71,7 +75,7 @@ int OnInit()
 			}
 			
 			orderNo++;
-			if(orderNo > maxOrderNo)
+			if((orderNo > maxOrderNo) && (maxOrderNo != 0))
 				break;
 		}
 		delete element;
