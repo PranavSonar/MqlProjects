@@ -13,10 +13,12 @@
 #include <stderror.mqh>
 
 static SimulateTranSystem system(DECISION_TYPE_ALL, LOT_MANAGEMENT_ALL, TRANSACTION_MANAGEMENT_ALL);
+bool chartIsChanging;
 
 int OnInit()
 {
-	GlobalContext.InitRefresh();
+	if(!GlobalContext.ChartIsChanging)
+		GlobalContext.InitRefresh();
 	
 	if(FirstSymbol == NULL)
 	{
@@ -97,6 +99,7 @@ int OnInit()
 		Print("Chart symbol should change! From " + _Symbol + " to " + system.FirstPositionTransactionData().TranSymbol);
 		ChartTransactionData nextChartTranData = system.FirstPositionTransactionData(); //system.NextPositionTransactionData();
 		GlobalContext.Config.ChangeSymbol(nextChartTranData.TranSymbol, PERIOD_CURRENT);
+		GlobalContext.ChartIsChanging = true;
 	}
 	
 	ChartRedraw();
@@ -111,7 +114,11 @@ void OnTick()
 	//	RefreshRates();
 	//	return;
 	//}
-	
+	if(GlobalContext.ChartIsChanging)
+	{
+		Sleep(10);
+		return;
+	}
 	// run EA (maybe it can trade even on symbols which are not current, which means refactor & fix)
 	system.RunTransactionSystemForCurrentSymbol(); // run EA
 	
@@ -124,6 +131,7 @@ void OnTick()
 	{
 		Print("Symbol should change!");
 		GlobalContext.Config.ChangeSymbol(chartTranData.TranSymbol, PERIOD_CURRENT /*chartTranData.TimeFrame*/);
+		GlobalContext.ChartIsChanging = true;
 	}
 }
 
