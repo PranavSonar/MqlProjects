@@ -32,10 +32,6 @@ int OnInit()
 		
 	// Or auto add using WebService
 	XmlElement *element = new XmlElement();
-		
-	bool isTransactionAllowedOnChartTransactionData = GlobalContext.Config.IsTradeAllowedOnEA(_Symbol);
-	if(!isTransactionAllowedOnChartTransactionData)
-		Print(__FUNCTION__ + " Transactions are not allowed on symbol " + _Symbol);
 	
 	GlobalContext.DatabaseLog.ParametersSet(_Symbol);
 	GlobalContext.DatabaseLog.CallWebServiceProcedure("ReadResultFromSymbol");
@@ -45,10 +41,18 @@ int OnInit()
 			
 	if((element.GetTagType() == TagType_InvalidTag) ||
 	(element.GetTagType() == TagType_CleanTag))
+	{
 		Print(__FUNCTION__ + " Invalid tag type after parsing response!");
+		delete element;
+		return (INIT_FAILED);
+	}
 			
 	if(element.GetChildByElementName("USP_ReadResultFromSymbol_Result") == NULL)//GlobalContext.DatabaseLog.Result == "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<string xmlns=\"http://tempuri.org/\" />")
+	{
 		Print(__FUNCTION__ + " invalid response received");
+		delete element;
+		return (INIT_FAILED);
+	}
 	
 	BaseLotManagement lots;
 	double minLots = MarketInfo(_Symbol, MODE_MINLOT);
@@ -63,7 +67,11 @@ int OnInit()
 		//if((system.chartTranData[0].LastDecisionBarShift < 3) && (system.chartTranData[0].LastDecisionBarShift != -1))
 	}
 	else
+	{
 		Print(__FUNCTION__ + " margin is not ok for symbol " + _Symbol);
+		delete element;
+		return (INIT_FAILED);
+	}
 	delete element;
 	
 	// Load current orders once, to all transaction types; resets and loads oldDecision
@@ -71,7 +79,10 @@ int OnInit()
 	
 	bool isTradeAllowedOnEA = GlobalContext.Config.IsTradeAllowedOnEA(_Symbol);
 	if(!isTradeAllowedOnEA)
+	{
 		Print(__FUNCTION__ + " Trade is not allowed on EA for symbol " + _Symbol);
+		return (INIT_FAILED);
+	}
 	
 	ChartRedraw();
 	return(INIT_SUCCEEDED);
@@ -79,8 +90,8 @@ int OnInit()
 
 void OnTick()
 {
-	// run EA (maybe it can trade even on symbols which are not current, which means refactor & fix)
-	system.RunTransactionSystemForCurrentSymbol(); // run EA
+	// Run Expert Advisor
+	system.RunTransactionSystemForCurrentSymbol();
 	
 	Print("After tick calc.");
 }
@@ -89,6 +100,7 @@ void OnDeinit(const int reason)
 {
 	GlobalContext.DatabaseLog.ParametersSet(__FILE__);
 	GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
+	
 	system.PrintDeInitReason(reason);
 	system.CleanTranData();
 	system.RemoveUnusedDecisionsTransactionsAndLots();
