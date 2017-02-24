@@ -33,9 +33,10 @@ int OnInit()
 	// Or auto add using WebService
 	XmlElement *element = new XmlElement();
 		
-	bool isTransactionAllowedOnChartTransactionData = false;
+	bool isTransactionAllowedOnChartTransactionData = GlobalContext.Config.IsTradeAllowedOnEA(_Symbol);
 	if(!isTransactionAllowedOnChartTransactionData)
-		Print("Transactions are not allowed");
+		Print(__FUNCTION__ + " Transactions are not allowed on symbol " + _Symbol);
+	
 	GlobalContext.DatabaseLog.ParametersSet(_Symbol);
 	GlobalContext.DatabaseLog.CallWebServiceProcedure("ReadResultFromSymbol");
 	
@@ -44,14 +45,14 @@ int OnInit()
 			
 	if((element.GetTagType() == TagType_InvalidTag) ||
 	(element.GetTagType() == TagType_CleanTag))
-		Print(__FILE__ + " Invalid tag type after parsing!");
+		Print(__FUNCTION__ + " Invalid tag type after parsing response!");
 			
 	if(element.GetChildByElementName("USP_ReadResultFromSymbol_Result") == NULL)//GlobalContext.DatabaseLog.Result == "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<string xmlns=\"http://tempuri.org/\" />")
-		Print(__FILE__ + " invalid response received");
+		Print(__FUNCTION__ + " invalid response received");
+	
 	BaseLotManagement lots;
-	double minLots = MarketInfo(symbol, MODE_MINLOT);
-			
-	bool isMarginOk = lots.IsMarginOk(symbol, minLots);
+	double minLots = MarketInfo(_Symbol, MODE_MINLOT);
+	bool isMarginOk = lots.IsMarginOk(_Symbol, minLots);
 	if(isMarginOk)
 	{
 		system.CleanTranData();
@@ -70,7 +71,7 @@ int OnInit()
 	
 	bool isTradeAllowedOnEA = GlobalContext.Config.IsTradeAllowedOnEA(_Symbol);
 	if(!isTradeAllowedOnEA)
-		Print(__FUNCTION__ + " trade is not allowed on EA.");
+		Print(__FUNCTION__ + " Trade is not allowed on EA for symbol " + _Symbol);
 	
 	ChartRedraw();
 	return(INIT_SUCCEEDED);

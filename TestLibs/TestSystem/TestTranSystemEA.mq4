@@ -65,6 +65,7 @@ int OnInit()
 			BaseLotManagement lots;
 			double minLots = MarketInfo(symbol, MODE_MINLOT);
 			
+			
 			if(lots.IsMarginOk(symbol, minLots))
 			{
 				system.CleanTranData();
@@ -79,7 +80,8 @@ int OnInit()
 			orderNo++;
 			if((orderNo > maxOrderNo) && (maxOrderNo != 0))
 				break;
-				
+			
+			//isTransactionAllowedOnChartTransactionData = GlobalContext.Config.IsTradeAllowedOnEA(symbol);	
 			//change chart here?
 		}
 		delete element;
