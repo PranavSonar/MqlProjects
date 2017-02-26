@@ -56,12 +56,13 @@ int OnInit()
 	
 	BaseLotManagement lots;
 	double minLots = MarketInfo(_Symbol, MODE_MINLOT);
-	bool isMarginOk = lots.IsMarginOk(_Symbol, minLots);
+	bool isMarginOk = lots.IsMarginOk(_Symbol, minLots, 0.4f, true);
 	if(isMarginOk)
 	{
 		system.CleanTranData();
 		system.AddChartTransactionData(element);
-		system.InitializeFromFirstChartTranData();
+		system.InitializeFromFirstChartTranData(true);
+		system.PrintFirstChartTranData();
 		system.SetupTransactionSystem(_Symbol);
 		system.RunTransactionSystemForCurrentSymbol();
 		//if((system.chartTranData[0].LastDecisionBarShift < 3) && (system.chartTranData[0].LastDecisionBarShift != -1))
@@ -93,7 +94,7 @@ void OnTick()
 	// Run Expert Advisor
 	system.RunTransactionSystemForCurrentSymbol();
 	
-	Print("After tick calc.");
+	//Print("After tick calc.");
 }
 
 void OnDeinit(const int reason)
