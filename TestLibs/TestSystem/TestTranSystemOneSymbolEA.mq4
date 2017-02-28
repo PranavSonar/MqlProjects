@@ -42,14 +42,14 @@ int OnInit()
 	if((element.GetTagType() == TagType_InvalidTag) ||
 	(element.GetTagType() == TagType_CleanTag))
 	{
-		Print(__FUNCTION__ + " Invalid tag type after parsing response!");
+		Print(__FUNCTION__ + " Invalid tag type after parsing response! (tag type clean or invalid)");
 		delete element;
 		return (INIT_FAILED);
 	}
 			
 	if(element.GetChildByElementName("USP_ReadResultFromSymbol_Result") == NULL)//GlobalContext.DatabaseLog.Result == "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<string xmlns=\"http://tempuri.org/\" />")
 	{
-		Print(__FUNCTION__ + " invalid response received");
+		Print(__FUNCTION__ + " invalid response received (no USP_ReadResultFromSymbol_Result child element)");
 		delete element;
 		return (INIT_FAILED);
 	}
@@ -101,6 +101,7 @@ void OnDeinit(const int reason)
 {
 	GlobalContext.DatabaseLog.ParametersSet(__FILE__);
 	GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
+	GlobalContext.DatabaseLog.CallBulkWebServiceProcedure("BulkDebugLog", true);
 	
 	system.PrintDeInitReason(reason);
 	system.CleanTranData();

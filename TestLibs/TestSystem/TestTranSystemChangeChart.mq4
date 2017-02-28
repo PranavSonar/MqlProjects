@@ -57,4 +57,5 @@ void OnTick()
 void OnDeinit(const int reason)
 {
 	system.PrintDeInitReason(reason);
+	GlobalContext.DatabaseLog.CallBulkWebServiceProcedure("BulkDebugLog", true);
 }

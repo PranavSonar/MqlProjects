@@ -141,6 +141,8 @@ void OnDeinit(const int reason)
 {
 	GlobalContext.DatabaseLog.ParametersSet(__FILE__);
 	GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
+	GlobalContext.DatabaseLog.CallBulkWebServiceProcedure("BulkDebugLog", true);
+	
 	system.PrintDeInitReason(reason);
 	system.CleanTranData();
 	system.RemoveUnusedDecisionsTransactionsAndLots();
