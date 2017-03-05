@@ -12,12 +12,23 @@
 #include <stdlib.mqh>
 #include <stderror.mqh>
 
+//#property indicator_chart_window
+
+extern bool UseKeyBoardChangeChart = false;
 static SimulateTranSystem system(DECISION_TYPE_ALL, LOT_MANAGEMENT_ALL, TRANSACTION_MANAGEMENT_ALL);
 
-int OnInit()
+int OnInit() // start()
 {
-	//EventKillTimer();
 	ResetLastError();
+	RefreshRates();
+	
+	if(!StringIsNullOrEmpty(CurrentSymbol) && (_Symbol != CurrentSymbol))
+	{
+		Sleep(20);
+		GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
+		Sleep(20);
+		return INIT_SUCCEEDED;
+	}
 	
 	if(FirstSymbol == NULL)
 	{
@@ -25,6 +36,7 @@ int OnInit()
 		
 		GlobalContext.DatabaseLog.Initialize(true);
 		string lastSymbol = system.GetLastSymbol();
+		string currentSymbol = GlobalContext.Config.GetNextSymbol(lastSymbol);
 		
 		if(StringIsNullOrEmpty(lastSymbol))
 		{
@@ -32,42 +44,35 @@ int OnInit()
 			GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession");
 			Print(GlobalContext.Config.GetConfigFile());
 			
-			system.SetupTransactionSystem(_Symbol);
+			system.SetupTransactionSystem(); //_Symbol);
 		}
 		else
 		{
-			GlobalContext.Config.ChangeSymbol(lastSymbol, PERIOD_CURRENT);
+			system.SetupTransactionSystem();
+			GlobalContext.Config.InitCurrentSymbol(currentSymbol);
+			GlobalContext.Config.ChangeSymbol(currentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
 		
-			system.SetupTransactionSystem(lastSymbol);
 			return (INIT_SUCCEEDED);
 		}
 	}
 	
 	system.TestTransactionSystemForCurrentSymbol(true, true, false);
 	
-	if(!GlobalContext.Config.ChangeSymbol())
+	if(!GlobalContext.Config.ChangeSymbol(UseKeyBoardChangeChart))
 	{
 		GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile());
 		GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
+		Print("Simulation finished! Job done!");
 	}
 	
 	//EventSetTimer(4);
 	return (INIT_SUCCEEDED);
 }
 
-//void OnTimer()
-//{
-//	string txt = "5 seconds elapsed; program stopped without changing chart; auto removing";
-//	Print(txt);
-//	Alert(txt);
-//	ChartClose(); // auto remove
-//}
-
 void OnDeinit(const int reason)
 {
 	GlobalContext.DatabaseLog.CallBulkWebServiceProcedure("BulkDebugLog", true);
 	system.PrintDeInitReason(reason);
 	system.CleanTranData();
-	//system.RemoveUnusedDecisionsTransactionsAndLots();
-	//EventKillTimer();
+	system.RemoveUnusedDecisionsTransactionsAndLots();
 }

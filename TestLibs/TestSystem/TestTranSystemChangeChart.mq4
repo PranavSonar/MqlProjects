@@ -24,26 +24,27 @@ int OnInit()
 		GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession");
 
 		GlobalContext.Config.Initialize(true, true, false, true, __FILE__);
-		GlobalContext.Config.AllowTrades();
+		//GlobalContext.Config.AllowTrades();
 
 		// Setup system only at the beginning:
 		system.SetupTransactionSystem(_Symbol);
 
 		// Add manual config only at the beginning:
-		system.AddChartTransactionData("AUDCHF", PERIOD_H1, typename(DecisionDoubleBB) /*because 2BB only*/, typename(BaseLotManagement) /*lotIndex*/, typename(BaseTransactionManagement) /*transactionIndex*/, true);
-		system.AddChartTransactionData("AUDCAD", PERIOD_H1, typename(DecisionDoubleBB) /*because 2BB only*/, typename(BaseLotManagement) /*lotIndex*/, typename(BaseTransactionManagement) /*transactionIndex*/, true);
-		system.AddChartTransactionData("AUDJPY", PERIOD_H1, typename(DecisionDoubleBB) /*because 2BB only*/, typename(BaseLotManagement) /*lotIndex*/, typename(BaseTransactionManagement) /*transactionIndex*/, true);
-		system.AddChartTransactionData("USDBRL", PERIOD_M15, typename(DecisionDoubleBB) /*because 2BB only*/, typename(BaseLotManagement) /*lotIndex*/, typename(BaseTransactionManagement) /*transactionIndex*/, true);
-		system.AddChartTransactionData("USDINR", PERIOD_M15, typename(DecisionDoubleBB) /*because 2BB only*/, typename(BaseLotManagement) /*lotIndex*/, typename(BaseTransactionManagement) /*transactionIndex*/, true);
-		system.AddChartTransactionData("USDCNY", PERIOD_M15, typename(DecisionDoubleBB) /*because 2BB only*/, typename(BaseLotManagement) /*lotIndex*/, typename(BaseTransactionManagement) /*transactionIndex*/, true);
+		//system.AddChartTransactionData("AUDCHF", PERIOD_H1, typename(DecisionDoubleBB) /*because 2BB only*/, typename(BaseLotManagement) /*lotIndex*/, typename(BaseTransactionManagement) /*transactionIndex*/, true);
+		//system.AddChartTransactionData("AUDCAD", PERIOD_H1, typename(DecisionDoubleBB) /*because 2BB only*/, typename(BaseLotManagement) /*lotIndex*/, typename(BaseTransactionManagement) /*transactionIndex*/, true);
+		//system.AddChartTransactionData("AUDJPY", PERIOD_H1, typename(DecisionDoubleBB) /*because 2BB only*/, typename(BaseLotManagement) /*lotIndex*/, typename(BaseTransactionManagement) /*transactionIndex*/, true);
+		//system.AddChartTransactionData("USDBRL", PERIOD_M15, typename(DecisionDoubleBB) /*because 2BB only*/, typename(BaseLotManagement) /*lotIndex*/, typename(BaseTransactionManagement) /*transactionIndex*/, true);
+		//system.AddChartTransactionData("USDINR", PERIOD_M15, typename(DecisionDoubleBB) /*because 2BB only*/, typename(BaseLotManagement) /*lotIndex*/, typename(BaseTransactionManagement) /*transactionIndex*/, true);
+		//system.AddChartTransactionData("USDCNY", PERIOD_M15, typename(DecisionDoubleBB) /*because 2BB only*/, typename(BaseLotManagement) /*lotIndex*/, typename(BaseTransactionManagement) /*transactionIndex*/, true);
 	}
 	
-	// not changing symbols for now	
-//	if(!GlobalContext.Config.ChangeSymbol())
-//	{
-//		GlobalContext.DatabaseLog.ParametersSet(__FILE__);
-//		GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
-//	}
+	//system.TestTransactionSystemForCurrentSymbol();
+	
+	if(!GlobalContext.Config.ChangeSymbol(true))
+	{
+		GlobalContext.DatabaseLog.ParametersSet(__FILE__);
+		GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
+	}
 	
 	return(INIT_SUCCEEDED);
 }
@@ -51,7 +52,7 @@ int OnInit()
 void OnTick()
 {
 	// run EA (maybe it can trade even on symbols which are not current, which means refactor & fix)
-	system.RunTransactionSystemForCurrentSymbol(); // run EA
+	//system.RunTransactionSystemForCurrentSymbol(); // run EA
 }
 
 void OnDeinit(const int reason)
