@@ -44,6 +44,7 @@ int OnInit()
 	{
 		GlobalContext.DatabaseLog.ParametersSet(__FILE__);
 		GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
+		system.FreeArrays();
 	}
 	
 	return(INIT_SUCCEEDED);

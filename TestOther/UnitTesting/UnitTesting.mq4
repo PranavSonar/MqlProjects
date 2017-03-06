@@ -320,14 +320,14 @@ void OnInit()
 {
 	// Log with WebService
 	GlobalContext.DatabaseLog.Initialize(true);
+	GlobalContext.Config.Initialize(true, true, false, false, __FILE__);
 	
 	if(FirstSymbol == NULL)
 	{
-		GlobalContext.DatabaseLog.ParametersSet("test");
+		GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile());
 		GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession");
 	}
 	
-	GlobalContext.Config.Initialize(true, true, false, false);
 	
 	string finalText = "", errors = "";
 	if(!TestWebService(errors))
@@ -367,6 +367,6 @@ void OnInit()
 	// Navigate next
 	GlobalContext.Config.ChangeSymbol(); // initialized before
 	
-	GlobalContext.DatabaseLog.ParametersSet(__FILE__);
+	GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile());
 	GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
 }

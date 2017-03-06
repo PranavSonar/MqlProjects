@@ -104,6 +104,6 @@ void OnDeinit(const int reason)
 	GlobalContext.DatabaseLog.CallBulkWebServiceProcedure("BulkDebugLog", true);
 	
 	system.PrintDeInitReason(reason);
-	system.CleanTranData();
+	system.FreeArrays();
 	system.RemoveUnusedDecisionsTransactionsAndLots();
 }

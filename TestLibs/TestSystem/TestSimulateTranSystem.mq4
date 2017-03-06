@@ -63,6 +63,7 @@ int OnInit() // start()
 		GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile());
 		GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
 		Print("Simulation finished! Job done!");
+		system.FreeArrays();
 	}
 	
 	//EventSetTimer(4);
