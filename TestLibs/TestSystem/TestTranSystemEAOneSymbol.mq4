@@ -63,7 +63,7 @@ int OnInit()
 		system.AddChartTransactionData(element);
 		system.InitializeFromFirstChartTranData(true);
 		system.PrintFirstChartTranData();
-		system.SetupTransactionSystem(_Symbol);
+		system.SetupTransactionSystem();
 		system.RunTransactionSystemForCurrentSymbol();
 		//if((system.chartTranData[0].LastDecisionBarShift < 3) && (system.chartTranData[0].LastDecisionBarShift != -1))
 	}
