@@ -116,11 +116,13 @@ void OnTick()
 	//	RefreshRates();
 	//	return;
 	//}
+	
 	if(GlobalContext.ChartIsChanging)
 	{
 		Sleep(10);
 		return;
 	}
+	
 	// run EA (maybe it can trade even on symbols which are not current, which means refactor & fix)
 	system.RunTransactionSystemForCurrentSymbol(); // run EA
 	
