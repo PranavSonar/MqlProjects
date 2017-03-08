@@ -27,7 +27,7 @@ int OnInit()
 		//GlobalContext.Config.AllowTrades();
 
 		// Setup system only at the beginning:
-		system.SetupTransactionSystem(_Symbol);
+		system.SetupTransactionSystem();
 
 		// Add manual config only at the beginning:
 		//system.AddChartTransactionData("AUDCHF", PERIOD_H1, typename(DecisionDoubleBB) /*because 2BB only*/, typename(BaseLotManagement) /*lotIndex*/, typename(BaseTransactionManagement) /*transactionIndex*/, true);
