@@ -14,13 +14,16 @@
 
 //#property indicator_chart_window
 
-extern bool UseKeyBoardChangeChart = false;
+extern bool UseKeyBoardChangeChart = true;
+extern bool StartSimulationAgain = false;
+
 static SimulateTranSystem system(DECISION_TYPE_ALL, LOT_MANAGEMENT_ALL, TRANSACTION_MANAGEMENT_ALL);
 
 int OnInit() // start()
 {
 	ResetLastError();
 	RefreshRates();
+	ChartRedraw();
 	
 	if(!StringIsNullOrEmpty(CurrentSymbol) && (_Symbol != CurrentSymbol))
 	{
@@ -38,7 +41,7 @@ int OnInit() // start()
 		string lastSymbol = system.GetLastSymbol();
 		string currentSymbol = GlobalContext.Config.GetNextSymbol(lastSymbol);
 		
-		if(StringIsNullOrEmpty(lastSymbol))
+		if(StringIsNullOrEmpty(lastSymbol) || (StringIsNullOrEmpty(currentSymbol) && StartSimulationAgain))
 		{
 			GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile());
 			GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession");
@@ -46,7 +49,7 @@ int OnInit() // start()
 			
 			system.SetupTransactionSystem(); //_Symbol);
 		}
-		else
+		else if(!StringIsNullOrEmpty(currentSymbol))
 		{
 			system.SetupTransactionSystem();
 			GlobalContext.Config.InitCurrentSymbol(currentSymbol);
@@ -54,6 +57,8 @@ int OnInit() // start()
 		
 			return (INIT_SUCCEEDED);
 		}
+		else
+			return (INIT_SUCCEEDED);
 	}
 	
 	system.TestTransactionSystemForCurrentSymbol(true, true, false);
@@ -63,6 +68,10 @@ int OnInit() // start()
 		GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile());
 		GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
 		Print("Simulation finished! Job done!");
+		
+		GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile());
+		GlobalContext.DatabaseLog.CallWebServiceProcedure("GetResults");
+		Print("GetResults execution finished (or at least the WS call)! Job done!");
 		system.FreeArrays();
 	}
 	
@@ -76,4 +85,7 @@ void OnDeinit(const int reason)
 	system.PrintDeInitReason(reason);
 	system.CleanTranData();
 	system.RemoveUnusedDecisionsTransactionsAndLots();
+	
+	if((_Symbol != CurrentSymbol) && (!StringIsNullOrEmpty(CurrentSymbol)))
+		GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT);
 }
