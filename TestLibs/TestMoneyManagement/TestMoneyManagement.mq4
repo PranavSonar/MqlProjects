@@ -20,8 +20,8 @@ int OnInit()
 //	LimitGenerator limit;
 	
 	//--- CalculatePriceForUSD
-	//printf("CalculatePriceForUSD(isOrderSymbol = false, isBaseCurrency = false): %f", money.CalculateCurrencyPriceForUSD(false, false));
-	printf("CalculateCurrencyPrice(isOrderSymbol = false, isBaseCurrency = false, 0, 0, 0): %f", money.CalculateCurrencyPrice(false, false, 0, 0, 0));
+	//printf("CalculatePriceForUSD(isOrderSymbol = false, isBaseCurrency = false): %f", money.CalculateCurrencyPriceForUSD(false, true));
+	printf("CalculateCurrencyPrice(isOrderSymbol = false, isBaseCurrency = false, 0, 0, 0): %f", money.CalculateCurrencyPrice(false, true, 0, 0, 0));
 //	
 //	//--- GetTotalAmount
 //	printf("GetTotalAmount: %f", money.GetTotalAmount());
@@ -41,7 +41,7 @@ int OnInit()
 //	//printf("CheckPriceGoesOurWay: %f", money.CheckPriceGoesOurWay());
 //	
 //	//--- CalculatePrice
-//	printf("CalculateCurrencyPrice: %f", money.CalculateCurrencyPrice(false, false, 0, 0, 0));
+//	printf("CalculateCurrencyPrice: %f", money.CalculateCurrencyPrice(false, true, 0, 0, 0));
 //	
 //	
 	return(INIT_SUCCEEDED);
