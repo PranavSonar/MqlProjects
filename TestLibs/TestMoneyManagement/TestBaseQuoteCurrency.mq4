@@ -17,13 +17,15 @@ int OnInit()
 	{
 		string symbol = SymbolName(i, false),
 			baseSymbolCurrency = SymbolInfoString(symbol, SYMBOL_CURRENCY_BASE),
-			profitSymbolCurrency = SymbolInfoString(symbol, SYMBOL_CURRENCY_PROFIT);
+			profitSymbolCurrency = SymbolInfoString(symbol, SYMBOL_CURRENCY_PROFIT),
+			marginSymbolCurrency = SymbolInfoString(symbol, SYMBOL_CURRENCY_MARGIN);
 		
 		printf(
-			"symbol=%s; baseCurrency=%s; profitCurrency=%s; accountCurrency=%s",
+			"symbol=%s; baseCurrency=%s; profitCurrency=%s; marginCurrency=%s; accountCurrency=%s",
 			symbol,
 			baseSymbolCurrency,
 			profitSymbolCurrency,
+			marginSymbolCurrency,
 			accountCurrency
 		);
 	}
