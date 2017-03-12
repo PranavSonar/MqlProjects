@@ -18,13 +18,16 @@
 
 int OnInit()
 {
-	int i, hstTotal=OrdersHistoryTotal();
 	BaseMoneyManagement money;
 	
-	for(i=0;i<hstTotal;i++)
+	int hstTotal = OrdersHistoryTotal();
+	if(hstTotal == 0)
+		Print("No orders until now on account " + IntegerToString(AccountNumber()) + ".");
+	
+	for(int i=0;i<hstTotal;i++)
 	{
-		//---- check selection result
-		if(OrderSelect(i,SELECT_BY_POS,MODE_HISTORY)==false)
+		// check selection result
+		if(OrderSelect(i, SELECT_BY_POS,MODE_HISTORY)==false)
 		{
 			Print("Access to history failed with error (",GetLastError(),")");
 			break;
@@ -44,7 +47,7 @@ int OnInit()
 		double orderLots = OrderLots() * MarketInfo(OrderSymbol(), MODE_LOTSIZE);
 		double orderProfitReal = OrderProfit();
 		
-		double changeRate = money.CalculateCurrencyPrice(true, true, closeTime);
+		double changeRate = money.CalculateCurrencyPrice(true, true, closeTime, PERIOD_CURRENT, 0);
 		double orderProfitTest = (orderType == "sell" ? (openPrice - closePrice) : (closePrice - openPrice)) * orderLots * changeRate;
 		
 		double orderProfitTakeProfitTest = 0.0;
@@ -59,12 +62,12 @@ int OnInit()
 		printf("[%d]: realProfit=%f calculatedProfit=%f calculatedProfitStopLoss=%f calculatedProfitTakeProfit=%f", i, OrderProfit(), orderProfitTest, orderProfitStopLossTest, orderProfitTakeProfitTest);
 		
 		
-		BaseSimulatedOrder order(OrderSymbol(), OrderOpenPrice(), OrderLots(), OrderType(), OrderTakeProfit(), OrderStopLoss(), OrderOpenTime());
+		BaseSimulatedOrder order(OrderSymbol(), OrderOpenPrice(), OrderLots(), OrderType(), OrderTakeProfit(), OrderStopLoss(), OrderOpenTime(), OrderExpiration(), PERIOD_CURRENT);
 		
 		printf("[%d]: realProfit=%f calculatedProfit2=%f calculatedProfitStopLoss2=%f calculatedProfitTakeProfit2=%f", i, OrderProfit(),
-			order.SimulatedOrderProfit(OrderCloseTime(),OrderClosePrice()),
-			order.SimulatedOrderProfit(OrderCloseTime(),OrderStopLoss()),
-			order.SimulatedOrderProfit(OrderCloseTime(),OrderTakeProfit()));
+			order.SimulatedOrderProfit(OrderCloseTime(), OrderClosePrice()),
+			order.SimulatedOrderProfit(OrderCloseTime(), OrderStopLoss()),
+			order.SimulatedOrderProfit(OrderCloseTime(), OrderTakeProfit()));
 		
 		printf("[%d]: Symbol: %s OrderType=%s Lots=%f", i, OrderSymbol(), orderType, OrderLots());
 	}

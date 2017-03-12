@@ -18,10 +18,13 @@
 
 int OnInit()
 {
-	int i, hstTotal=OrdersHistoryTotal();
 	BaseMoneyManagement money;
 	
-	for(i=0;i<hstTotal;i++)
+	int hstTotal = OrdersHistoryTotal();
+	if(hstTotal == 0)
+		Print("No orders until now on account " + IntegerToString(AccountNumber()) + ".");
+	
+	for(int i=0;i<hstTotal;i++)
 	{
 		//---- check selection result
 		if(OrderSelect(i,SELECT_BY_POS,MODE_HISTORY)==false)
@@ -44,7 +47,7 @@ int OnInit()
 		double orderLots = OrderLots() * MarketInfo(OrderSymbol(), MODE_LOTSIZE);
 		double orderProfitReal = OrderProfit();
 		
-		double changeRate = money.CalculateCurrencyPrice(true, true, closeTime);
+		double changeRate = money.CalculateCurrencyPrice(true, true, closeTime, PERIOD_CURRENT, 0);
 		double orderProfitTest = (orderType == "sell" ? (openPrice - closePrice) : (closePrice - openPrice)) * orderLots * changeRate;
 		
 		double orderProfitTakeProfitTest = 0.0;
@@ -61,12 +64,12 @@ int OnInit()
 		printf("[%d]: pipValue=%f point=%f pipValueChangeRate=%f", i,
 			Pip(),
 			Point(),
-			money.PipChangeRate());
+			money.PipChangeRate(true, true, closeTime, PERIOD_CURRENT, 0));
 			
 		printf("[%d]: pips=%f profitPerPip(based on lots)=%f finalProfitCalculated=%f", i,
 			(orderType == "sell" ? (openPrice - stopLoss) : (stopLoss - openPrice))/Pip(), 
-			(orderLots * money.PipChangeRate()),
-			(orderType == "sell" ? (openPrice - stopLoss) : (stopLoss - openPrice))/(orderLots * money.PipChangeRate(true,true,closeTime)));
+			(orderLots * money.PipChangeRate(true, true, closeTime, PERIOD_CURRENT, 0)),
+			(orderType == "sell" ? (openPrice - stopLoss) : (stopLoss - openPrice))/(orderLots * money.PipChangeRate(true, true, closeTime, PERIOD_CURRENT, 0)));
 		
 		//MarketInfo(OrderSymbol(), MODE_MARGININIT)
 		//MarketInfo(OrderSymbol(), MODE_MARGINMAINTENANCE)
