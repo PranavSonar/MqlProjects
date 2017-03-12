@@ -66,7 +66,7 @@ int OnInit()
 			double minLots = MarketInfo(symbol, MODE_MINLOT);
 			
 			
-			if(lots.IsMarginOk(symbol, minLots))
+			if(lots.IsMarginOk(symbol, minLots, 0.4))
 			{
 				system.CleanTranData();
 				system.AddChartTransactionData(element);
