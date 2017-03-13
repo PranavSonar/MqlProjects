@@ -24,14 +24,16 @@ int OnInit()
 	{
 		string symbol = SymbolName(i, false),
 			baseSymbolCurrency = SymbolInfoString(symbol, SYMBOL_CURRENCY_BASE),
-			profitSymbolCurrency = SymbolInfoString(symbol, SYMBOL_CURRENCY_PROFIT);
+			profitSymbolCurrency = SymbolInfoString(symbol, SYMBOL_CURRENCY_PROFIT),
+			marginSymbolCurrency = SymbolInfoString(symbol, SYMBOL_CURRENCY_MARGIN);
 		
 		printf(
-			"CalculateCurrencyPriceForSymbol=%f; symbol=%s; baseCurrency=%s; profitCurrency=%s; accountCurrency=%s",
+			"CalculateCurrencyPriceForSymbol=%f; symbol=%s; baseCurrency=%s; profitCurrency=%s; marginCurrency=%s; accountCurrency=%s",
 			money.CalculateCurrencyPriceForSymbol(symbol, false, true, 0, 0, 0),
 			symbol,
 			baseSymbolCurrency,
 			profitSymbolCurrency,
+			marginSymbolCurrency,
 			accountCurrency
 		);
 	}
