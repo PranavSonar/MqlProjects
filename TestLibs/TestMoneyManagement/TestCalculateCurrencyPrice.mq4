@@ -27,6 +27,9 @@ int OnInit()
 			profitSymbolCurrency = SymbolInfoString(symbol, SYMBOL_CURRENCY_PROFIT),
 			marginSymbolCurrency = SymbolInfoString(symbol, SYMBOL_CURRENCY_MARGIN);
 		
+//		if((marginSymbolCurrency == "NZD") || (marginSymbolCurrency == "AUD"))
+//			DebugBreak();
+		
 		printf(
 			"CalculateCurrencyPriceForSymbol=%f; symbol=%s; baseCurrency=%s; profitCurrency=%s; marginCurrency=%s; accountCurrency=%s",
 			money.CalculateCurrencyPriceForSymbol(symbol, false, true, 0, 0, 0),
