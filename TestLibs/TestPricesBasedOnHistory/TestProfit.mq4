@@ -8,7 +8,7 @@
 #property version   "1.00"
 #property strict
 
-#include <MyMql/Global/Money/BaseMoneyManagement.mqh>
+#include <MyMql/Global/Global.mqh>
 #include <MyMql/Global/Symbols/BaseSymbol.mqh>
 #include <MyMql/Simulation/BaseSimulatedOrder.mqh>
 
@@ -47,7 +47,7 @@ int OnInit()
 		double orderLots = OrderLots() * MarketInfo(OrderSymbol(), MODE_LOTSIZE);
 		double orderProfitReal = OrderProfit();
 		
-		double changeRate = money.CalculateCurrencyPrice(true, true, closeTime, PERIOD_CURRENT, 0);
+		double changeRate = money.CalculateCurrencyRateForSymbol(OrderSymbol(), closeTime, PERIOD_CURRENT, 0);
 		double orderProfitTest = (orderType == "sell" ? (openPrice - closePrice) : (closePrice - openPrice)) * orderLots * changeRate;
 		
 		double orderProfitTakeProfitTest = 0.0;
