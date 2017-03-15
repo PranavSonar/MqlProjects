@@ -32,7 +32,7 @@ int OnInit()
 		
 		printf(
 			"CalculateCurrencyPriceForSymbol=%f; symbol=%s; baseCurrency=%s; profitCurrency=%s; marginCurrency=%s; accountCurrency=%s",
-			money.CalculateCurrencyRateForSymbol(symbol, false, true, 0, 0, 0),
+			money.CalculateCurrencyRateForSymbol(symbol, 0, 0, 0),
 			symbol,
 			baseSymbolCurrency,
 			profitSymbolCurrency,
