@@ -8,7 +8,7 @@
 #property version   "1.00"
 #property strict
 
-#include <MyMql/Global/Money/BaseMoneyManagement.mqh>
+#include <MyMql/Global/Global.mqh>
 #include <MyMql/Global/Symbols/BaseSymbol.mqh>
 #include <MyMql/Simulation/BaseSimulatedOrder.mqh>
 
@@ -47,7 +47,7 @@ int OnInit()
 		double orderLots = OrderLots() * MarketInfo(OrderSymbol(), MODE_LOTSIZE);
 		double orderProfitReal = OrderProfit();
 		
-		double changeRate = money.CalculateCurrencyPrice(true, true, closeTime, PERIOD_CURRENT, 0);
+		double changeRate = money.CalculateCurrencyRateForSymbol(OrderSymbol(), closeTime, PERIOD_CURRENT, 0);
 		double orderProfitTest = (orderType == "sell" ? (openPrice - closePrice) : (closePrice - openPrice)) * orderLots * changeRate;
 		
 		double orderProfitTakeProfitTest = 0.0;
@@ -64,12 +64,12 @@ int OnInit()
 		printf("[%d]: pipValue=%f point=%f pipValueChangeRate=%f", i,
 			Pip(),
 			Point(),
-			money.PipChangeRate(true, true, closeTime, PERIOD_CURRENT, 0));
+			money.PipChangeRateForSymbol(OrderSymbol(), closeTime, PERIOD_CURRENT, 0));
 			
 		printf("[%d]: pips=%f profitPerPip(based on lots)=%f finalProfitCalculated=%f", i,
 			(orderType == "sell" ? (openPrice - stopLoss) : (stopLoss - openPrice))/Pip(), 
-			(orderLots * money.PipChangeRate(true, true, closeTime, PERIOD_CURRENT, 0)),
-			(orderType == "sell" ? (openPrice - stopLoss) : (stopLoss - openPrice))/(orderLots * money.PipChangeRate(true, true, closeTime, PERIOD_CURRENT, 0)));
+			(orderLots * money.PipChangeRateForSymbol(OrderSymbol(), closeTime, PERIOD_CURRENT, 0)),
+			(orderType == "sell" ? (openPrice - stopLoss) : (stopLoss - openPrice))/(orderLots * money.PipChangeRateForSymbol(OrderSymbol(), closeTime, PERIOD_CURRENT, 0)));
 		
 		//MarketInfo(OrderSymbol(), MODE_MARGININIT)
 		//MarketInfo(OrderSymbol(), MODE_MARGINMAINTENANCE)
