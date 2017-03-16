@@ -25,9 +25,6 @@ int OnInit()
 		string symbol = SymbolName(i, false),
 			marginSymbolCurrency = SymbolInfoString(symbol, SYMBOL_CURRENCY_MARGIN);
 		
-//		if((marginSymbolCurrency == "NZD") || (marginSymbolCurrency == "AUD"))
-//			DebugBreak();
-		
 		ResetLastError();
 		double freeMarginLeft = 
 			(AccountFreeMarginCheck(symbol, OP_BUY, MarketInfo(symbol, MODE_MINLOT)) + 
