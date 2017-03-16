@@ -9,7 +9,6 @@
 #property strict
 
 #include <MyMql/Global/Global.mqh>
-#include <MyMql/Global/Symbols/BaseSymbol.mqh>
 #include <MyMql/Simulation/BaseSimulatedOrder.mqh>
 
 //+------------------------------------------------------------------+
