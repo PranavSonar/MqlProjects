@@ -9,15 +9,18 @@
 #property strict
 
 #include <MyMql\System\SimulateTranSystem.mqh>
+#include <MyMql\Global\Global.mqh>
 #include <stdlib.mqh>
 #include <stderror.mqh>
 
 //#property indicator_chart_window
 
 extern bool UseKeyBoardChangeChart = false;
+extern bool UseIndicatorChangeChart = true;
 extern bool StartSimulationAgain = false;
 
 static SimulateTranSystem system(DECISION_TYPE_ALL, LOT_MANAGEMENT_ALL, TRANSACTION_MANAGEMENT_ALL);
+const string GlobalVariableNameConst = "GlobalVariableSymbol";
 
 int OnInit() // start()
 {
@@ -28,7 +31,10 @@ int OnInit() // start()
 	if(!StringIsNullOrEmpty(CurrentSymbol) && (_Symbol != CurrentSymbol))
 	{
 		Sleep(20);
-		GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
+		if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableNameConst)))
+			GlobalVariableSet(GlobalVariableNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+		else
+			GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
 		Sleep(20);
 		return INIT_SUCCEEDED;
 	}
@@ -53,8 +59,12 @@ int OnInit() // start()
 		{
 			system.SetupTransactionSystem();
 			GlobalContext.Config.InitCurrentSymbol(currentSymbol);
-			GlobalContext.Config.ChangeSymbol(currentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
-		
+			
+			if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableNameConst)))
+				GlobalVariableSet(GlobalVariableNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+			else
+				GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
+
 			return (INIT_SUCCEEDED);
 		}
 		else
@@ -63,7 +73,17 @@ int OnInit() // start()
 	
 	system.TestTransactionSystemForCurrentSymbol(true, true, false);
 	
-	if(!GlobalContext.Config.ChangeSymbol(UseKeyBoardChangeChart))
+	bool symbolChanged = false;
+	CurrentSymbol = GlobalContext.Config.GetNextSymbol(CurrentSymbol);
+	
+	if(!StringIsNullOrEmpty(CurrentSymbol))
+	{
+		if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableNameConst)))
+			GlobalVariableSet(GlobalVariableNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+		else
+			symbolChanged = GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
+	}
+	else
 	{
 		GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile());
 		GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
@@ -87,5 +107,10 @@ void OnDeinit(const int reason)
 	system.RemoveUnusedDecisionsTransactionsAndLots();
 	
 	if((_Symbol != CurrentSymbol) && (!StringIsNullOrEmpty(CurrentSymbol)))
-		GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT);
+	{
+		if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableNameConst)))
+			GlobalVariableSet(GlobalVariableNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+		else
+			symbolChanged = GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
+	}
 }
