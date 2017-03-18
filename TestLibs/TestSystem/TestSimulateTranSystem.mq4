@@ -14,7 +14,7 @@
 
 //#property indicator_chart_window
 
-extern bool UseKeyBoardChangeChart = true;
+extern bool UseKeyBoardChangeChart = false;
 extern bool StartSimulationAgain = false;
 
 static SimulateTranSystem system(DECISION_TYPE_ALL, LOT_MANAGEMENT_ALL, TRANSACTION_MANAGEMENT_ALL);
