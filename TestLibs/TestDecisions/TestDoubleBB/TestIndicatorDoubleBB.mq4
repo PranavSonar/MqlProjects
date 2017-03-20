@@ -84,7 +84,7 @@ int start()
 {
    _SW
    
-	DecisionDoubleBB decision;
+	DecisionDoubleBB decision(1, 0);
 //	bool openFile = true;
 	
 //	if(logToFile && openFile) {

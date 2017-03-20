@@ -91,7 +91,7 @@ int start()
 {
 	_SW
 	
-	DecisionRSI decision;
+	DecisionRSI decision(1,0);
 	
 	int i = Bars - IndicatorCounted() - 1;
 	double SL = 0.0, TP = 0.0, spread = MarketInfo(_Symbol,MODE_ASK) - MarketInfo(_Symbol,MODE_BID), spreadPips = spread/Pip();
@@ -119,7 +119,7 @@ int start()
 		
 		if(d > 0.0) { // Buy
 			double price = Close[i] + spread; // Ask
-			GlobalContext.Limit.CalculateTP_SL(TP, SL, OP_BUY, price, false, spread, 8*spreadPips, 13*spreadPips);
+			GlobalContext.Limit.CalculateTP_SL(TP, SL, 8*spreadPips, 13*spreadPips, OP_BUY, price, _Symbol, spread);
 			GlobalContext.Limit.ValidateAndFixTPandSL(TP, SL, price, OP_BUY, spread, false);
 			
 			transaction.SimulateOrderSend(_Symbol, OP_BUY, 0.01, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
@@ -136,7 +136,7 @@ int start()
 			
 		} else if(d < 0.0) { // Sell
 			double price = Close[i]; // Bid
-			GlobalContext.Limit.CalculateTP_SL(TP, SL, OP_SELL, price, false, spread, 8*spreadPips, 13*spreadPips);
+			GlobalContext.Limit.CalculateTP_SL(TP, SL, 8*spreadPips, 13*spreadPips, OP_SELL, price, _Symbol, spread);
 			GlobalContext.Limit.ValidateAndFixTPandSL(TP, SL, price, OP_SELL, spread, false);
 			transaction.SimulateOrderSend(_Symbol, OP_SELL, 0.01, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
 			

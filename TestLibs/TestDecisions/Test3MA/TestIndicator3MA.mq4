@@ -111,7 +111,7 @@ int start()
 {
 	_SW
    
-	Decision3CombinedMA decision;
+	Decision3CombinedMA decision(1,0);
 	//bool openFile = true;
 	
 	//if(logToFile && openFile) {
@@ -152,7 +152,7 @@ int start()
 		
 		if(d > 0.0) { // Buy
 			double price = Close[i] + spread; // Ask
-			GlobalContext.Limit.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_BUY, price, false, spread);
+			GlobalContext.Limit.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_BUY, price, _Symbol, spread);
 			GlobalContext.Limit.ValidateAndFixTPandSL(TP, SL, price, OP_BUY, spread, false);
 			transaction.SimulateOrderSend(_Symbol, OP_BUY, 0.1, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
 			
@@ -169,7 +169,7 @@ int start()
 			////Print("");
 		} else if(d < 0.0) { // Sell
 			double price = Close[i]; // Bid
-			GlobalContext.Limit.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_SELL, price, false, spread);
+			GlobalContext.Limit.CalculateTP_SL(TP, SL, 2.6*spreadPips, 1.6*spreadPips, OP_SELL, price, _Symbol, spread);
 			GlobalContext.Limit.ValidateAndFixTPandSL(TP, SL, price, OP_SELL, spread, false);
 			transaction.SimulateOrderSend(_Symbol, OP_SELL, 0.1, price, 0, SL, TP, NULL, 0, 0, clrNONE, i);
 			
