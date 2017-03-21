@@ -32,7 +32,7 @@ int OnInit()
 	
 	// Setup & simulation run
 	system.SetupTransactionSystem();
-	system.TestTransactionSystemForCurrentSymbol(true, true, false);
+	system.TestTransactionSystemForCurrentSymbol(true, false, false);
 
 	// EndTradingSession
 	GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile());

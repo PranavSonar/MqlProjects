@@ -18,6 +18,7 @@
 extern bool UseKeyBoardChangeChart = false;
 extern bool UseIndicatorChangeChart = true;
 extern bool StartSimulationAgain = false;
+extern bool UseOnlyFirstDecisionAndConfirmItWithOtherDecisions = false;
 
 static SimulateTranSystem system(DECISION_TYPE_ALL, LOT_MANAGEMENT_ALL, TRANSACTION_MANAGEMENT_ALL);
 const string GlobalVariableNameConst = "GlobalVariableSymbol";
@@ -71,7 +72,7 @@ int OnInit() // start()
 			return (INIT_SUCCEEDED);
 	}
 	
-	system.TestTransactionSystemForCurrentSymbol(true, true, false);
+	system.TestTransactionSystemForCurrentSymbol(true, true, UseOnlyFirstDecisionAndConfirmItWithOtherDecisions);
 	
 	bool symbolChanged = false;
 	CurrentSymbol = GlobalContext.Config.GetNextSymbol(CurrentSymbol);

@@ -12,6 +12,8 @@
 #include <stdlib.mqh>
 #include <stderror.mqh>
 
+extern bool UseOnlyFirstDecisionAndConfirmItWithOtherDecisions = false;
+
 static SimulateTranSystem system(DECISION_TYPE_ALL, LOT_MANAGEMENT_ALL, TRANSACTION_MANAGEMENT_ALL);
 bool chartIsChanging;
 
@@ -72,7 +74,7 @@ int OnInit()
 				system.AddChartTransactionData(element);
 				system.InitializeFromFirstChartTranData();
 				system.SetupTransactionSystem();
-				system.RunTransactionSystemForCurrentSymbol();
+				system.RunTransactionSystemForCurrentSymbol(true, UseOnlyFirstDecisionAndConfirmItWithOtherDecisions);
 				//if((system.chartTranData[0].LastDecisionBarShift < 3) && (system.chartTranData[0].LastDecisionBarShift != -1))
 					break;
 			}
@@ -124,7 +126,7 @@ void OnTick()
 	}
 	
 	// run EA (maybe it can trade even on symbols which are not current, which means refactor & fix)
-	system.RunTransactionSystemForCurrentSymbol(); // run EA
+	system.RunTransactionSystemForCurrentSymbol(true, UseOnlyFirstDecisionAndConfirmItWithOtherDecisions); // run EA
 	
 	Print("After tick calc.");
 	

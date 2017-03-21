@@ -12,6 +12,7 @@
 #include <stdlib.mqh>
 #include <stderror.mqh>
 
+extern bool UseOnlyFirstDecisionAndConfirmItWithOtherDecisions = false;
 static SimulateTranSystem system(DECISION_TYPE_ALL, LOT_MANAGEMENT_ALL, TRANSACTION_MANAGEMENT_ALL);
 
 int OnInit()
@@ -64,7 +65,7 @@ int OnInit()
 		system.InitializeFromFirstChartTranData(true);
 		system.PrintFirstChartTranData();
 		system.SetupTransactionSystem();
-		system.RunTransactionSystemForCurrentSymbol();
+		system.RunTransactionSystemForCurrentSymbol(true, UseOnlyFirstDecisionAndConfirmItWithOtherDecisions);
 		//if((system.chartTranData[0].LastDecisionBarShift < 3) && (system.chartTranData[0].LastDecisionBarShift != -1))
 	}
 	else
@@ -92,7 +93,7 @@ int OnInit()
 void OnTick()
 {
 	// Run Expert Advisor
-	system.RunTransactionSystemForCurrentSymbol();
+	system.RunTransactionSystemForCurrentSymbol(true, UseOnlyFirstDecisionAndConfirmItWithOtherDecisions);
 	
 	//Print("After tick calc.");
 }

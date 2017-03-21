@@ -78,7 +78,7 @@ void OnDeinit(const int reason)
 
 //bool logToFile = false;
 //static CFileTxt logFile;
-static FlowWithTrendTranMan transaction;
+static BaseTransactionManagement transaction;
 
 int start()
 {
