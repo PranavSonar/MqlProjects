@@ -72,7 +72,7 @@ int OnInit() // start()
 			return (INIT_SUCCEEDED);
 	}
 	
-	system.TestTransactionSystemForCurrentSymbol(true, true, UseOnlyFirstDecisionAndConfirmItWithOtherDecisions);
+	system.TestTransactionSystemForCurrentSymbol(true, UseOnlyFirstDecisionAndConfirmItWithOtherDecisions, false);
 	
 	bool symbolChanged = false;
 	CurrentSymbol = GlobalContext.Config.GetNextSymbol(CurrentSymbol);
