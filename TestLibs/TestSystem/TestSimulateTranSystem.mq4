@@ -112,6 +112,6 @@ void OnDeinit(const int reason)
 		if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableNameConst)))
 			GlobalVariableSet(GlobalVariableNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
 		else
-			symbolChanged = GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
+			GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
 	}
 }
