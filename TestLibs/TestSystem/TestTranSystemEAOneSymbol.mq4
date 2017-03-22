@@ -18,12 +18,19 @@ static SimulateTranSystem system(DECISION_TYPE_ALL, LOT_MANAGEMENT_ALL, TRANSACT
 int OnInit()
 {
 	GlobalContext.DatabaseLog.Initialize(true);
-	GlobalContext.DatabaseLog.ParametersSet(__FILE__);
-	GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession");
-		
 	GlobalContext.Config.Initialize(true, true, false, false, __FILE__);
 	GlobalContext.Config.AllowTrades();
 		
+	bool isTradeAllowedOnEA = GlobalContext.Config.IsTradeAllowedOnEA(_Symbol);
+	if(!isTradeAllowedOnEA)
+	{
+		Print(__FUNCTION__ + " Trade is not allowed on EA for symbol " + _Symbol);
+		return (INIT_FAILED);
+	}
+	
+	GlobalContext.DatabaseLog.ParametersSet(__FILE__);
+	GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession");
+	
 	// Setup system only at the beginning:
 		
 	// Add manual config only at the beginning:
@@ -78,13 +85,6 @@ int OnInit()
 	
 	// Load current orders once, to all transaction types; resets and loads oldDecision
 	system.LoadCurrentOrdersToAllTransactionTypes();
-	
-	bool isTradeAllowedOnEA = GlobalContext.Config.IsTradeAllowedOnEA(_Symbol);
-	if(!isTradeAllowedOnEA)
-	{
-		Print(__FUNCTION__ + " Trade is not allowed on EA for symbol " + _Symbol);
-		return (INIT_FAILED);
-	}
 	
 	ChartRedraw();
 	return(INIT_SUCCEEDED);
