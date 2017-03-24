@@ -12,7 +12,11 @@
 #include <stdlib.mqh>
 #include <stderror.mqh>
 
+extern bool UseKeyBoardChangeChart = false;
+extern bool UseIndicatorChangeChart = true;
 extern bool UseOnlyFirstDecisionAndConfirmItWithOtherDecisions = false;
+
+const string GlobalVariableNameConst = "GlobalVariableSymbol";
 
 static SimulateTranSystem system(DECISION_TYPE_ALL, LOT_MANAGEMENT_ALL, TRANSACTION_MANAGEMENT_ALL);
 bool chartIsChanging;
@@ -66,45 +70,41 @@ int OnInit()
 			int maxOrderNo = (int) StringToInteger(element.GetChildTagDataByParentElementName("MaxOrderNo"));
 			BaseLotManagement lots;
 			double minLots = MarketInfo(symbol, MODE_MINLOT);
+			bool isTradeAllowedOnEA = GlobalContext.Config.IsTradeAllowedOnEA(symbol);
+			bool isMarginOk = lots.IsMarginOk(symbol, minLots, 0.4);
 			
-			
-			if(lots.IsMarginOk(symbol, minLots, 0.4))
+			if((isMarginOk) && (isTradeAllowedOnEA))
 			{
 				system.CleanTranData();
 				system.AddChartTransactionData(element);
 				system.InitializeFromFirstChartTranData();
 				system.SetupTransactionSystem();
-				system.RunTransactionSystemForCurrentSymbol(true, UseOnlyFirstDecisionAndConfirmItWithOtherDecisions);
-				//if((system.chartTranData[0].LastDecisionBarShift < 3) && (system.chartTranData[0].LastDecisionBarShift != -1))
-					break;
+				CurrentSymbol = symbol;
+				
+				if(CurrentSymbol != _Symbol)
+				{
+					Print(__FUNCTION__ + " Symbol should change from " + _Symbol + " to " + CurrentSymbol);
+					
+					if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableNameConst)))
+						GlobalVariableSet(GlobalVariableNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+					else
+						GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
+					
+					GlobalContext.ChartIsChanging = true;
+				}
+				return 0;
 			}
 			
 			orderNo++;
 			if((orderNo > maxOrderNo) && (maxOrderNo != 0))
 				break;
-			
-			//isTransactionAllowedOnChartTransactionData = GlobalContext.Config.IsTradeAllowedOnEA(symbol);	
-			//change chart here?
 		}
 		delete element;
 	}
 	
 	// Load current orders once, to all transaction types; resets and loads oldDecision
 	system.LoadCurrentOrdersToAllTransactionTypes();
-	
-	
-	// not changing symbols for now	
-	////if(!GlobalContext.Config.ChangeSymbol())
-	bool isTradeAllowedOnEA = GlobalContext.Config.IsTradeAllowedOnEA(_Symbol);
-	bool existsChartTransactionData = system.ExistsChartTransactionData(_Symbol, PERIOD_CURRENT, typename(DecisionDoubleBB), typename(BaseLotManagement), typename(BaseTransactionManagement));
-	
-	if(((!isTradeAllowedOnEA) || (!existsChartTransactionData)) && (!StringIsNullOrEmpty(system.FirstPositionTransactionData().TranSymbol)))
-	{
-		Print("Chart symbol should change! From " + _Symbol + " to " + system.FirstPositionTransactionData().TranSymbol);
-		ChartTransactionData nextChartTranData = system.FirstPositionTransactionData(); //system.NextPositionTransactionData();
-		GlobalContext.Config.ChangeSymbol(nextChartTranData.TranSymbol, PERIOD_CURRENT);
-		GlobalContext.ChartIsChanging = true;
-	}
+	system.RunTransactionSystemForCurrentSymbol(true, UseOnlyFirstDecisionAndConfirmItWithOtherDecisions);
 	
 	ChartRedraw();
 	return(INIT_SUCCEEDED);
@@ -112,31 +112,29 @@ int OnInit()
 
 void OnTick()
 {
-	//// Run only on each new bar; even though the system has useOnlyFirstDecisionAndConfirmItWithOtherDecisions = true
-	//if(!GlobalContext.Config.IsNewBar())
-	//{
-	//	RefreshRates();
-	//	return;
-	//}
-	
+	if(GlobalContext.Config.IsNewBar())
+		RefreshRates();
 	if(GlobalContext.ChartIsChanging)
-	{
-		Sleep(10);
 		return;
-	}
 	
 	// run EA (maybe it can trade even on symbols which are not current, which means refactor & fix)
 	system.RunTransactionSystemForCurrentSymbol(true, UseOnlyFirstDecisionAndConfirmItWithOtherDecisions); // run EA
 	
 	Print("After tick calc.");
 	
+	
 	ChartTransactionData chartTranData = system.CurrentPositionTransactionData();
 	ChartTransactionData nextChartTranData = system.NextPositionTransactionData();
-	
 	if((chartTranData != nextChartTranData) && (!StringIsNullOrEmpty(chartTranData.TranSymbol)))
 	{
-		Print("Symbol should change!");
-		GlobalContext.Config.ChangeSymbol(chartTranData.TranSymbol, PERIOD_CURRENT /*chartTranData.TimeFrame*/);
+		CurrentSymbol = nextChartTranData.TranSymbol;
+		Print(__FUNCTION__ + " Symbol should change from " + _Symbol + " to " + CurrentSymbol);
+		
+		if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableNameConst)))
+			GlobalVariableSet(GlobalVariableNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+		else
+			GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
+		
 		GlobalContext.ChartIsChanging = true;
 	}
 }
