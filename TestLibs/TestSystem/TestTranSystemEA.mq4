@@ -123,29 +123,32 @@ void OnTick()
 	Print("After tick calc.");
 	
 	
-	ChartTransactionData chartTranData = system.CurrentPositionTransactionData();
-	ChartTransactionData nextChartTranData = system.NextPositionTransactionData();
-	if((chartTranData != nextChartTranData) && (!StringIsNullOrEmpty(chartTranData.TranSymbol)))
-	{
-		CurrentSymbol = nextChartTranData.TranSymbol;
-		Print(__FUNCTION__ + " Symbol should change from " + _Symbol + " to " + CurrentSymbol);
-		
-		if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableNameConst)))
-			GlobalVariableSet(GlobalVariableNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
-		else
-			GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
-		
-		GlobalContext.ChartIsChanging = true;
-	}
+//	ChartTransactionData chartTranData = system.CurrentPositionTransactionData();
+//	ChartTransactionData nextChartTranData = system.NextPositionTransactionData();
+//	if((chartTranData != nextChartTranData) && (!StringIsNullOrEmpty(chartTranData.TranSymbol)))
+//	{
+//		CurrentSymbol = nextChartTranData.TranSymbol;
+//		Print(__FUNCTION__ + " Symbol should change from " + _Symbol + " to " + CurrentSymbol);
+//		
+//		if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableNameConst)))
+//			GlobalVariableSet(GlobalVariableNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+//		else
+//			GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
+//		
+//		GlobalContext.ChartIsChanging = true;
+//	}
 }
 
 void OnDeinit(const int reason)
 {
-	GlobalContext.DatabaseLog.ParametersSet(__FILE__);
-	GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
-	GlobalContext.DatabaseLog.CallBulkWebServiceProcedure("BulkDebugLog", true);
-	
-	system.PrintDeInitReason(reason);
-	system.CleanTranData();
-	system.RemoveUnusedDecisionsTransactionsAndLots();
+	if(!GlobalContext.ChartIsChanging)
+	{
+		GlobalContext.DatabaseLog.ParametersSet(__FILE__);
+		GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
+		GlobalContext.DatabaseLog.CallBulkWebServiceProcedure("BulkDebugLog", true);
+		
+		system.PrintDeInitReason(reason);
+		system.CleanTranData();
+		system.RemoveUnusedDecisionsTransactionsAndLots();
+	}
 }
