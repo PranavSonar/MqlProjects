@@ -25,6 +25,8 @@ const string GlobalVariableNameConst = "GlobalVariableSymbol";
 
 int OnInit() // start()
 {
+	GlobalContext.Config.UseOnlyFirstDecisionAndConfirmItWithOtherDecisions = UseOnlyFirstDecisionAndConfirmItWithOtherDecisions;
+	
 	ResetLastError();
 	RefreshRates();
 	ChartRedraw();
@@ -72,7 +74,7 @@ int OnInit() // start()
 			return (INIT_SUCCEEDED);
 	}
 	
-	system.TestTransactionSystemForCurrentSymbol(true, UseOnlyFirstDecisionAndConfirmItWithOtherDecisions, false);
+	system.TestTransactionSystemForCurrentSymbol(true, true);
 	
 	bool symbolChanged = false;
 	CurrentSymbol = GlobalContext.Config.GetNextSymbol(CurrentSymbol);

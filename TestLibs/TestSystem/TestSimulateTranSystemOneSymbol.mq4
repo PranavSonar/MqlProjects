@@ -32,7 +32,8 @@ int OnInit()
 	
 	// Setup & simulation run
 	system.SetupTransactionSystem();
-	system.TestTransactionSystemForCurrentSymbol(true, false, false);
+	GlobalContext.Config.UseOnlyFirstDecisionAndConfirmItWithOtherDecisions = false;
+	system.TestTransactionSystemForCurrentSymbol(true, false);
 
 	// EndTradingSession
 	GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile());

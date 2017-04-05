@@ -104,7 +104,8 @@ int OnInit()
 	
 	// Load current orders once, to all transaction types; resets and loads oldDecision
 	system.LoadCurrentOrdersToAllTransactionTypes();
-	system.RunTransactionSystemForCurrentSymbol(true, UseOnlyFirstDecisionAndConfirmItWithOtherDecisions);
+	GlobalContext.Config.UseOnlyFirstDecisionAndConfirmItWithOtherDecisions = UseOnlyFirstDecisionAndConfirmItWithOtherDecisions;
+	system.RunTransactionSystemForCurrentSymbol(true);
 	
 	ChartRedraw();
 	return(INIT_SUCCEEDED);
@@ -118,7 +119,9 @@ void OnTick()
 		return;
 	
 	// run EA (maybe it can trade even on symbols which are not current, which means refactor & fix)
-	system.RunTransactionSystemForCurrentSymbol(true, UseOnlyFirstDecisionAndConfirmItWithOtherDecisions); // run EA
+	
+	GlobalContext.Config.UseOnlyFirstDecisionAndConfirmItWithOtherDecisions = UseOnlyFirstDecisionAndConfirmItWithOtherDecisions;
+	system.RunTransactionSystemForCurrentSymbol(true); // run EA
 	
 	Print("After tick calc.");
 	

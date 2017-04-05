@@ -72,7 +72,9 @@ int OnInit()
 		system.InitializeFromFirstChartTranData(true);
 		system.PrintFirstChartTranData();
 		system.SetupTransactionSystem();
-		system.RunTransactionSystemForCurrentSymbol(true, UseOnlyFirstDecisionAndConfirmItWithOtherDecisions);
+		
+		GlobalContext.Config.UseOnlyFirstDecisionAndConfirmItWithOtherDecisions = UseOnlyFirstDecisionAndConfirmItWithOtherDecisions;
+		system.RunTransactionSystemForCurrentSymbol(true);
 		//if((system.chartTranData[0].LastDecisionBarShift < 3) && (system.chartTranData[0].LastDecisionBarShift != -1))
 	}
 	else
@@ -93,7 +95,8 @@ int OnInit()
 void OnTick()
 {
 	// Run Expert Advisor
-	system.RunTransactionSystemForCurrentSymbol(true, UseOnlyFirstDecisionAndConfirmItWithOtherDecisions);
+	GlobalContext.Config.UseOnlyFirstDecisionAndConfirmItWithOtherDecisions = UseOnlyFirstDecisionAndConfirmItWithOtherDecisions;
+	system.RunTransactionSystemForCurrentSymbol(true);
 	
 	//Print("After tick calc.");
 }
