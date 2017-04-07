@@ -8,11 +8,13 @@
 #property version   "1.00"
 #property strict
 
-#include <MyMql/TransactionManagement/CrappyTranManagement.mqh>
-#include <MyMql/MoneyManagement/BaseMoneyManagement.mqh>
-#include <MyMql/Info/ScreenInfo.mqh>
+#include <MyMql/UnOwnedTransactionManagement/CrappyTranManagement.mqh>
+#include <MyMql/Global/Money/BaseMoneyManagement.mqh>
+#include <MyMql/Global/Info/ScreenInfo.mqh>
+#include <MyMql/Global/Money/Generator/LimitGenerator.mqh>
 
 BaseMoneyManagement money;
+LimitGenerator limitGenerator;
 CrappyTranManagement tran;
 ScreenInfo scrn;
 
@@ -79,7 +81,7 @@ void SumCompute()
 	OrderIsBuyValue = -1;
 	
 	tran.Get_OpenOrders_AvgPrice(CurrentOpenOrders, AveragePrice, OrderIsBuyValue);
-	money.CalculateTP_SL(TargetTP, TargetSL, TpLimitPips, SlLimitPips, OrderIsBuyValue, AveragePrice, false, ComputeSpread);
+	limitGenerator.CalculateTP_SL(TargetTP, TargetSL, TpLimitPips, SlLimitPips, OrderIsBuyValue, AveragePrice, _Symbol, ComputeSpread);
 }
  
 bool OpenNewOrder()
@@ -118,7 +120,7 @@ bool TestNewOrder()
 void Initialisation()
 {
 	double TotalAmount = money.GetTotalAmount();
-	double ComputePrice = money.CalculateCurrencyPrice(false,true);
+	double ComputePrice = money.CalculateCurrencyRateForSymbol(_Symbol, iTime(_Symbol,PERIOD_CURRENT,0),PERIOD_CURRENT,0);
 	LotsDividerCompute();
 	ComputeSpread = Ask-Bid;
 
