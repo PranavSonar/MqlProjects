@@ -45,6 +45,8 @@ int OnInit()
 		GlobalContext.DatabaseLog.ParametersSet(__FILE__);
 		GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
 		system.FreeArrays();
+		Print("Chart changing finished!");
+		ExpertRemove();
 	}
 	
 	return(INIT_SUCCEEDED);

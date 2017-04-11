@@ -96,6 +96,9 @@ int OnInit() // start()
 		GlobalContext.DatabaseLog.CallWebServiceProcedure("GetResults");
 		Print("GetResults execution finished (or at least the WS call)! Job done!");
 		system.FreeArrays();
+		
+		Print("Closing expert!");
+		ExpertRemove();
 	}
 	
 	//EventSetTimer(4);
