@@ -1,5 +1,5 @@
 //+------------------------------------------------------------------+
-//|                                       TestSimulateTranSystem.mq4 |
+//|                              TestTranSystemEAOneSymbolManual.mq4 |
 //|                                Copyright 2016, Chirita Alexandru |
 //|                                             https://www.mql5.com |
 //+------------------------------------------------------------------+

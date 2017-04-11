@@ -69,11 +69,7 @@ int OnInit()
 			string symbol = element.GetChildTagDataByParentElementName("Symbol");
 			int maxOrderNo = (int) StringToInteger(element.GetChildTagDataByParentElementName("MaxOrderNo"));
 			BaseLotManagement lots;
-			double minLots = MarketInfo(symbol, MODE_MINLOT);
-			bool isTradeAllowedOnEA = GlobalContext.Config.IsTradeAllowedOnEA(symbol);
-			bool isMarginOk = lots.IsMarginOk(symbol, minLots, 0.4);
-			
-			if((isMarginOk) && (isTradeAllowedOnEA))
+	      if(lots.IsMarginOk(symbol, MarketInfo(_Symbol, MODE_MINLOT), 0.4f, true) && GlobalContext.Config.IsTradeAllowedOnEA(symbol))
 			{
 				system.CleanTranData();
 				system.AddChartTransactionData(element);

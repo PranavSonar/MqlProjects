@@ -1,5 +1,5 @@
 //+------------------------------------------------------------------+
-//|                                    TestTranSystemEAOneSymbol.mq4 |
+//|                                       TestSimulateTranSystem.mq4 |
 //|                                Copyright 2016, Chirita Alexandru |
 //|                                             https://www.mql5.com |
 //+------------------------------------------------------------------+
@@ -31,42 +31,19 @@ int OnInit()
 	GlobalContext.DatabaseLog.ParametersSet(__FILE__);
 	GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession");
 	
-	// Setup system only at the beginning:
-		
 	// Add manual config only at the beginning:
-	//system.AddChartTransactionData("ETCETH", PERIOD_H1, typename(DecisionDoubleBB), typename(LotManagement), typename(BaseTransactionManagement), true);
-	//system.AddChartTransactionData("BTCUSD", PERIOD_H1, typename(DecisionDoubleBB), typename(LotManagement), typename(BaseTransactionManagement), false);
-		
-		
-	// Or auto add using WebService
-	XmlElement *element = new XmlElement();
-	
-	GlobalContext.DatabaseLog.ParametersSet(_Symbol);
-	GlobalContext.DatabaseLog.CallWebServiceProcedure("ReadResultFromSymbol");
-	
-	element.Clear();
-	element.ParseXml(GlobalContext.DatabaseLog.Result);
-			
-	if((element.GetTagType() == TagType_InvalidTag) ||
-	(element.GetTagType() == TagType_CleanTag))
-	{
-		Print(__FUNCTION__ + " Invalid tag type after parsing response! (tag type clean or invalid)");
-		delete element;
-		return (INIT_FAILED);
-	}
-			
-	if(element.GetChildByElementName("USP_ReadResultFromSymbol_Result") == NULL)//GlobalContext.DatabaseLog.Result == "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<string xmlns=\"http://tempuri.org/\" />")
-	{
-		Print(__FUNCTION__ + " invalid response received (no USP_ReadResultFromSymbol_Result child element)");
-		delete element;
-		return (INIT_FAILED);
-	}
+	system.CleanTranData();
+	system.AddChartTransactionData(
+	   _Symbol,
+	   PERIOD_CURRENT,
+	   typename(DecisionCombinedMA),
+	   typename(BaseLotManagement), 
+	   typename(ScalpingTransactionManagement),
+	   true);
 	
 	BaseLotManagement lots;
 	if(lots.IsMarginOk(_Symbol, MarketInfo(_Symbol, MODE_MINLOT), 0.4f, true))
 	{
-		system.CleanTranData();
-		system.AddChartTransactionData(element);
 		system.InitializeFromFirstChartTranData(true);
 		system.PrintFirstChartTranData();
 		system.SetupTransactionSystem();
@@ -78,10 +55,8 @@ int OnInit()
 	else
 	{
 		Print(__FUNCTION__ + " margin is not ok for symbol " + _Symbol);
-		delete element;
 		return (INIT_FAILED);
 	}
-	delete element;
 	
 	// Load current orders once, to all transaction types; resets and loads oldDecision
 	system.LoadCurrentOrdersToAllTransactionTypes();
