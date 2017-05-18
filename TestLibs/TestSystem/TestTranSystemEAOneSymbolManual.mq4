@@ -36,10 +36,10 @@ int OnInit()
 	system.AddChartTransactionData(
 	   _Symbol,
 	   PERIOD_CURRENT,
-	   typename(DecisionCombinedMA),
+	   typename(Decision3CombinedMA),
 	   typename(BaseLotManagement), 
 	   typename(ScalpingTransactionManagement),
-	   true);
+	   false);
 	
 	BaseLotManagement lots;
 	if(lots.IsMarginOk(_Symbol, MarketInfo(_Symbol, MODE_MINLOT), 0.4f, true))
@@ -69,7 +69,9 @@ void OnTick()
 {
 	// Run Expert Advisor
 	GlobalContext.Config.UseOnlyFirstDecisionAndConfirmItWithOtherDecisions = UseOnlyFirstDecisionAndConfirmItWithOtherDecisions;
-	system.RunTransactionSystemForCurrentSymbol(true);
+
+system.RunTransactionSystemForCurrentSymbol(true);
+	
 	
 	//Print("After tick calc.");
 }

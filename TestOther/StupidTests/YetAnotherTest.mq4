@@ -8,6 +8,7 @@
 #property version   "1.00"
 #property strict
 
+#include <MyMql/Base/BaseObject.mqh>
 
 class A
 {
@@ -30,10 +31,15 @@ class B : A
 
 void OnStart()
 {
-	
-	A *a;
-	B b;
-	a = (A*) &b;
-	a.PrintSomeData();
+//	
+//	A *a;
+//	B b;
+//	a = (A*) &b;
+//	a.PrintSomeData();
+   bool res = SendNotification("Salutare");
+   
+   
+   Print(BoolToString(res) + " " + IntegerToString(_LastError));
+   Sleep(2000);
 }
 
