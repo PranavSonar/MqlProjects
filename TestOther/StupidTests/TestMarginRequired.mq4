@@ -1,5 +1,5 @@
 //+------------------------------------------------------------------+
-//|                                          TestLotsCalculation.mq4 |
+//|                                           TestMarginRequired.mq4 |
 //|                        Copyright 2016, MetaQuotes Software Corp. |
 //|                                             https://www.mql5.com |
 //+------------------------------------------------------------------+
@@ -63,13 +63,15 @@ int OnInit()
 	lotMM = NormalizeDouble(lotMM/LotStep,0) * LotStep;
 	
 	bool CanTradeOnThis = MinLotMargin < MarginAmount;
-	bool CanTradeOnThis2 = MinLotMargin < MarginAmount*2;
-	bool CanTradeOnThis5 = MinLotMargin < MarginAmount*5;
+	bool CanTradeOnThis2 = MinLotMargin*2 < MarginAmount;
+	bool CanTradeOnThis5 = MinLotMargin*5 < MarginAmount;
+	bool CanTradeOnThis10 = MinLotMargin*10 < MarginAmount;
 	
-	GlobalContext.DatabaseLog.ParametersSet("MarginRequired on symbol " + _Symbol,
-		"CanTrade100:" + BoolToString(CanTradeOnThis)
-		+ " CanTrade200:" + BoolToString(CanTradeOnThis2)
-		+ " CanTrade500:" + BoolToString(CanTradeOnThis5)
+	GlobalContext.DatabaseLog.ParametersSet(__FILE__, "MarginRequired on symbol " + _Symbol,
+		"CanTrade1:" + BoolToString(CanTradeOnThis)
+		+ " CanTrade2:" + BoolToString(CanTradeOnThis2)
+		+ " CanTrade5:" + BoolToString(CanTradeOnThis5)
+		+ " CanTrade10:" + BoolToString(CanTradeOnThis10)
 		+ " OneLotMargin:" + DoubleToString(OneLotMargin,3)
 		+ " MinLotMargin:" + DoubleToString(MinLotMargin,3)
 		+ " MaxLotMargin:" + DoubleToString(MaxLotMargin,3)
