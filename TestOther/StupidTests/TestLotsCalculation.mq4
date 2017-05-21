@@ -11,6 +11,11 @@
 #include <MyMql\Global\Global.mqh>
 #include <MyMql\Global\Log\WebServiceLog.mqh>
 
+extern bool UseIndicatorChangeChart = true;
+extern bool UseKeyBoardChangeChart = false;
+
+const string GlobalVariableNameConst = "GlobalVariableSymbol";
+
 double ValidateLot(double lot)
 {
 	double minLot = MarketInfo(_Symbol,MODE_MINLOT);
@@ -38,7 +43,8 @@ int OnInit()
 	if(FirstSymbol == NULL)
 	{
 		GlobalContext.DatabaseLog.Initialize(true);
-		GlobalContext.DatabaseLog.NewTradingSession("TestLotsCalculation.mq4");
+		GlobalContext.DatabaseLog.ParametersSet("TestLotsCalculation.mq4");
+		GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession");
 	}
 	
 	double OneLotMargin = MarketInfo(_Symbol,MODE_MARGINREQUIRED);
@@ -49,7 +55,8 @@ int OnInit()
 	//double MinLotMargin = GetMarginFromLots(MarketInfo(_Symbol,MODE_MINLOT));
 	//double MaxLotMargin = GetMarginFromLots(MarketInfo(_Symbol,MODE_MAXLOT));
 	
-	double MarginAmount = 100; //this means we want to use 200 ron for trade
+	//double MarginAmount = 100; //this means we want to use 200 ron for trade
+	double MarginAmount = AccountFreeMargin();
 	double lotMM = MarginAmount / OneLotMargin;
 	double LotStep = MarketInfo(_Symbol,MODE_LOTSTEP);
 	
@@ -59,7 +66,7 @@ int OnInit()
 	bool CanTradeOnThis2 = MinLotMargin < MarginAmount*2;
 	bool CanTradeOnThis5 = MinLotMargin < MarginAmount*5;
 	
-	GlobalContext.DatabaseLog.DataLog("MarginRequired on symbol " + _Symbol,
+	GlobalContext.DatabaseLog.ParametersSet("MarginRequired on symbol " + _Symbol,
 		"CanTrade100:" + BoolToString(CanTradeOnThis)
 		+ " CanTrade200:" + BoolToString(CanTradeOnThis2)
 		+ " CanTrade500:" + BoolToString(CanTradeOnThis5)
@@ -72,9 +79,20 @@ int OnInit()
 		+ " lotMM:" + DoubleToString(lotMM,3)
 		+ " LotStep:" + DoubleToString(LotStep,3)
 	);
+	GlobalContext.DatabaseLog.CallWebServiceProcedure("DataLog");
 	
 	GlobalContext.Config.Initialize(true, true, false, true, __FILE__);
 	GlobalContext.Config.ChangeSymbol();
-	GlobalContext.DatabaseLog.EndTradingSession("TestLotsCalculation.mq4");
+
+
+	CurrentSymbol = GlobalContext.Config.GetNextSymbol(_Symbol);
+	if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableNameConst)))
+		GlobalVariableSet(GlobalVariableNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+	else
+		GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
+	GlobalContext.ChartIsChanging = true;
+	
+	GlobalContext.DatabaseLog.ParametersSet("TestLotsCalculation.mq4");
+	GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
 	return(INIT_SUCCEEDED);
 }
