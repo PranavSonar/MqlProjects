@@ -12,6 +12,7 @@
 #include <stdlib.mqh>
 #include <stderror.mqh>
 
+extern bool MakeOnlyOneOrder = false;
 extern bool UseOnlyFirstDecisionAndConfirmItWithOtherDecisions = false;
 static SimulateTranSystem system(DECISION_TYPE_ALL, LOT_MANAGEMENT_ALL, TRANSACTION_MANAGEMENT_ALL);
 
@@ -24,21 +25,27 @@ int OnInit()
 	bool isTradeAllowedOnEA = GlobalContext.Config.IsTradeAllowedOnEA(_Symbol);
 	if(!isTradeAllowedOnEA)
 	{
-		Print(__FUNCTION__ + " Trade is not allowed on EA for symbol " + _Symbol);
+		Print(__FUNCTION__ + ": Trade is not allowed on EA for symbol " + _Symbol);
 		return (INIT_FAILED);
 	}
 	
 	GlobalContext.DatabaseLog.ParametersSet(__FILE__);
 	GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession");
 	
+	/*
+	 * 1. TELIA.SE - Candle (simple & scalping)
+	 * 2. FING.SE - RSI, 3MA (simple & scalping)
+	 * 3. AEX25 - 2BB (simple)
+	 */
+	
 	// Add manual config only at the beginning:
 	system.CleanTranData();
 	system.AddChartTransactionData(
 	   _Symbol,
 	   PERIOD_CURRENT,
-	   typename(Decision3CombinedMA),
-	   typename(BaseLotManagement), 
-	   typename(ScalpingTransactionManagement),
+	   typename(DecisionDoubleBB),
+	   typename(BaseLotManagement),
+	   typename(SimpleTransactionManagement),
 	   false);
 	
 	BaseLotManagement lots;
@@ -48,7 +55,7 @@ int OnInit()
 		system.PrintFirstChartTranData();
 		system.SetupTransactionSystem();
 		
-		GlobalContext.Config.UseOnlyFirstDecisionAndConfirmItWithOtherDecisions = UseOnlyFirstDecisionAndConfirmItWithOtherDecisions;
+		GlobalContext.Config.SetBoolValue("UseOnlyFirstDecisionAndConfirmItWithOtherDecisions",UseOnlyFirstDecisionAndConfirmItWithOtherDecisions);
 		system.RunTransactionSystemForCurrentSymbol(true);
 		//if((system.chartTranData[0].LastDecisionBarShift < 3) && (system.chartTranData[0].LastDecisionBarShift != -1))
 	}
@@ -68,10 +75,16 @@ int OnInit()
 void OnTick()
 {
 	// Run Expert Advisor
-	GlobalContext.Config.UseOnlyFirstDecisionAndConfirmItWithOtherDecisions = UseOnlyFirstDecisionAndConfirmItWithOtherDecisions;
+	GlobalContext.Config.SetBoolValue("UseOnlyFirstDecisionAndConfirmItWithOtherDecisions",UseOnlyFirstDecisionAndConfirmItWithOtherDecisions);
 
-system.RunTransactionSystemForCurrentSymbol(true);
+   system.RunTransactionSystemForCurrentSymbol(true);
 	
+	int orders = system.OrdersCount();
+	if((MakeOnlyOneOrder) && (orders > 0))
+	{
+	   Print("Removing expert. He made " + IntegerToString(orders) + " order(s).");
+	   ExpertRemove();
+	}
 	
 	//Print("After tick calc.");
 }
