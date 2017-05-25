@@ -96,5 +96,8 @@ int OnInit()
 	
 	GlobalContext.DatabaseLog.ParametersSet("TestLotsCalculation.mq4");
 	GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
+	
+	
+	Print("Expert remove"); ExpertRemove();
 	return(INIT_SUCCEEDED);
 }
