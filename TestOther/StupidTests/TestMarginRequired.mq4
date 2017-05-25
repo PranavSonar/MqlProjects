@@ -105,5 +105,7 @@ int OnInit()
 	   ExpertRemove();
    } 	
 	
+	ChartApplyTemplate(ChartID(), "Default");
+	
 	return(INIT_SUCCEEDED);
 }
