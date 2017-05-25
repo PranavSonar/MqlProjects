@@ -88,15 +88,19 @@ int OnInit()
 
 
 	CurrentSymbol = GlobalContext.Config.GetNextSymbol(_Symbol);
-	if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableNameConst)))
-		GlobalVariableSet(GlobalVariableNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+	if(!StringIsNullOrEmpty(CurrentSymbol))
+	{
+   	if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableNameConst)))
+   		GlobalVariableSet(GlobalVariableNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+   	else
+   		GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
+   	GlobalContext.ChartIsChanging = true;
+	}
 	else
-		GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
-	GlobalContext.ChartIsChanging = true;
-	
-	GlobalContext.DatabaseLog.ParametersSet("TestLotsCalculation.mq4");
-	GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
-	
+	{
+   	GlobalContext.DatabaseLog.ParametersSet(__FILE__);
+   	GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
+   } 	
 	
 	Print("Expert remove"); ExpertRemove();
 	return(INIT_SUCCEEDED);
