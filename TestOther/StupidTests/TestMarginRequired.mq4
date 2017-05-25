@@ -100,8 +100,10 @@ int OnInit()
 	{
    	GlobalContext.DatabaseLog.ParametersSet(__FILE__);
    	GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
+   	
+	   Print("Expert remove");
+	   ExpertRemove();
    } 	
 	
-	Print("Expert remove"); ExpertRemove();
 	return(INIT_SUCCEEDED);
 }
