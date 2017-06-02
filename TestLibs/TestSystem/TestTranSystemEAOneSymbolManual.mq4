@@ -45,7 +45,7 @@ int OnInit()
 	   PERIOD_CURRENT,
 	   typename(DecisionDoubleBB),
 	   typename(BaseLotManagement),
-	   typename(SimpleTransactionManagement),
+	   typename(BaseTransactionManagement),
 	   false);
 	
 	BaseLotManagement lots;
