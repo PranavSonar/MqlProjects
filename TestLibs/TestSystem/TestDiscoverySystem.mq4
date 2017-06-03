@@ -15,7 +15,11 @@
 
 //#property indicator_chart_window
 
-extern bool UseDiscoverySystem = true;
+extern bool UseDiscoverySystem = false;
+extern bool UseLightSystem = true;
+extern bool UseFullSystem = false;
+
+
 extern bool UseKeyBoardChangeChart = false;
 extern bool UseIndicatorChangeChart = true;
 extern bool StartSimulationAgain = false;
@@ -57,12 +61,12 @@ int OnInit() // start()
 			GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession");
 			Print(GlobalContext.Config.GetConfigFile());
 			
-			if(!UseDiscoverySystem)
+			if(UseLightSystem || UseFullSystem)
 				system.SetupTransactionSystem(); //_Symbol);
 		}
 		else if(!StringIsNullOrEmpty(currentSymbol))
 		{
-			if(!UseDiscoverySystem)
+			if(UseLightSystem || UseFullSystem)
 				system.SetupTransactionSystem();
 			GlobalContext.Config.InitCurrentSymbol(currentSymbol);
 			
@@ -80,7 +84,7 @@ int OnInit() // start()
 	if(UseDiscoverySystem)
 		system.SystemDiscovery();
 	else
-		system.TestTransactionSystemForCurrentSymbol(true, true);
+		system.TestTransactionSystemForCurrentSymbol(true, true, UseLightSystem);
 	
 	bool symbolChanged = false;
 	GlobalContext.Config.InitCurrentSymbol(GlobalContext.Config.GetNextSymbol(CurrentSymbol));
@@ -99,13 +103,15 @@ int OnInit() // start()
 		
 		if(UseDiscoverySystem)
 			Print("Discovery finished! Job done!");
-		else
+		else if(UseLightSystem || UseFullSystem)
 			Print("Simulation finished! Job done!");
 		
 		GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile());
 		GlobalContext.DatabaseLog.CallWebServiceProcedure("GetResults");
 		Print("GetResults execution finished (or at least the WS call)! Job done!");
-		system.FreeArrays();
+		
+		if(UseLightSystem || UseFullSystem)
+			system.FreeArrays();
 		
 		if(UseDiscoverySystem)
 		{
