@@ -1,5 +1,5 @@
 //+------------------------------------------------------------------+
-//|                                       TestSimulateTranSystem.mq4 |
+//|                                          TestDiscoverySystem.mq4 |
 //|                                Copyright 2016, Chirita Alexandru |
 //|                                             https://www.mql5.com |
 //+------------------------------------------------------------------+
@@ -15,6 +15,7 @@
 
 //#property indicator_chart_window
 
+extern bool UseDiscoverySystem = true;
 extern bool UseKeyBoardChangeChart = false;
 extern bool UseIndicatorChangeChart = true;
 extern bool StartSimulationAgain = false;
@@ -56,11 +57,13 @@ int OnInit() // start()
 			GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession");
 			Print(GlobalContext.Config.GetConfigFile());
 			
-			system.SetupTransactionSystem(); //_Symbol);
+			if(!UseDiscoverySystem)
+				system.SetupTransactionSystem(); //_Symbol);
 		}
 		else if(!StringIsNullOrEmpty(currentSymbol))
 		{
-			system.SetupTransactionSystem();
+			if(!UseDiscoverySystem)
+				system.SetupTransactionSystem();
 			GlobalContext.Config.InitCurrentSymbol(currentSymbol);
 			
 			if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableNameConst)))
@@ -74,10 +77,13 @@ int OnInit() // start()
 			return (INIT_SUCCEEDED);
 	}
 	
-	system.TestTransactionSystemForCurrentSymbol(true, true);
+	if(UseDiscoverySystem)
+		system.SystemDiscovery();
+	else
+		system.TestTransactionSystemForCurrentSymbol(true, true);
 	
 	bool symbolChanged = false;
-	CurrentSymbol = GlobalContext.Config.GetNextSymbol(CurrentSymbol);
+	GlobalContext.Config.InitCurrentSymbol(GlobalContext.Config.GetNextSymbol(CurrentSymbol));
 	
 	if(!StringIsNullOrEmpty(CurrentSymbol))
 	{
@@ -90,12 +96,25 @@ int OnInit() // start()
 	{
 		GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile());
 		GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
-		Print("Simulation finished! Job done!");
+		
+		if(UseDiscoverySystem)
+			Print("Discovery finished! Job done!");
+		else
+			Print("Simulation finished! Job done!");
 		
 		GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile());
 		GlobalContext.DatabaseLog.CallWebServiceProcedure("GetResults");
 		Print("GetResults execution finished (or at least the WS call)! Job done!");
 		system.FreeArrays();
+		
+		if(UseDiscoverySystem)
+		{
+			system.SystemDiscoveryPrintData();
+			Print("--=-=-=-=-==================================================================================");
+			system.SystemDiscoveryDeleteWorseThanAverage();
+			Print("--=-=-=-=-==================================================================================");
+			system.SystemDiscoveryPrintData();
+		}
 		
 		Print("Closing expert!");
 		ExpertRemove();
@@ -109,8 +128,12 @@ void OnDeinit(const int reason)
 {
 	GlobalContext.DatabaseLog.CallBulkWebServiceProcedure("BulkDebugLog", true);
 	system.PrintDeInitReason(reason);
-	system.CleanTranData();
-	system.RemoveUnusedDecisionsTransactionsAndLots();
+	
+	if(!UseDiscoverySystem)
+	{
+		system.CleanTranData();
+		system.RemoveUnusedDecisionsTransactionsAndLots();
+	}
 	
 	if((_Symbol != CurrentSymbol) && (!StringIsNullOrEmpty(CurrentSymbol)))
 	{
