@@ -38,12 +38,12 @@ int OnInit() // start()
 	
 	if(!StringIsNullOrEmpty(CurrentSymbol) && (_Symbol != CurrentSymbol))
 	{
-		Sleep(20);
+		Sleep(10);
 		if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableNameConst)))
 			GlobalVariableSet(GlobalVariableNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
 		else
 			GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
-		Sleep(20);
+		Sleep(10);
 		return INIT_SUCCEEDED;
 	}
 	
