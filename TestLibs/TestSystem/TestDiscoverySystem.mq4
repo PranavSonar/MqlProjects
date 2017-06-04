@@ -20,10 +20,15 @@ extern bool UseLightSystem = true;
 extern bool UseFullSystem = false;
 
 
+extern bool OnlyCurrentSymbol = true;
+
 extern bool UseKeyBoardChangeChart = false;
 extern bool UseIndicatorChangeChart = true;
+
 extern bool StartSimulationAgain = false;
 extern bool UseOnlyFirstDecisionAndConfirmItWithOtherDecisions = false;
+
+extern bool KeepAllObjects = true;
 
 static SimulateTranSystem system(DECISION_TYPE_ALL, LOT_MANAGEMENT_ALL, TRANSACTION_MANAGEMENT_ALL);
 const string GlobalVariableNameConst = "GlobalVariableSymbol";
@@ -36,15 +41,18 @@ int OnInit() // start()
 	RefreshRates();
 	ChartRedraw();
 	
-	if(!StringIsNullOrEmpty(CurrentSymbol) && (_Symbol != CurrentSymbol))
+	if(!OnlyCurrentSymbol)
 	{
-		Sleep(10);
-		if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableNameConst)))
-			GlobalVariableSet(GlobalVariableNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
-		else
-			GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
-		Sleep(10);
-		return INIT_SUCCEEDED;
+		if(!StringIsNullOrEmpty(CurrentSymbol) && (_Symbol != CurrentSymbol))
+		{
+			Sleep(10);
+			if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableNameConst)))
+				GlobalVariableSet(GlobalVariableNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+			else
+				GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
+			Sleep(10);
+			return INIT_SUCCEEDED;
+		}
 	}
 	
 	if(FirstSymbol == NULL)
@@ -55,11 +63,17 @@ int OnInit() // start()
 		string lastSymbol = system.GetLastSymbol();
 		string currentSymbol = GlobalContext.Config.GetNextSymbol(lastSymbol);
 		
+		if(OnlyCurrentSymbol)
+			currentSymbol = lastSymbol = _Symbol;
+	
 		if(StringIsNullOrEmpty(lastSymbol) || (StringIsNullOrEmpty(currentSymbol) && StartSimulationAgain))
 		{
-			GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile());
-			GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession");
-			Print(GlobalContext.Config.GetConfigFile());
+			if(UseFullSystem)
+			{
+				GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile());
+				GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession");
+				Print(GlobalContext.Config.GetConfigFile());
+			}
 			
 			if(UseLightSystem || UseFullSystem)
 				system.SetupTransactionSystem(); //_Symbol);
@@ -70,12 +84,16 @@ int OnInit() // start()
 				system.SetupTransactionSystem();
 			GlobalContext.Config.InitCurrentSymbol(currentSymbol);
 			
-			if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableNameConst)))
-				GlobalVariableSet(GlobalVariableNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
-			else
-				GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
-
-			return (INIT_SUCCEEDED);
+			if(!OnlyCurrentSymbol)
+			{
+				if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableNameConst)))
+					GlobalVariableSet(GlobalVariableNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+				else
+					GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
+			}
+			
+			if(!OnlyCurrentSymbol)
+				return (INIT_SUCCEEDED);
 		}
 		else
 			return (INIT_SUCCEEDED);
@@ -84,12 +102,14 @@ int OnInit() // start()
 	if(UseDiscoverySystem)
 		system.SystemDiscovery();
 	else
-		system.TestTransactionSystemForCurrentSymbol(true, true, UseLightSystem);
+		system.TestTransactionSystemForCurrentSymbol(true, true, UseLightSystem, KeepAllObjects);
 	
 	bool symbolChanged = false;
-	GlobalContext.Config.InitCurrentSymbol(GlobalContext.Config.GetNextSymbol(CurrentSymbol));
 	
-	if(!StringIsNullOrEmpty(CurrentSymbol))
+	if(!OnlyCurrentSymbol)
+		GlobalContext.Config.InitCurrentSymbol(GlobalContext.Config.GetNextSymbol(CurrentSymbol));
+	
+	if((!OnlyCurrentSymbol) && (!StringIsNullOrEmpty(CurrentSymbol)))
 	{
 		if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableNameConst)))
 			GlobalVariableSet(GlobalVariableNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
@@ -98,8 +118,11 @@ int OnInit() // start()
 	}
 	else
 	{
-		GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile());
-		GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
+		if(UseFullSystem)
+		{
+			GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile());
+			GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
+		}
 		
 		if(UseDiscoverySystem)
 			Print("Discovery finished! Job done!");
@@ -115,8 +138,8 @@ int OnInit() // start()
 		
 		if(UseDiscoverySystem)
 		{
-			system.SystemDiscoveryPrintData();
-			Print("--=-=-=-=-==================================================================================");
+			//system.SystemDiscoveryPrintData();
+			//Print("--=-=-=-=-==================================================================================");
 			system.SystemDiscoveryDeleteWorseThanAverage();
 			Print("--=-=-=-=-==================================================================================");
 			system.SystemDiscoveryPrintData();
@@ -132,6 +155,7 @@ int OnInit() // start()
 
 void OnDeinit(const int reason)
 {
+	// Bulk debug anyway
 	GlobalContext.DatabaseLog.CallBulkWebServiceProcedure("BulkDebugLog", true);
 	system.PrintDeInitReason(reason);
 	
@@ -141,11 +165,14 @@ void OnDeinit(const int reason)
 		system.RemoveUnusedDecisionsTransactionsAndLots();
 	}
 	
-	if((_Symbol != CurrentSymbol) && (!StringIsNullOrEmpty(CurrentSymbol)))
+	if(!OnlyCurrentSymbol)
 	{
-		if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableNameConst)))
-			GlobalVariableSet(GlobalVariableNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
-		else
-			GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
+		if((_Symbol != CurrentSymbol) && (!StringIsNullOrEmpty(CurrentSymbol)))
+		{
+			if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableNameConst)))
+				GlobalVariableSet(GlobalVariableNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+			else
+				GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
+		}
 	}
 }

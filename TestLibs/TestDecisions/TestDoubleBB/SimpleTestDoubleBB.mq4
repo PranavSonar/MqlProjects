@@ -29,7 +29,7 @@ int OnInit()
 	GlobalContext.Config.Initialize(true, true, false, false, __FILE__);
 	
 	
-	lastDecision = 0.0;
+	lastDecision = InvalidValue;
 	nrDecisions = 0;
 	
 	//if(IsTesting())
