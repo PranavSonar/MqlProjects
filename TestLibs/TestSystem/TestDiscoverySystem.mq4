@@ -109,8 +109,6 @@ int OnInit() // start()
 	else
 		system.TestTransactionSystemForCurrentSymbol(true, true, UseLightSystem, KeepAllObjects);
 	
-	bool symbolChanged = false;
-	
 	if(!OnlyCurrentSymbol)
 		GlobalContext.Config.InitCurrentSymbol(GlobalContext.Config.GetNextSymbol(CurrentSymbol));
 	
@@ -119,7 +117,7 @@ int OnInit() // start()
 		if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableNameConst)))
 			GlobalVariableSet(GlobalVariableNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
 		else
-			symbolChanged = GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
+			GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
 	}
 	else
 	{
