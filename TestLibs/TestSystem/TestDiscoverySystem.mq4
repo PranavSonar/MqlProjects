@@ -29,7 +29,7 @@ extern bool KeepAllObjects = true;
 extern bool UseEA = false;
 extern bool MakeOnlyOneOrder = false;
 
-extern bool UseManualDecisionEA = false;
+extern bool UseManualDecisionEA = true;
 extern string DecisionEA = typename(DecisionDoubleBB);
 extern string LotManagementEA = typename(BaseLotManagement);
 extern string TransactionManagementEA = typename(BaseTransactionManagement);
