@@ -13,33 +13,146 @@
 #include <stdlib.mqh>
 #include <stderror.mqh>
 
-//#property indicator_chart_window
 
+
+// Config System
 extern bool UseDiscoverySystem = false;
 extern bool UseLightSystem = true;
 extern bool UseFullSystem = false;
 
+extern bool StartSimulationAgain = false;
+extern bool KeepAllObjects = true;
 
+
+
+// Config EA
+extern bool UseEA = false;
+extern bool MakeOnlyOneOrder = false;
+
+extern bool UseManualDecisionEA = false;
+extern string DecisionEA = typename(DecisionDoubleBB);
+extern string LotManagementEA = typename(BaseLotManagement);
+extern string TransactionManagementEA = typename(BaseTransactionManagement);
+extern bool IsInverseDecisionEA = false;
+
+
+
+// Generic - used both for System & EA
 extern bool OnlyCurrentSymbol = true;
 
 extern bool UseKeyBoardChangeChart = false;
 extern bool UseIndicatorChangeChart = true;
 
-extern bool StartSimulationAgain = false;
 extern bool UseOnlyFirstDecisionAndConfirmItWithOtherDecisions = false;
 
-extern bool KeepAllObjects = true;
 
 static SimulateTranSystem system(DECISION_TYPE_ALL, LOT_MANAGEMENT_ALL, TRANSACTION_MANAGEMENT_ALL);
 const string GlobalVariableNameConst = "GlobalVariableSymbol";
 
-int OnInit() // start()
+int OnInit()
 {
 	GlobalContext.Config.SetBoolValue("UseOnlyFirstDecisionAndConfirmItWithOtherDecisions", UseOnlyFirstDecisionAndConfirmItWithOtherDecisions);
 	
 	ResetLastError();
 	RefreshRates();
 	ChartRedraw();
+	
+	if(UseEA)
+	{
+		GlobalContext.Config.AllowTrades();
+	
+		bool isTradeAllowedOnEA = GlobalContext.Config.IsTradeAllowedOnEA(_Symbol);
+		if(!isTradeAllowedOnEA)
+		{
+			Print(__FUNCTION__ + ": Trade is not allowed on EA for symbol " + _Symbol);
+			return (INIT_FAILED);
+		}
+		
+		// Add manual config only at the beginning:
+		system.CleanTranData();
+		
+		if(UseManualDecisionEA)
+		{
+			system.AddChartTransactionData(
+			   _Symbol,
+			   PERIOD_CURRENT,
+			   DecisionEA,
+			   LotManagementEA,
+			   TransactionManagementEA,
+			   IsInverseDecisionEA);
+		}
+		else // Use Automatic Decision EA - needs Database simulation data + run GetResults, WS call, etc
+		{
+			XmlElement *element = new XmlElement();
+			
+			bool isTransactionAllowedOnChartTransactionData = false;
+			int orderNo = 1;
+			
+			while(!isTransactionAllowedOnChartTransactionData)
+			{
+				GlobalContext.DatabaseLog.ParametersSet(IntegerToString(orderNo)); // OrderNo
+				GlobalContext.DatabaseLog.CallWebServiceProcedure("ReadResult");
+				
+				element.Clear();
+				element.ParseXml(GlobalContext.DatabaseLog.Result);
+				
+				if((element.GetTagType() == TagType_InvalidTag) ||
+				(element.GetTagType() == TagType_CleanTag))
+					break;
+				
+				if(element.GetChildByElementName("USP_ReadResult_Result") == NULL)//GlobalContext.DatabaseLog.Result == "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<string xmlns=\"http://tempuri.org/\" />")
+				{
+					Print("MaxOrderNo" + IntegerToString(orderNo));
+					break;
+				}
+				
+				string symbol = element.GetChildTagDataByParentElementName("Symbol");
+				int maxOrderNo = (int) StringToInteger(element.GetChildTagDataByParentElementName("MaxOrderNo"));
+				BaseLotManagement lots;
+		      if(lots.IsMarginOk(symbol, MarketInfo(_Symbol, MODE_MINLOT), 0.4f, true) && GlobalContext.Config.IsTradeAllowedOnEA(symbol))
+				{
+					system.CleanTranData();
+					system.AddChartTransactionData(element);
+					system.InitializeFromFirstChartTranData();
+					system.SetupTransactionSystem();
+					CurrentSymbol = symbol;
+					
+					if(CurrentSymbol != _Symbol)
+					{
+						Print(__FUNCTION__ + " Symbol should change from " + _Symbol + " to " + CurrentSymbol);
+						
+						if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableNameConst)))
+							GlobalVariableSet(GlobalVariableNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+						else
+							GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
+						
+						GlobalContext.ChartIsChanging = true;
+					}
+					return 0;
+				}
+				
+				orderNo++;
+				if((orderNo > maxOrderNo) && (maxOrderNo != 0))
+					break;
+			}
+			delete element;
+		}
+		
+		BaseLotManagement lots;
+		if(lots.IsMarginOk(_Symbol, MarketInfo(_Symbol, MODE_MINLOT), 0.4f, true))
+		{
+			system.InitializeFromFirstChartTranData(true);
+			system.PrintFirstChartTranData();
+			system.SetupTransactionSystem();
+			
+			system.RunTransactionSystemForCurrentSymbol(true);
+		}
+		else
+		{
+			Print(__FUNCTION__ + " margin is not ok for symbol " + _Symbol);
+			return (INIT_FAILED);
+		}
+	}
 	
 	if(!OnlyCurrentSymbol)
 	{
@@ -60,8 +173,7 @@ int OnInit() // start()
 		GlobalContext.Config.Initialize(true, true, false, true, __FILE__);
 		GlobalContext.DatabaseLog.Initialize(true);
 		
-		string lastSymbol = NULL;
-		string currentSymbol = NULL;
+		string lastSymbol = NULL, currentSymbol = NULL;
 		
 		if(OnlyCurrentSymbol)
 			currentSymbol = lastSymbol = _Symbol;
@@ -81,7 +193,7 @@ int OnInit() // start()
 			}
 			
 			if(UseLightSystem || UseFullSystem)
-				system.SetupTransactionSystem(); //_Symbol);
+				system.SetupTransactionSystem();
 		}
 		else if(!StringIsNullOrEmpty(currentSymbol))
 		{
@@ -148,12 +260,24 @@ int OnInit() // start()
 			system.SystemDiscoveryPrintData();
 		}
 		
-		Print("Closing expert!");
-		ExpertRemove();
+		Print("Closing [ExpertRemove]!"); ExpertRemove();
 	}
 	
 	//EventSetTimer(4);
 	return (INIT_SUCCEEDED);
+}
+
+void OnTick()
+{
+	if(UseEA)
+	{
+		if(GlobalContext.Config.IsNewBar())
+			RefreshRates();
+		if(GlobalContext.ChartIsChanging)
+			return;
+		
+		system.RunTransactionSystemForCurrentSymbol(true);
+	}
 }
 
 void OnDeinit(const int reason)
