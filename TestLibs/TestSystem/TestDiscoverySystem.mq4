@@ -58,14 +58,19 @@ int OnInit() // start()
 	if(FirstSymbol == NULL)
 	{
 		GlobalContext.Config.Initialize(true, true, false, true, __FILE__);
-		
 		GlobalContext.DatabaseLog.Initialize(true);
-		string lastSymbol = system.GetLastSymbol();
-		string currentSymbol = GlobalContext.Config.GetNextSymbol(lastSymbol);
+		
+		string lastSymbol = NULL;
+		string currentSymbol = NULL;
 		
 		if(OnlyCurrentSymbol)
 			currentSymbol = lastSymbol = _Symbol;
-	
+		else
+		{
+			lastSymbol = system.GetLastSymbol();
+			currentSymbol = GlobalContext.Config.GetNextSymbol(lastSymbol);
+		}
+		
 		if(StringIsNullOrEmpty(lastSymbol) || (StringIsNullOrEmpty(currentSymbol) && StartSimulationAgain))
 		{
 			if(UseFullSystem)
