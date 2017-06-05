@@ -138,6 +138,8 @@ int OnInit()
 			delete element;
 		}
 		
+		system.LoadCurrentOrdersToAllTransactionTypes();
+		
 		BaseLotManagement lots;
 		if(lots.IsMarginOk(_Symbol, MarketInfo(_Symbol, MODE_MINLOT), 0.4f, true))
 		{
