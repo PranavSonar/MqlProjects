@@ -8,6 +8,8 @@
 #property version   "1.00"
 #property strict
 
+#include <MyMql\Global\Config\ConfigInfo.mqh>
+
 int OnInit()
 {
 	for(int i=0;i<SymbolsTotal(false);i++)
@@ -17,6 +19,10 @@ int OnInit()
 		
 		Print("Symbol: " + symbol + " Margin init: " + DoubleToString(marginInit));
 	}
+	
+	//ConfigInfo info;
+	//info.WriteConfig();
+	
 	return(INIT_SUCCEEDED);
 }
 
