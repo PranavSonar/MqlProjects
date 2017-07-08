@@ -13,7 +13,7 @@
 int OnInit()
 {
 	ConfigInfo info;
-	//info.WriteConfig();
+	info.WriteConfig();
 	
 	return(INIT_SUCCEEDED);
 }
