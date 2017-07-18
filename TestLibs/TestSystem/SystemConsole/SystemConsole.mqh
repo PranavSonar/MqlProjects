@@ -33,13 +33,11 @@
 class SystemConsole : public CAppDialog
   {
 private:
-   CEdit             m_edit;                          // the display field object
-   CButton           m_button1;                       // the button object
-   CButton           m_button2;                       // the button object
-   CButton           m_button3;                       // the fixed button object
-   CListView         m_list_view;                     // the list object
-   CRadioGroup       m_radio_group;                   // the radio buttons group object
-   CCheckGroup       m_check_group;                   // the check box group object
+   CEdit             outputEdit;                      // the display field object
+   CEdit             inputEdit;                       // input edit
+   CButton           lockButton;                       // the fixed button object
+   CListView         optionsListView;                     // the list object
+   CCheckGroup       configCheckGroup;                   // the check box group object
 
 public:
                      SystemConsole(void);
@@ -51,34 +49,26 @@ public:
 
 protected:
    //--- create dependent controls
-   bool              CreateEdit(void);
-   bool              CreateButton1(void);
-   bool              CreateButton2(void);
-   bool              CreateButton3(void);
-   bool              CreateRadioGroup(void);
-   bool              CreateCheckGroup(void);
-   bool              CreateListView(void);
+   bool              CreateOutputEdit(void);
+   bool              CreateInputEdit(void);
+   bool              CreateLockButton(void);
+   bool              CreateConfigCheckGroup(void);
+   bool              CreateOptionsListView(void);
    //--- internal event handlers
    virtual bool      OnResize(void);
    //--- handlers of the dependent controls events
-   void              OnClickButton1(void);
-   void              OnClickButton2(void);
-   void              OnClickButton3(void);
-   void              OnChangeRadioGroup(void);
-   void              OnChangeCheckGroup(void);
-   void              OnChangeListView(void);
+   void              OnClickLockButton(void);
+   void              OnChangeOptionsListView(void);
+   void              OnChangeConfigCheckGroup(void);
    bool              OnDefault(const int id,const long &lparam,const double &dparam,const string &sparam);
   };
 //+------------------------------------------------------------------+
 //| Event Handling                                                   |
 //+------------------------------------------------------------------+
 EVENT_MAP_BEGIN(SystemConsole)
-ON_EVENT(ON_CLICK,m_button1,OnClickButton1)
-ON_EVENT(ON_CLICK,m_button2,OnClickButton2)
-ON_EVENT(ON_CLICK,m_button3,OnClickButton3)
-ON_EVENT(ON_CHANGE,m_radio_group,OnChangeRadioGroup)
-ON_EVENT(ON_CHANGE,m_check_group,OnChangeCheckGroup)
-ON_EVENT(ON_CHANGE,m_list_view,OnChangeListView)
+ON_EVENT(ON_CLICK,lockButton,OnClickLockButton)
+ON_EVENT(ON_CHANGE,configCheckGroup,OnChangeConfigCheckGroup)
+ON_EVENT(ON_CHANGE,optionsListView,OnChangeOptionsListView)
 ON_OTHER_EVENTS(OnDefault)
 EVENT_MAP_END(CAppDialog)
 //+------------------------------------------------------------------+
@@ -101,19 +91,15 @@ bool SystemConsole::Create(const long chart,const string name,const int subwin,c
    if(!CAppDialog::Create(chart,name,subwin,x1,y1,x2,y2))
       return(false);
 //--- create dependent controls
-   if(!CreateEdit())
+   if(!CreateOutputEdit())
       return(false);
-   if(!CreateButton1())
+   if(!CreateInputEdit())
       return(false);
-   if(!CreateButton2())
+   if(!CreateLockButton())
       return(false);
-   if(!CreateButton3())
+   if(!CreateConfigCheckGroup())
       return(false);
-   if(!CreateRadioGroup())
-      return(false);
-   if(!CreateCheckGroup())
-      return(false);
-   if(!CreateListView())
+   if(!CreateOptionsListView())
       return(false);
 //--- succeed
    return(true);
@@ -121,132 +107,88 @@ bool SystemConsole::Create(const long chart,const string name,const int subwin,c
 //+------------------------------------------------------------------+
 //| Create the display field                                         |
 //+------------------------------------------------------------------+
-bool SystemConsole::CreateEdit(void)
+bool SystemConsole::CreateOutputEdit(void)
   {
 //--- coordinates
    int x1=INDENT_LEFT;
    int y1=INDENT_TOP;
-   int x2=ClientAreaWidth()-(INDENT_RIGHT+BUTTON_WIDTH+CONTROLS_GAP_X);
+   int x2=ClientAreaWidth()-(CONTROLS_GAP_X+BUTTON_WIDTH+CONTROLS_GAP_X+BUTTON_WIDTH+INDENT_RIGHT);
+   int y2=ClientAreaHeight()-(CONTROLS_GAP_Y+EDIT_HEIGHT+INDENT_BOTTOM);
+//--- create
+   if(!outputEdit.Create(m_chart_id,m_name+"OutputEdit",m_subwin,x1,y1,x2,y2))
+      return(false);
+   if(!outputEdit.ReadOnly(true))
+      return(false);
+   if(!Add(outputEdit))
+      return(false);
+   outputEdit.Alignment(WND_ALIGN_WIDTH,INDENT_LEFT,0,INDENT_RIGHT+BUTTON_WIDTH+CONTROLS_GAP_X,0);
+//--- succeed
+   return(true);
+  }
+  
+//+------------------------------------------------------------------+
+//| Create the display field                                         |
+//+------------------------------------------------------------------+
+  bool SystemConsole::CreateInputEdit(void)
+  {
+//--- coordinates
+   int x1=INDENT_LEFT;
+   int y1=ClientAreaHeight()-(EDIT_HEIGHT+INDENT_BOTTOM);
+   int x2=ClientAreaWidth()-(CONTROLS_GAP_X+BUTTON_WIDTH+CONTROLS_GAP_X+BUTTON_WIDTH+INDENT_RIGHT);
    int y2=y1+EDIT_HEIGHT;
 //--- create
-   if(!m_edit.Create(m_chart_id,m_name+"Edit",m_subwin,x1,y1,x2,y2))
+   if(!inputEdit.Create(m_chart_id,m_name+"InputEdit",m_subwin,x1,y1,x2,y2))
       return(false);
-   if(!m_edit.ReadOnly(true))
+   if(!inputEdit.ReadOnly(false))
       return(false);
-   if(!Add(m_edit))
+   if(!Add(inputEdit))
       return(false);
-   m_edit.Alignment(WND_ALIGN_WIDTH,INDENT_LEFT,0,INDENT_RIGHT+BUTTON_WIDTH+CONTROLS_GAP_X,0);
+   inputEdit.Alignment(WND_ALIGN_WIDTH,INDENT_LEFT,0,CONTROLS_GAP_X+BUTTON_WIDTH+INDENT_RIGHT,0);
 //--- succeed
    return(true);
   }
+  
 //+------------------------------------------------------------------+
-//| Create the "Button1" button                                      |
+//| Create the "CreateLockButton" fixed button                       |
 //+------------------------------------------------------------------+
-bool SystemConsole::CreateButton1(void)
+bool SystemConsole::CreateLockButton(void)
   {
 //--- coordinates
-   int x1=ClientAreaWidth()-(INDENT_RIGHT+BUTTON_WIDTH);
-   int y1=INDENT_TOP;
+   int x1=ClientAreaWidth()-(BUTTON_WIDTH+INDENT_RIGHT);
+   int y1=ClientAreaHeight()-(BUTTON_HEIGHT+INDENT_BOTTOM);
    int x2=x1+BUTTON_WIDTH;
    int y2=y1+BUTTON_HEIGHT;
 //--- create
-   if(!m_button1.Create(m_chart_id,m_name+"Button1",m_subwin,x1,y1,x2,y2))
+   if(!lockButton.Create(m_chart_id,m_name+"LockButton",m_subwin,x1,y1,x2,y2))
       return(false);
-   if(!m_button1.Text("Button1"))
+   if(!lockButton.Text("Locked"))
       return(false);
-   if(!Add(m_button1))
+   if(!Add(lockButton))
       return(false);
-   m_button1.Alignment(WND_ALIGN_RIGHT,0,0,INDENT_RIGHT,0);
-//--- succeed
-   return(true);
-  }
-//+------------------------------------------------------------------+
-//| Create the "Button2" button                                      |
-//+------------------------------------------------------------------+
-bool SystemConsole::CreateButton2(void)
-  {
-//--- coordinates
-   int x1=ClientAreaWidth()-(INDENT_RIGHT+BUTTON_WIDTH);
-   int y1=INDENT_TOP+BUTTON_HEIGHT+CONTROLS_GAP_Y;
-   int x2=x1+BUTTON_WIDTH;
-   int y2=y1+BUTTON_HEIGHT;
-//--- create
-   if(!m_button2.Create(m_chart_id,m_name+"Button2",m_subwin,x1,y1,x2,y2))
-      return(false);
-   if(!m_button2.Text("Button2"))
-      return(false);
-   if(!Add(m_button2))
-      return(false);
-   m_button2.Alignment(WND_ALIGN_RIGHT,0,0,INDENT_RIGHT,0);
-//--- succeed
-   return(true);
-  }
-//+------------------------------------------------------------------+
-//| Create the "Button3" fixed button                                |
-//+------------------------------------------------------------------+
-bool SystemConsole::CreateButton3(void)
-  {
-//--- coordinates
-   int x1=ClientAreaWidth()-(INDENT_RIGHT+BUTTON_WIDTH);
-   int y1=ClientAreaHeight()-(INDENT_BOTTOM+BUTTON_HEIGHT);
-   int x2=x1+BUTTON_WIDTH;
-   int y2=y1+BUTTON_HEIGHT;
-//--- create
-   if(!m_button3.Create(m_chart_id,m_name+"Button3",m_subwin,x1,y1,x2,y2))
-      return(false);
-   if(!m_button3.Text("Locked"))
-      return(false);
-   if(!Add(m_button3))
-      return(false);
-   m_button3.Locking(true);
-   m_button3.Alignment(WND_ALIGN_RIGHT|WND_ALIGN_BOTTOM,0,0,INDENT_RIGHT,INDENT_BOTTOM);
-//--- succeed
-   return(true);
-  }
-//+------------------------------------------------------------------+
-//| Create the "RadioGroup" element                                  |
-//+------------------------------------------------------------------+
-bool SystemConsole::CreateRadioGroup(void)
-  {
-   int sx=(ClientAreaWidth()-(INDENT_LEFT+INDENT_RIGHT+BUTTON_WIDTH))/3-CONTROLS_GAP_X;
-//--- coordinates
-   int x1=INDENT_LEFT;
-   int y1=INDENT_TOP+EDIT_HEIGHT+CONTROLS_GAP_Y;
-   int x2=x1+sx;
-   int y2=ClientAreaHeight()-INDENT_BOTTOM;
-//--- create
-   if(!m_radio_group.Create(m_chart_id,m_name+"RadioGroup",m_subwin,x1,y1,x2,y2))
-      return(false);
-   if(!Add(m_radio_group))
-      return(false);
-   m_radio_group.Alignment(WND_ALIGN_HEIGHT,0,y1,0,INDENT_BOTTOM);
-//--- fill out with strings
-   for(int i=0;i<4;i++)
-      if(!m_radio_group.AddItem("Item "+IntegerToString(i),1<<i))
-         return(false);
+   lockButton.Locking(true);
+   lockButton.Alignment(WND_ALIGN_RIGHT|WND_ALIGN_BOTTOM,0,0,INDENT_RIGHT,INDENT_BOTTOM);
 //--- succeed
    return(true);
   }
 //+------------------------------------------------------------------+
 //| Create the "CheckGroup" element                                  |
 //+------------------------------------------------------------------+
-bool SystemConsole::CreateCheckGroup(void)
+bool SystemConsole::CreateConfigCheckGroup(void)
   {
-   int sx=(ClientAreaWidth()-(INDENT_LEFT+INDENT_RIGHT+BUTTON_WIDTH))/3-CONTROLS_GAP_X;
 //--- coordinates
-   int x1=INDENT_LEFT+sx+CONTROLS_GAP_X;
-   int y1=INDENT_TOP+EDIT_HEIGHT+CONTROLS_GAP_Y;
-   int x2=x1+sx;
-   int y2=ClientAreaHeight()-INDENT_BOTTOM;
+   int x1=ClientAreaWidth()-(BUTTON_WIDTH+INDENT_RIGHT);
+   int y1=INDENT_TOP;
+   int x2=x1+BUTTON_WIDTH;
+   int y2=ClientAreaHeight()-(CONTROLS_GAP_Y+EDIT_HEIGHT+INDENT_BOTTOM);
 //--- create
-   if(!m_check_group.Create(m_chart_id,m_name+"CheckGroup",m_subwin,x1,y1,x2,y2))
+   if(!configCheckGroup.Create(m_chart_id,m_name+"CheckGroup",m_subwin,x1,y1,x2,y2))
       return(false);
-   if(!Add(m_check_group))
+   if(!Add(configCheckGroup))
       return(false);
-   m_check_group.Alignment(WND_ALIGN_HEIGHT,0,y1,0,INDENT_BOTTOM);
+   configCheckGroup.Alignment(WND_ALIGN_HEIGHT,0,y1,0,INDENT_BOTTOM);
 //--- fill out with strings
-   for(int i=0;i<4;i++)
-      if(!m_check_group.AddItem("Item "+IntegerToString(i),1<<i))
+   for(int i=0;i<10;i++)
+      if(!configCheckGroup.AddItem("Item "+IntegerToString(i),1<<i))
          return(false);
 //--- succeed
    return(true);
@@ -254,23 +196,23 @@ bool SystemConsole::CreateCheckGroup(void)
 //+------------------------------------------------------------------+
 //| Create the "ListView" element                                    |
 //+------------------------------------------------------------------+
-bool SystemConsole::CreateListView(void)
+bool SystemConsole::CreateOptionsListView(void)
   {
-   int sx=(ClientAreaWidth()-(INDENT_LEFT+INDENT_RIGHT+BUTTON_WIDTH))/3-CONTROLS_GAP_X;
+   int sx=BUTTON_WIDTH;
 //--- coordinates
    int x1=ClientAreaWidth()-(sx+INDENT_RIGHT+BUTTON_WIDTH+CONTROLS_GAP_X);
-   int y1=INDENT_TOP+EDIT_HEIGHT+CONTROLS_GAP_Y;
+   int y1=INDENT_TOP;
    int x2=x1+sx;
    int y2=ClientAreaHeight()-INDENT_BOTTOM;
 //--- create
-   if(!m_list_view.Create(m_chart_id,m_name+"ListView",m_subwin,x1,y1,x2,y2))
+   if(!optionsListView.Create(m_chart_id,m_name+"ListView",m_subwin,x1,y1,x2,y2))
       return(false);
-   if(!Add(m_list_view))
+   if(!Add(optionsListView))
       return(false);
-   m_list_view.Alignment(WND_ALIGN_HEIGHT,0,y1,0,INDENT_BOTTOM);
+   optionsListView.Alignment(WND_ALIGN_HEIGHT,0,y1,0,INDENT_BOTTOM);
 //--- fill out with strings
    for(int i=0;i<16;i++)
-      if(!m_list_view.ItemAdd("Item "+IntegerToString(i)))
+      if(!optionsListView.ItemAdd("Item "+IntegerToString(i)))
          return(false);
 //--- succeed
    return(true);
@@ -284,66 +226,58 @@ bool SystemConsole::OnResize(void)
    if(!CAppDialog::OnResize()) return(false);
 //--- coordinates
    int x=ClientAreaLeft()+INDENT_LEFT;
-   int y=m_radio_group.Top();
+   int y=optionsListView.Top();
    int sx=(ClientAreaWidth()-(INDENT_LEFT+INDENT_RIGHT+BUTTON_WIDTH))/3-CONTROLS_GAP_X;
-//--- move and resize the "RadioGroup" element
-   m_radio_group.Move(x,y);
-   m_radio_group.Width(sx);
+
 //--- move and resize the "CheckGroup" element
    x=ClientAreaLeft()+INDENT_LEFT+sx+CONTROLS_GAP_X;
-   m_check_group.Move(x,y);
-   m_check_group.Width(sx);
+   configCheckGroup.Move(x,y);
+   configCheckGroup.Width(sx);
 //--- move and resize the "ListView" element
    x=ClientAreaLeft()+ClientAreaWidth()-(sx+INDENT_RIGHT+BUTTON_WIDTH+CONTROLS_GAP_X);
-   m_list_view.Move(x,y);
-   m_list_view.Width(sx);
+   optionsListView.Move(x,y);
+   optionsListView.Width(sx);
 //--- succeed
    return(true);
   }
 //+------------------------------------------------------------------+
 //| Event handler                                                    |
 //+------------------------------------------------------------------+
-void SystemConsole::OnClickButton1(void)
+void SystemConsole::OnClickLockButton(void)
   {
-   m_edit.Text(__FUNCTION__);
-  }
-//+------------------------------------------------------------------+
-//| Event handler                                                    |
-//+------------------------------------------------------------------+
-void SystemConsole::OnClickButton2(void)
-  {
-   m_edit.Text(__FUNCTION__);
-  }
-//+------------------------------------------------------------------+
-//| Event handler                                                    |
-//+------------------------------------------------------------------+
-void SystemConsole::OnClickButton3(void)
-  {
-   if(m_button3.Pressed())
-      m_edit.Text(__FUNCTION__+"On");
+   if(lockButton.Pressed())
+   {
+   	//outputEdit.Text(__FUNCTION__+"On");
+   	inputEdit.ReadOnly(true);
+   	configCheckGroup.Disable();
+   	optionsListView.Disable();
+   }
    else
-      m_edit.Text(__FUNCTION__+"Off");
+   {
+		//outputEdit.Text(__FUNCTION__+"Off");
+		inputEdit.ReadOnly(false);
+   	configCheckGroup.Enable();
+   	optionsListView.Enable();
+   	//CreateConfigCheckGroup();
+   	//CreateOptionsListView();
+   	this.Enable();
+   }
   }
 //+------------------------------------------------------------------+
 //| Event handler                                                    |
 //+------------------------------------------------------------------+
-void SystemConsole::OnChangeListView(void)
+void SystemConsole::OnChangeOptionsListView(void)
   {
-   m_edit.Text(__FUNCTION__+" \""+m_list_view.Select()+"\"");
+  	if(optionsListView.IsEnabled())
+ 	  outputEdit.Text(__FUNCTION__+" \""+optionsListView.Select()+"\"");
   }
 //+------------------------------------------------------------------+
 //| Event handler                                                    |
 //+------------------------------------------------------------------+
-void SystemConsole::OnChangeRadioGroup(void)
+void SystemConsole::OnChangeConfigCheckGroup(void)
   {
-   m_edit.Text(__FUNCTION__+" : Value="+IntegerToString(m_radio_group.Value()));
-  }
-//+------------------------------------------------------------------+
-//| Event handler                                                    |
-//+------------------------------------------------------------------+
-void SystemConsole::OnChangeCheckGroup(void)
-  {
-   m_edit.Text(__FUNCTION__+" : Value="+IntegerToString(m_check_group.Value()));
+  	if(configCheckGroup.IsEnabled())
+   	outputEdit.Text(__FUNCTION__+" : Value="+IntegerToString(configCheckGroup.Value()));
   }
 //+------------------------------------------------------------------+
 //| Rest events handler                                                    |
@@ -351,8 +285,8 @@ void SystemConsole::OnChangeCheckGroup(void)
 bool SystemConsole::OnDefault(const int id,const long &lparam,const double &dparam,const string &sparam)
   {
 //--- restore buttons' states after mouse move'n'click
-   if(id==CHARTEVENT_CLICK)
-      m_radio_group.RedrawButtonStates();
+   //if(id==CHARTEVENT_CLICK)
+   //   m_radio_group.RedrawButtonStates();
 //--- let's handle event by parent
    return(false);
   }
