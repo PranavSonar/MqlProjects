@@ -3,6 +3,7 @@
 //|                   Copyright 2009-2015, MetaQuotes Software Corp. |
 //|                                              http://www.mql5.com |
 //+------------------------------------------------------------------+
+#include <MyMql\Base\BeforeObject.mqh>
 #include <Controls\Dialog.mqh>
 #include <Controls\Button.mqh>
 #include <Controls\Edit.mqh>
@@ -34,12 +35,12 @@
 class SystemConsole : public CAppDialog
   {
 private:
-   CLabel            outputEdit;                      // the display field object
+   CLabel            outputEdit[];                      // the display field object
    CEdit             inputEdit;                       // input edit
    CButton           lockButton;                       // the fixed button object
    CListView         optionsListView;                     // the list object
    CCheckGroup       configCheckGroup;                   // the check box group object
-
+	
 public:
                      SystemConsole(void);
                     ~SystemConsole(void);
@@ -63,6 +64,9 @@ protected:
    void              OnChangeConfigCheckGroup(void);
    void              OnEndEditInputEdit(void);
    bool              OnDefault(const int id,const long &lparam,const double &dparam,const string &sparam);
+   //--- Text handlers
+   void              AddLine(string line);
+   void              SetText(string text);
   };
 //+------------------------------------------------------------------+
 //| Event Handling                                                   |
@@ -116,16 +120,27 @@ bool SystemConsole::CreateOutputEdit(void)
    int x1=INDENT_LEFT;
    int y1=INDENT_TOP;
    int x2=ClientAreaWidth()-(CONTROLS_GAP_X+BUTTON_WIDTH+CONTROLS_GAP_X+BUTTON_WIDTH+INDENT_RIGHT);
-   int y2=ClientAreaHeight()-(CONTROLS_GAP_Y+EDIT_HEIGHT+INDENT_BOTTOM);
+   int y2=y1+EDIT_HEIGHT;
+   int yMax=ClientAreaHeight()-(CONTROLS_GAP_Y+EDIT_HEIGHT+INDENT_BOTTOM);
+   int nr = yMax/EDIT_HEIGHT;
+   ArrayResize(outputEdit,nr);
+   
 //--- create
-   if(!outputEdit.Create(m_chart_id,m_name+"OutputEdit",m_subwin,x1,y1,x2,y2))
-      return(false);
-   //if(!outputEdit.ReadOnly(true))
-   //   return(false);
-   if(!Add(outputEdit))
-      return(false);
-   //outputEdit.TextAlign(ALIGN_LEFT);
-   outputEdit.Alignment(WND_ALIGN_WIDTH,INDENT_LEFT,0,INDENT_RIGHT+BUTTON_WIDTH+CONTROLS_GAP_X,0);
+	for(int i=0;i<nr;i++)
+	{
+		if(!outputEdit[i].Create(m_chart_id,m_name+"OutputEdit" + IntegerToString(i),m_subwin,x1,y1,x2,y2))
+	      return(false);
+	   //if(!outputEdit.ReadOnly(true))
+	   //   return(false);
+	   if(!Add(outputEdit[i]))
+	      return(false);
+	      
+   	outputEdit[i].Alignment(WND_ALIGN_WIDTH,INDENT_LEFT,0,INDENT_RIGHT+BUTTON_WIDTH+CONTROLS_GAP_X,0);
+   	
+   	y1=y2;
+   	y2=y1+EDIT_HEIGHT;
+	}
+	
 //--- succeed
    return(true);
   }
@@ -236,11 +251,22 @@ bool SystemConsole::OnResize(void)
    int x1=INDENT_LEFT;
    int y1=INDENT_TOP;
    int x2=ClientAreaWidth()-(CONTROLS_GAP_X+BUTTON_WIDTH+CONTROLS_GAP_X+BUTTON_WIDTH+INDENT_RIGHT);
-   int y2=ClientAreaHeight()-(CONTROLS_GAP_Y+EDIT_HEIGHT+INDENT_BOTTOM);
-   outputEdit.Move(x1,paddingTop+y1);
-   outputEdit.Width(x2-x1);
-   outputEdit.Height(y2-y1);
-   outputEdit.Alignment(WND_ALIGN_WIDTH,INDENT_LEFT,0,INDENT_RIGHT+BUTTON_WIDTH+CONTROLS_GAP_X,0);
+   int y2=y1+EDIT_HEIGHT;
+   int yMax=ClientAreaHeight()-(CONTROLS_GAP_Y+EDIT_HEIGHT+INDENT_BOTTOM);
+   int nr = yMax/EDIT_HEIGHT;
+   ArrayResize(outputEdit,nr);
+   
+//--- create
+	for(int i=0;i<nr;i++)
+	{
+	   outputEdit[i].Move(x1,paddingTop+y1);
+	   outputEdit[i].Width(x2-x1);
+	   outputEdit[i].Height(y2-y1);     
+   	outputEdit[i].Alignment(WND_ALIGN_WIDTH,INDENT_LEFT,0,INDENT_RIGHT+BUTTON_WIDTH+CONTROLS_GAP_X,0);
+   	
+   	y1=y2;
+   	y2=y1+EDIT_HEIGHT;
+	}
    
    // inputEdit align, move, resize
    x1=INDENT_LEFT;
@@ -314,7 +340,10 @@ void SystemConsole::OnClickLockButton(void)
 void SystemConsole::OnChangeOptionsListView(void)
   {
   	if(optionsListView.IsEnabled())
- 	  outputEdit.Text(__FUNCTION__+" \""+optionsListView.Select()+"\"");
+  	{
+  		AddLine(__FUNCTION__+" \""+optionsListView.Select()+"\"");
+ 	  //outputEdit.Text(__FUNCTION__+" \""+optionsListView.Select()+"\"");
+  	}
   }
 //+------------------------------------------------------------------+
 //| Event handler                                                    |
@@ -322,7 +351,10 @@ void SystemConsole::OnChangeOptionsListView(void)
 void SystemConsole::OnChangeConfigCheckGroup(void)
   {
   	if(configCheckGroup.IsEnabled())
-   	outputEdit.Text(__FUNCTION__+" : Value="+IntegerToString(configCheckGroup.Value()) + "\n\n\n\nasdfasdfasdfasdf");
+  	{
+  		AddLine(__FUNCTION__+" : Value="+IntegerToString(configCheckGroup.Value()));
+   	//outputEdit.Text(__FUNCTION__+" : Value="+IntegerToString(configCheckGroup.Value()));
+   }
   }
 //+------------------------------------------------------------------+
 //| Event handler                                                    |
@@ -330,7 +362,10 @@ void SystemConsole::OnChangeConfigCheckGroup(void)
 void SystemConsole::OnEndEditInputEdit(void)
   {
   	if(inputEdit.IsEnabled())
-   	outputEdit.Text(__FUNCTION__+" : Text="+inputEdit.Text());
+  	{
+  		AddLine(__FUNCTION__+" : Text="+inputEdit.Text());
+   	//outputEdit.Text(__FUNCTION__+" : Text="+inputEdit.Text());
+   }
   }
   
   
@@ -346,3 +381,22 @@ bool SystemConsole::OnDefault(const int id,const long &lparam,const double &dpar
    return(false);
   }
 //+------------------------------------------------------------------+
+
+void SystemConsole::AddLine(string line)
+{
+	int outputEditLength = ArraySize(outputEdit);
+	
+	for(int i=1;i<outputEditLength;i++)
+		outputEdit[i-1].Text(outputEdit[i].Text());
+	outputEdit[outputEditLength-1].Text(line);
+}
+
+void SystemConsole::SetText(string text)
+{
+	string lines[];
+	StringSplit(text, '\n', lines);
+	
+	int len = ArraySize(lines);
+	for(int i=0;i<len;i++)
+		AddLine(lines[i]);
+}
