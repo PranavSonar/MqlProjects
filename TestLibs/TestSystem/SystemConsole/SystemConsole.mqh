@@ -6,6 +6,7 @@
 #include <Controls\Dialog.mqh>
 #include <Controls\Button.mqh>
 #include <Controls\Edit.mqh>
+#include <Controls\Label.mqh>
 #include <Controls\ListView.mqh>
 #include <Controls\ComboBox.mqh>
 #include <Controls\SpinEdit.mqh>
@@ -33,7 +34,7 @@
 class SystemConsole : public CAppDialog
   {
 private:
-   CEdit             outputEdit;                      // the display field object
+   CLabel            outputEdit;                      // the display field object
    CEdit             inputEdit;                       // input edit
    CButton           lockButton;                       // the fixed button object
    CListView         optionsListView;                     // the list object
@@ -60,6 +61,7 @@ protected:
    void              OnClickLockButton(void);
    void              OnChangeOptionsListView(void);
    void              OnChangeConfigCheckGroup(void);
+   void              OnEndEditInputEdit(void);
    bool              OnDefault(const int id,const long &lparam,const double &dparam,const string &sparam);
   };
 //+------------------------------------------------------------------+
@@ -69,6 +71,7 @@ EVENT_MAP_BEGIN(SystemConsole)
 ON_EVENT(ON_CLICK,lockButton,OnClickLockButton)
 ON_EVENT(ON_CHANGE,configCheckGroup,OnChangeConfigCheckGroup)
 ON_EVENT(ON_CHANGE,optionsListView,OnChangeOptionsListView)
+ON_EVENT(ON_END_EDIT,inputEdit,OnEndEditInputEdit)
 ON_OTHER_EVENTS(OnDefault)
 EVENT_MAP_END(CAppDialog)
 //+------------------------------------------------------------------+
@@ -117,11 +120,11 @@ bool SystemConsole::CreateOutputEdit(void)
 //--- create
    if(!outputEdit.Create(m_chart_id,m_name+"OutputEdit",m_subwin,x1,y1,x2,y2))
       return(false);
-   if(!outputEdit.ReadOnly(true))
-      return(false);
+   //if(!outputEdit.ReadOnly(true))
+   //   return(false);
    if(!Add(outputEdit))
       return(false);
-   outputEdit.TextAlign(ALIGN_LEFT);
+   //outputEdit.TextAlign(ALIGN_LEFT);
    outputEdit.Alignment(WND_ALIGN_WIDTH,INDENT_LEFT,0,INDENT_RIGHT+BUTTON_WIDTH+CONTROLS_GAP_X,0);
 //--- succeed
    return(true);
@@ -319,8 +322,18 @@ void SystemConsole::OnChangeOptionsListView(void)
 void SystemConsole::OnChangeConfigCheckGroup(void)
   {
   	if(configCheckGroup.IsEnabled())
-   	outputEdit.Text(__FUNCTION__+" : Value="+IntegerToString(configCheckGroup.Value()));
+   	outputEdit.Text(__FUNCTION__+" : Value="+IntegerToString(configCheckGroup.Value()) + "\n\n\n\nasdfasdfasdfasdf");
   }
+//+------------------------------------------------------------------+
+//| Event handler                                                    |
+//+------------------------------------------------------------------+
+void SystemConsole::OnEndEditInputEdit(void)
+  {
+  	if(inputEdit.IsEnabled())
+   	outputEdit.Text(__FUNCTION__+" : Text="+inputEdit.Text());
+  }
+  
+  
 //+------------------------------------------------------------------+
 //| Rest events handler                                                    |
 //+------------------------------------------------------------------+
