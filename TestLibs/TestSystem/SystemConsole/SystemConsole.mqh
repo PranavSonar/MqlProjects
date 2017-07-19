@@ -256,7 +256,6 @@ bool SystemConsole::OnResize(void)
    int nr = yMax/EDIT_HEIGHT;
    ArrayResize(outputEdit,nr);
    
-//--- create
 	for(int i=0;i<nr;i++)
 	{
 	   outputEdit[i].Move(x1,paddingTop+y1);
@@ -363,8 +362,11 @@ void SystemConsole::OnEndEditInputEdit(void)
   {
   	if(inputEdit.IsEnabled())
   	{
-  		AddLine(__FUNCTION__+" : Text="+inputEdit.Text());
+  		AddLine(__FUNCTION__+" : Text=\""+inputEdit.Text()+"\"");
    	//outputEdit.Text(__FUNCTION__+" : Text="+inputEdit.Text());
+   	//inputEdit.Activate();
+   	inputEdit.Text(NULL);
+   	//EventChartCustom(ChartID(), CHARTEVENT_CLICK, inputEdit.Left(), inputEdit.Top(), NULL);
    }
   }
   
