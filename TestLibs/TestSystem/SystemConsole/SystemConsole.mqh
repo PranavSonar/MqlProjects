@@ -121,6 +121,7 @@ bool SystemConsole::CreateOutputEdit(void)
       return(false);
    if(!Add(outputEdit))
       return(false);
+   outputEdit.TextAlign(ALIGN_LEFT);
    outputEdit.Alignment(WND_ALIGN_WIDTH,INDENT_LEFT,0,INDENT_RIGHT+BUTTON_WIDTH+CONTROLS_GAP_X,0);
 //--- succeed
    return(true);
@@ -143,6 +144,7 @@ bool SystemConsole::CreateOutputEdit(void)
       return(false);
    if(!Add(inputEdit))
       return(false);
+   inputEdit.TextAlign(ALIGN_LEFT);
    inputEdit.Alignment(WND_ALIGN_WIDTH,INDENT_LEFT,0,CONTROLS_GAP_X+BUTTON_WIDTH+INDENT_RIGHT,0);
 //--- succeed
    return(true);
@@ -198,11 +200,10 @@ bool SystemConsole::CreateConfigCheckGroup(void)
 //+------------------------------------------------------------------+
 bool SystemConsole::CreateOptionsListView(void)
   {
-   int sx=BUTTON_WIDTH;
 //--- coordinates
-   int x1=ClientAreaWidth()-(sx+INDENT_RIGHT+BUTTON_WIDTH+CONTROLS_GAP_X);
+   int x1=ClientAreaWidth()-(BUTTON_WIDTH+CONTROLS_GAP_X+BUTTON_WIDTH+INDENT_RIGHT);
    int y1=INDENT_TOP;
-   int x2=x1+sx;
+   int x2=x1+BUTTON_WIDTH;
    int y2=ClientAreaHeight()-INDENT_BOTTOM;
 //--- create
    if(!optionsListView.Create(m_chart_id,m_name+"ListView",m_subwin,x1,y1,x2,y2))
@@ -225,18 +226,59 @@ bool SystemConsole::OnResize(void)
 //--- call method of parent class
    if(!CAppDialog::OnResize()) return(false);
 //--- coordinates
-   int x=ClientAreaLeft()+INDENT_LEFT;
-   int y=optionsListView.Top();
-   int sx=(ClientAreaWidth()-(INDENT_LEFT+INDENT_RIGHT+BUTTON_WIDTH))/3-CONTROLS_GAP_X;
-
-//--- move and resize the "CheckGroup" element
-   x=ClientAreaLeft()+INDENT_LEFT+sx+CONTROLS_GAP_X;
-   configCheckGroup.Move(x,y);
-   configCheckGroup.Width(sx);
-//--- move and resize the "ListView" element
-   x=ClientAreaLeft()+ClientAreaWidth()-(sx+INDENT_RIGHT+BUTTON_WIDTH+CONTROLS_GAP_X);
-   optionsListView.Move(x,y);
-   optionsListView.Width(sx);
+   
+   int paddingTop = 2*INDENT_TOP;
+   
+   // outputEdit align, move, resize
+   int x1=INDENT_LEFT;
+   int y1=INDENT_TOP;
+   int x2=ClientAreaWidth()-(CONTROLS_GAP_X+BUTTON_WIDTH+CONTROLS_GAP_X+BUTTON_WIDTH+INDENT_RIGHT);
+   int y2=ClientAreaHeight()-(CONTROLS_GAP_Y+EDIT_HEIGHT+INDENT_BOTTOM);
+   outputEdit.Move(x1,paddingTop+y1);
+   outputEdit.Width(x2-x1);
+   outputEdit.Height(y2-y1);
+   outputEdit.Alignment(WND_ALIGN_WIDTH,INDENT_LEFT,0,INDENT_RIGHT+BUTTON_WIDTH+CONTROLS_GAP_X,0);
+   
+   // inputEdit align, move, resize
+   x1=INDENT_LEFT;
+   y1=ClientAreaHeight()-(EDIT_HEIGHT+INDENT_BOTTOM);
+   x2=ClientAreaWidth()-(CONTROLS_GAP_X+BUTTON_WIDTH+CONTROLS_GAP_X+BUTTON_WIDTH+INDENT_RIGHT);
+   y2=y1+EDIT_HEIGHT;
+   inputEdit.Move(x1, paddingTop+y1);
+   inputEdit.Width(x2-x1);
+   inputEdit.Height(y2-y1);
+   inputEdit.Alignment(WND_ALIGN_WIDTH,INDENT_LEFT,0,CONTROLS_GAP_X+BUTTON_WIDTH+INDENT_RIGHT,0);
+   
+   // lockButton align, move, resize
+   x1=ClientAreaWidth()-(BUTTON_WIDTH+INDENT_RIGHT);
+   y1=ClientAreaHeight()-(BUTTON_HEIGHT+INDENT_BOTTOM);
+   x2=x1+BUTTON_WIDTH;
+   y2=y1+BUTTON_HEIGHT;
+   lockButton.Move(x1, paddingTop+y1);
+   lockButton.Width(x2-x1);
+   lockButton.Height(y2-y1);
+   lockButton.Alignment(WND_ALIGN_RIGHT|WND_ALIGN_BOTTOM,0,0,INDENT_RIGHT,INDENT_BOTTOM);
+   
+   // configCheckGroup align, move, resize
+   x1=ClientAreaWidth()-(BUTTON_WIDTH+INDENT_RIGHT);
+   y1=INDENT_TOP;
+   x2=x1+BUTTON_WIDTH;
+   y2=ClientAreaHeight()-(CONTROLS_GAP_Y+EDIT_HEIGHT+INDENT_BOTTOM);
+   configCheckGroup.Move(x1, paddingTop+y1);
+   configCheckGroup.Width(x2-x1);
+   configCheckGroup.Height(y2-y1);
+   configCheckGroup.Alignment(WND_ALIGN_HEIGHT,0,y1,0,INDENT_BOTTOM);
+   
+   // optionsListView align, move, resize
+   x1=ClientAreaWidth()-(BUTTON_WIDTH+CONTROLS_GAP_X+BUTTON_WIDTH+INDENT_RIGHT);
+   y1=INDENT_TOP;
+   x2=x1+BUTTON_WIDTH;
+   y2=ClientAreaHeight()-INDENT_BOTTOM;
+   optionsListView.Move(x1, paddingTop+y1);
+   optionsListView.Width(x2-x1);
+   optionsListView.Height(y2-y1);
+   optionsListView.Alignment(WND_ALIGN_HEIGHT,0,y1,0,INDENT_BOTTOM);
+   
 //--- succeed
    return(true);
   }
