@@ -351,7 +351,22 @@ void SystemConsole::OnChangeOptionsListView(void)
   {
   	if(optionsListView.IsEnabled())
   	{
-  		AddLine(__FUNCTION__+" \""+optionsListView.Select()+"\"");
+  	   string command = optionsListView.Select();
+  		//AddLine(__FUNCTION__+" \""+optionsListView.Select()+"\"");
+  		AddLine(sCommands.GetSystemCommandToExecute(command));
+  		
+  		if(sCommands.NeedRefresh(command))
+  		{
+  		   optionsListView.ItemsClear();
+  		   
+      	string commands [];
+      	sCommands.GetSystemCommands(commands);
+      	
+         for(int i=0;i<ArraySize(commands);i++)
+            if(!optionsListView.ItemAdd(commands[i]))
+               return;
+  		}
+  		
  	  //outputEdit.Text(__FUNCTION__+" \""+optionsListView.Select()+"\"");
   	}
   }
