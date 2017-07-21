@@ -4,6 +4,7 @@
 //|                                              http://www.mql5.com |
 //+------------------------------------------------------------------+
 #include <MyMql\Base\BeforeObject.mqh>
+
 #include <Controls\Dialog.mqh>
 #include <Controls\Button.mqh>
 #include <Controls\Edit.mqh>
@@ -13,6 +14,9 @@
 #include <Controls\SpinEdit.mqh>
 #include <Controls\RadioGroup.mqh>
 #include <Controls\CheckGroup.mqh>
+
+#include "SystemCommands.mqh"
+
 //+------------------------------------------------------------------+
 //| defines                                                          |
 //+------------------------------------------------------------------+
@@ -28,8 +32,9 @@
 #define BUTTON_HEIGHT                       (20)      // size by Y coordinate
 //--- for the indication area
 #define EDIT_HEIGHT                         (20)      // size by Y coordinate
+
 //+------------------------------------------------------------------+
-//| Class SystemConsole                                               |
+//| Class SystemConsole                                              |
 //| Usage: main dialog of the SimplePanel application                |
 //+------------------------------------------------------------------+
 class SystemConsole : public CAppDialog
@@ -40,6 +45,8 @@ private:
    CButton           lockButton;                       // the fixed button object
    CListView         optionsListView;                     // the list object
    CCheckGroup       configCheckGroup;                   // the check box group object
+	
+	SystemCommands sCommands;
 	
 public:
                      SystemConsole(void);
@@ -230,8 +237,12 @@ bool SystemConsole::CreateOptionsListView(void)
       return(false);
    optionsListView.Alignment(WND_ALIGN_HEIGHT,0,y1,0,INDENT_BOTTOM);
 //--- fill out with strings
-   for(int i=0;i<16;i++)
-      if(!optionsListView.ItemAdd("Item "+IntegerToString(i)))
+
+	string commands [];
+	sCommands.GetSystemCommands(commands);
+	
+   for(int i=0;i<ArraySize(commands);i++)
+      if(!optionsListView.ItemAdd(commands[i]))
          return(false);
 //--- succeed
    return(true);
