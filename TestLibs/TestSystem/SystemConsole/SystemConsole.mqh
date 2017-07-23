@@ -74,6 +74,7 @@ protected:
    //--- Text handlers
    void              AddLine(string line);
    void              SetText(string text);
+   void              UpdateControls(string command);
   };
 //+------------------------------------------------------------------+
 //| Event Handling                                                   |
@@ -351,21 +352,10 @@ void SystemConsole::OnChangeOptionsListView(void)
   {
   	if(optionsListView.IsEnabled())
   	{
-  	   string command = optionsListView.Select();
   		//AddLine(__FUNCTION__+" \""+optionsListView.Select()+"\"");
-  		AddLine(sCommands.GetSystemCommandToExecute(command));
   		
-  		if(sCommands.NeedRefresh(command))
-  		{
-  		   optionsListView.ItemsClear();
-  		   
-      	string commands [];
-      	sCommands.GetSystemCommands(commands);
-      	
-         for(int i=0;i<ArraySize(commands);i++)
-            if(!optionsListView.ItemAdd(commands[i]))
-               return;
-  		}
+  		string command = optionsListView.Select();
+   	UpdateControls(command);
   		
  	  //outputEdit.Text(__FUNCTION__+" \""+optionsListView.Select()+"\"");
   	}
@@ -388,9 +378,13 @@ void SystemConsole::OnEndEditInputEdit(void)
   {
   	if(inputEdit.IsEnabled())
   	{
-  		AddLine(__FUNCTION__+" : Text=\""+inputEdit.Text()+"\"");
+  		//AddLine(__FUNCTION__+" : Text=\""+inputEdit.Text()+"\"");
    	//outputEdit.Text(__FUNCTION__+" : Text="+inputEdit.Text());
    	//inputEdit.Activate();
+	   
+	   string command = inputEdit.Text();
+   	UpdateControls(command);
+   	
    	inputEdit.Text(NULL);
    	//EventChartCustom(ChartID(), CHARTEVENT_CLICK, inputEdit.Left(), inputEdit.Top(), NULL);
    }
@@ -427,4 +421,21 @@ void SystemConsole::SetText(string text)
 	int len = ArraySize(lines);
 	for(int i=0;i<len;i++)
 		AddLine(lines[i]);
+}
+
+void SystemConsole::UpdateControls(string command)
+{
+  		AddLine(sCommands.GetSystemCommandToExecute(command));
+  		
+  		if(sCommands.NeedRefresh(command))
+  		{
+  		   optionsListView.ItemsClear();
+  		   
+      	string commands [];
+      	sCommands.GetSystemCommands(commands);
+      	
+         for(int i=0;i<ArraySize(commands);i++)
+            if(!optionsListView.ItemAdd(commands[i]))
+               return;
+  		}
 }
