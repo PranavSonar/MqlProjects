@@ -387,6 +387,7 @@ void SystemConsole::OnEndEditInputEdit(void)
    	
    	inputEdit.Text(NULL);
    	//EventChartCustom(ChartID(), CHARTEVENT_CLICK, inputEdit.Left(), inputEdit.Top(), NULL);
+   	inputEdit.OnMouseEvent(1, 1, MOUSE_LEFT);
    }
   }
   
@@ -427,11 +428,13 @@ void SystemConsole::UpdateControls(string command)
 {     
   		if(sCommands.NeedRefresh(command))
   		{
-  		   //optionsListView.Select(CONTROLS_INVALID_INDEX);
-  		   //optionsListView.ItemsClear(); // this might fuck it up
-  		   while(optionsListView.ItemDelete(0))
-  		      ;
-  		   
+  		   optionsListView.Select(CONTROLS_INVALID_INDEX);
+  		   optionsListView.ItemsClear(); // this might fuck it up
+  		   //while(optionsListView.ItemDelete(0))
+  		   //   ;
+  		   //optionsListView.ItemDelete(0);
+			optionsListView.VScrolled(false);
+				   
          command = sCommands.GetSystemCommandToExecute(command, true);
          
       	string commands [];
@@ -442,5 +445,5 @@ void SystemConsole::UpdateControls(string command)
                return;
   		}
   		
-  		AddLine(command);
+  		AddLine("\"" + sCommands.GetContext() + "\" \"" + command + "\"");
 }

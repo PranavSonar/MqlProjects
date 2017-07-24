@@ -17,6 +17,8 @@ class SystemCommands : public BaseObject
 	public:
 	   SystemCommands(string ctx = NULL) { context = ctx; }
 	   
+	   string GetContext() { return context; }
+	   
 		void GetSystemCommands(string &commands[])
 		{
 			if(context == NULL)
@@ -40,12 +42,12 @@ class SystemCommands : public BaseObject
 				commands[15] = "[x]exit/[q]quit";
 			} else if(context == "print") {
 				ArrayResize(commands, 7);
-				commands[0] = "[h]help";
-				commands[1] = "[p]print";
-				commands[2] = "[o]config";
-				commands[3] = "[d]discovery";
-				commands[4] = "[l]light system";
-				commands[5] = "[s]system";
+				commands[0] = "[d]discovery";
+				commands[1] = "[s]system";
+				commands[2] = "[o]orders";
+				commands[3] = "[r]results";
+				commands[4] = "[v]variables";
+				commands[5] = "[c]config";
 				commands[6] = "[b]back";
 			} else if((context == "discovery") || (context == "light") || (context == "system") || (context == "EA")) {
 				ArrayResize(commands, 5);
@@ -71,6 +73,15 @@ class SystemCommands : public BaseObject
 			} else if(context == "analysis") {
 				ArrayResize(commands, 1); // to do: choose between available indicators
 				commands[0] = "[b]back";
+			} else if(context == "orders") { // to do: complete orders; it was way bigger than this
+				ArrayResize(commands, 1);
+				commands[0] = "[b]back";
+			} else if(context == "probability") {
+				ArrayResize(commands, 4);
+				commands[0] = "opened";
+				commands[1] = "virtual";
+				commands[2] = "new";
+				commands[3] = "[b]back";
 			} else if(context == "manual") {
 				ArrayResize(commands, 1); // to do: maybe something can be done for any of those: manual/symbol/% of margin used/order type(buy/sell)/TP & SL type(pips, simple s/r, 2BB, Fibonacci s/r, MA s/r)/virtual limits
 				commands[0] = "[b]back";
@@ -83,12 +94,9 @@ class SystemCommands : public BaseObject
 				commands[4] = "notification";
 				commands[5] = "virtual";
 				commands[6] = "[b]back";
-			} else if(context == "probability") {
-				ArrayResize(commands, 4);
-				commands[0] = "opened";
-				commands[1] = "virtual";
-				commands[2] = "new";
-				commands[3] = "[b]back";
+			} else if(context == "call") {
+				ArrayResize(commands, 1); // to do: it was more than this
+				commands[0] = "[b]back";
 			}
 		}
 		
@@ -151,8 +159,8 @@ class SystemCommands : public BaseObject
 		   	else if((command == "[b]back") || (command == "back") || (command == "b"))
 		   	{ UpdateContext(NULL, changeContext); return "back"; }
 		   } else if(StringFind(context,"call") == 0) { // WS Proc call
-		   	if((command == "back") || (command == "b")) // to do: validate words (procedure name, params)
-		   	{ UpdateContext(NULL, changeContext); return "back"; }
+		   	if((command == "[b]back") || (command == "back") || (command == "b")) // to do: validate words (procedure name, params)
+		   	{ UpdateContext(NULL, changeContext); return "back"; } 
 		   	
 		   	string words[];
 		   	StringSplit(context, '/', words);
@@ -181,7 +189,7 @@ class SystemCommands : public BaseObject
 		   		return UpdateContext("indicator/decision", changeContext);
 		   	else if((command == "[s]show") || (command == "show") || (command == "s"))
 		   		return UpdateContext("indicator/show", changeContext);
-		   	else if((command == "[c]orders") || (command == "orders") || (command == "o"))
+		   	else if((command == "[o]orders") || (command == "orders") || (command == "o"))
 		   		return UpdateContext("indicator/orders", changeContext);
 		   	else if((command == "[b]back") || (command == "back") || (command == "b"))
 		   		{ UpdateContext(NULL, changeContext); return "back"; }
@@ -193,9 +201,12 @@ class SystemCommands : public BaseObject
 		   	StringSplit(context, '/', words);
 		   	if(ArraySize(words) != 2) // analysis/indicator
 		   		return UpdateContext(context + "/" + command, changeContext);
+		   } else if(context == "orders") { // to do: complete orders; it was way bigger than this
+		   	if((command == "[b]back") || (command == "back") || (command == "b"))
+		   	{ UpdateContext(NULL, changeContext); return "back"; }
 		   } else if(StringFind(context,"manual") == 0) { // to do: validate words
-		   	if((command == "back") || (command == "b"))
-		    	{ UpdateContext(NULL, changeContext); return "back"; }
+		   	if((command == "[b]back") || (command == "back") || (command == "b"))
+		   	{ UpdateContext(NULL, changeContext); return "back"; }
 		   		
 		   	string words[];
 		   	StringSplit(context, '/', words);
@@ -239,8 +250,8 @@ class SystemCommands : public BaseObject
 		   //}
 		   
 		   // default
-		   if((command == "[b]back") || (command == "back") || (command == "b"))
-		   	{ UpdateContext(NULL, changeContext); return "back"; }
+		   //if((command == "[b]back") || (command == "back") || (command == "b"))
+		   //	{ UpdateContext(NULL, changeContext); return "back"; }
 		   
 		   return NULL; // lucky if command is the whole context; not written one by one, but the whole the first time
 		}
@@ -273,7 +284,8 @@ class SystemCommands : public BaseObject
 		      (command == "manual") ||
 		      (command == "update") ||
 		      (command == "call") ||
-		      (command == "back"))
+		      (command == "back") ||
+		      (command == NULL))
 		         return true;
 		   return false;
 		}

@@ -26,7 +26,7 @@ SystemConsole ExtDialog;
 int OnInit(void)
   {
 //--- create application dialog
-   if(!ExtDialog.Create(0,"System Console",0,50,50,390,300))
+   if(!ExtDialog.Create(0,"System Console",0,50,50,500,400))
      return(INIT_FAILED);
 //--- run application
    if(!ExtDialog.Run())
