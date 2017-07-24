@@ -92,60 +92,67 @@ class SystemCommands : public BaseObject
 			}
 		}
 		
-		string GetSystemCommandToExecute(string command)
+		string UpdateContext(string value, bool changeContext = false)
+		{
+		   if(changeContext)
+		      context = value;
+		   return value;
+		}
+		
+		string GetSystemCommandToExecute(string command, bool changeContext = false)
 		{
 		   if(context == NULL)
 		   {
 		      if((command == "[h]help") || (command == "h") || (command == "help"))
    		      return "help";
    		   else if((command == "[p]print") || (command == "p") || (command == "print"))
-   		      return context = "print";
+   		      return UpdateContext("print", changeContext);
    		   else if((command == "[o]config") || (command == "o") || (command == "config"))
-   		      return context = "config";
+   		      return UpdateContext("config", changeContext);
    		   else if((command == "[d]discovery") || (command == "d") || (command == "discovery"))
-   		      return context = "discovery";
+   		      return UpdateContext("discovery", changeContext);
    		   else if((command == "[l]light system") || (command == "l") || (command == "light system") || (command == "light"))
-   		      return context = "light";
+   		      return UpdateContext("light", changeContext);
    		   else if((command == "[s]system") || (command == "s") || (command == "system"))
-   		      return context = "system";
+   		      return UpdateContext("system", changeContext);
    		   else if((command == "[a]EA") || (command == "a") || (command == "EA"))
-   		      return context = "EA";
+   		      return UpdateContext("EA", changeContext);
    		   else if((command == "[i]indicator") || (command == "i") || (command == "indicator"))
-   		      return context = "indicator";
+   		      return UpdateContext("indicator", changeContext);
    		   else if((command == "[n]analysis indicator") || (command == "n") || (command == "analysis indicator") || (command == "analysis"))
-   		      return context = "analysis";
+   		      return UpdateContext("analysis", changeContext);
    		   else if((command == "[o]orders view") || (command == "o") || (command == "orders view") || (command == "orders") || (command == "order"))
-   		      return context = "probability";
+   		      return UpdateContext("orders", changeContext);
    		   else if((command == "[%]probability of order") || (command == "%") || (command == "probability of order") || (command == "probability"))
-   		      return context = "probability";
+   		      return UpdateContext("probability", changeContext);
    		   else if((command == "[m]manual order") || (command == "m") || (command == "manual order") || (command == "manual"))
-   		      return context = "manual";
+   		      return UpdateContext("manual", changeContext);
    		   else if((command == "[u]update order") || (command == "u") || (command == "update order") || (command == "update"))
-   		      return context = "update";
+   		      return UpdateContext("update", changeContext);
    		   else if((command == "[c]call WS proc") || (command == "c") || (command == "call WS proc") || (command == "call"))
-   		      return context = "call";
+   		      return UpdateContext("call", changeContext);
    		   else if((command == "[r]screenshot") || (command == "r") || (command == "screenshot"))
-   		      return context = "screenshot";
+   		      return UpdateContext("screenshot", changeContext);
    		   else if((command == "[x]exit/[q]quit") || (command == "x") || (command == "q") || (command == "exit") || (command == "quit"))
-   		      return context = "exit";
+   		      return UpdateContext("exit", changeContext);
 		   } else if(context == "print") {
 		   	if((command == "[d]discovery") || (command == "discovery") || (command == "d"))
-		   		return context = "print/discovery";
+		   		return UpdateContext("print/discovery", changeContext);
 		   	else if((command == "[s]system") || (command == "system") || (command == "s"))
-		   		return context = "print/system";
+		   		return UpdateContext("print/system", changeContext);
 		   	else if((command == "[o]orders") || (command == "orders") || (command == "order") || (command == "o"))
-		   		return context = "print/orders";
+		   		return UpdateContext("print/orders", changeContext);
 		   	else if((command == "[r]results") || (command == "results") || (command == "result") || (command == "r"))
-		   		return context = "print/results";
+		   		return UpdateContext("print/results", changeContext);
 		   	else if((command == "[v]variables") || (command == "variables") || (command == "variable") || (command == "v"))
-		   		return context = "print/variables";
+		   		return UpdateContext("print/variables", changeContext);
 		   	else if((command == "[c]config") || (command == "config") || (command == "c"))
-		   		return context = "print/config";
+		   		return UpdateContext("print/config", changeContext);
 		   	else if((command == "[b]back") || (command == "back") || (command == "b"))
-		   	{ context = NULL; return "back"; }
+		   	{ UpdateContext(NULL, changeContext); return "back"; }
 		   } else if(StringFind(context,"call") == 0) { // WS Proc call
 		   	if((command == "back") || (command == "b")) // to do: validate words (procedure name, params)
-		   	{ context = NULL; return "back"; }
+		   	{ UpdateContext(NULL, changeContext); return "back"; }
 		   	
 		   	string words[];
 		   	StringSplit(context, '/', words);
@@ -153,42 +160,42 @@ class SystemCommands : public BaseObject
 		   		return context + "/" + command;
 		   } else if((context == "discovery") || (context == "light") || (context == "system") || (context == "EA")) {
 		   	if((command == "[1]one symbol") || (command == "one symbol") || (command == "one") || (command == "1"))
-		   		return context = context + "/one";
+		   		return UpdateContext(context + "/one", changeContext);
 		   	else if((command == "[c]current symbol") || (command == "current symbol") || (command == "current") || (command == "c"))
-		   		return context = context + "/current";
+		   		return UpdateContext(context + "/current", changeContext);
 		   	else if((command == "[w]watchlist symbols") || (command == "watchlist symbols") || (command == "watchlist") || (command == "watch") || (command == "w"))
-		   		return context = context + "/watchlist";
+		   		return UpdateContext(context + "/watchlist", changeContext);
 		   	else if((command == "[a]all symbols") ||(command == "all symbols") || (command == "all") || (command == "a"))
-		   		return context = context + "/all";
+		   		return UpdateContext(context + "/all", changeContext);
 		   	else if((command == "[b]back") || (command == "back") || (command == "b"))
-		   	{ context = NULL; return "back"; }
+		   	{ UpdateContext(NULL, changeContext); return "back"; }
 		   } else if(context == "config") {
 		   	if((command == "[c]change") || (command == "change") || (command == "c"))
-		   		return context = "config/change";
+		   		return UpdateContext("config/change", changeContext);
 		   	else if((command == "[p]print") || (command == "print") || (command == "p"))
-		   		return context = "config/print";
+		   		return UpdateContext("config/print", changeContext);
 		   	else if((command == "[b]back") || (command == "back") || (command == "b"))
-		   		{ context = NULL; return "back"; }
+		   		{ UpdateContext(NULL, changeContext); return "back"; }
 		   } else if(context == "indicator") {
 		   	if((command == "[d]decision") || (command == "decision") || (command == "d"))
-		   		return context = "indicator/decision";
+		   		return UpdateContext("indicator/decision", changeContext);
 		   	else if((command == "[s]show") || (command == "show") || (command == "s"))
-		   		return context = "indicator/show";
+		   		return UpdateContext("indicator/show", changeContext);
 		   	else if((command == "[c]orders") || (command == "orders") || (command == "o"))
-		   		return context = "indicator/orders";
+		   		return UpdateContext("indicator/orders", changeContext);
 		   	else if((command == "[b]back") || (command == "back") || (command == "b"))
-		   		{ context = NULL; return "back"; }
+		   		{ UpdateContext(NULL, changeContext); return "back"; }
 		   } else if(context == "analysis") { // to do: validate word
 		   	if((command == "[b]back") || (command == "back") || (command == "b"))
-		   	{ context = NULL; return "back"; }
+		   	{ UpdateContext(NULL, changeContext); return "back"; }
 		   	
 		   	string words[];
 		   	StringSplit(context, '/', words);
 		   	if(ArraySize(words) != 2) // analysis/indicator
-		   		return context += "/" + command;
+		   		return UpdateContext(context + "/" + command, changeContext);
 		   } else if(StringFind(context,"manual") == 0) { // to do: validate words
 		   	if((command == "back") || (command == "b"))
-		    	{ context = NULL; return "back"; }
+		    	{ UpdateContext(NULL, changeContext); return "back"; }
 		   		
 		   	string words[];
 		   	StringSplit(context, '/', words);
@@ -196,44 +203,44 @@ class SystemCommands : public BaseObject
 		   		return context + "/" + command;
 		   } else if(StringFind(context,"update") == 0) { // to do: make all for "update" in this context
 		   	if((command == "[b]back") || (command == "back") || (command == "b"))
-		   	{ context = NULL; return "back"; }
+		   	{ UpdateContext(NULL, changeContext); return "back"; }
 		   	
 		   	if((command == "TakeProfit") || (command == "take profit") || (command == "TP"))
-		   		return context += "/TP";
+		   		return UpdateContext(context + "/TP", changeContext);
 		   	else if((command == "StopLoss") || (command == "stop loss") || (command == "SL"))
-		   		return context += "/SL";
+		   		return UpdateContext(context + "/SL", changeContext);
 		   	else if((command == "close"))
-		   		return context += "/close";
+		   		return UpdateContext(context + "/close", changeContext);
 		   	else if((command == "trailing stop") || (command == "trailing"))
-		   		return context += "/trailing";
+		   		return UpdateContext(context + "/trailing", changeContext);
 		   	else if((command == "notification") || (command == "notif"))
-		   		return context += "/notification";
+		   		return UpdateContext(context + "/notification", changeContext);
 		   	else if((command == "virtual") || (command == "virt"))
-		   		return context += "/virtual";
+		   		return UpdateContext(context + "/virtual", changeContext);
 		   } else if(context == "probability") {
 		   	if((command == "current") || (command == "opened")) // opened order
-		   		return context += "/current";
+		   		return UpdateContext(context + "/current", changeContext);
 		   	else if((command == "virtual") || (command == "virt")) // virtual order
-		   		return context += "/virt";
+		   		return UpdateContext(context + "/virt", changeContext);
 		   	else if((command == "new")) // new order
-		   		return context += "/new";
+		   		return UpdateContext(context + "/new", changeContext);
 		   	else if((command == "[b]back") || (command == "back") || (command == "b"))
-		   	{ context = NULL; return "back"; }
+		   	{ UpdateContext(NULL, changeContext); return "back"; }
 		   }
 		   //else if(context == "") {
 		   //	if((command == "") || (command == ""))
-		   //		return context = "";
+		   //		return UpdateContext("";
 		   //	else if((command == "") || (command == ""))
-		   //		return context = "";
+		   //		return UpdateContext("";
 		   //	else if((command == "") || (command == ""))
-		   //		return context = "";
+		   //		return UpdateContext("";
 		   //	else if((command == "[b]back") || (command == "back") || (command == "b"))
-		   //		return context = NULL;
+		   //		return UpdateContext(NULL;
 		   //}
 		   
 		   // default
 		   if((command == "[b]back") || (command == "back") || (command == "b"))
-		   	{ context = NULL; return "back"; }
+		   	{ UpdateContext(NULL, changeContext); return "back"; }
 		   
 		   return NULL; // lucky if command is the whole context; not written one by one, but the whole the first time
 		}

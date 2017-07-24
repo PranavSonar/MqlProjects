@@ -424,12 +424,16 @@ void SystemConsole::SetText(string text)
 }
 
 void SystemConsole::UpdateControls(string command)
-{
+{     
   		if(sCommands.NeedRefresh(command))
   		{
-  		   optionsListView.Select(CONTROLS_INVALID_INDEX);
-  		   optionsListView.ItemsClear();
+  		   //optionsListView.Select(CONTROLS_INVALID_INDEX);
+  		   //optionsListView.ItemsClear(); // this might fuck it up
+  		   while(optionsListView.ItemDelete(0))
+  		      ;
   		   
+         command = sCommands.GetSystemCommandToExecute(command, true);
+         
       	string commands [];
       	sCommands.GetSystemCommands(commands);
       	
@@ -438,5 +442,5 @@ void SystemConsole::UpdateControls(string command)
                return;
   		}
   		
-  		AddLine(sCommands.GetSystemCommandToExecute(command));
+  		AddLine(command);
 }
