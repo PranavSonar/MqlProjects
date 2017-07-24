@@ -142,10 +142,10 @@ class SystemCommands : public BaseObject
 		   	else if((command == "[c]config") || (command == "config") || (command == "c"))
 		   		return context = "print/config";
 		   	else if((command == "[b]back") || (command == "back") || (command == "b"))
-		   		return context = NULL;
+		   	{ context = NULL; return "back"; }
 		   } else if(StringFind(context,"call") == 0) { // WS Proc call
 		   	if((command == "back") || (command == "b")) // to do: validate words (procedure name, params)
-		   		return context = NULL;
+		   	{ context = NULL; return "back"; }
 		   	
 		   	string words[];
 		   	StringSplit(context, '/', words);
@@ -161,14 +161,14 @@ class SystemCommands : public BaseObject
 		   	else if((command == "[a]all symbols") ||(command == "all symbols") || (command == "all") || (command == "a"))
 		   		return context = context + "/all";
 		   	else if((command == "[b]back") || (command == "back") || (command == "b"))
-		   		return context = NULL;
+		   	{ context = NULL; return "back"; }
 		   } else if(context == "config") {
 		   	if((command == "[c]change") || (command == "change") || (command == "c"))
 		   		return context = "config/change";
 		   	else if((command == "[p]print") || (command == "print") || (command == "p"))
 		   		return context = "config/print";
 		   	else if((command == "[b]back") || (command == "back") || (command == "b"))
-		   		return context = NULL;
+		   		{ context = NULL; return "back"; }
 		   } else if(context == "indicator") {
 		   	if((command == "[d]decision") || (command == "decision") || (command == "d"))
 		   		return context = "indicator/decision";
@@ -177,10 +177,10 @@ class SystemCommands : public BaseObject
 		   	else if((command == "[c]orders") || (command == "orders") || (command == "o"))
 		   		return context = "indicator/orders";
 		   	else if((command == "[b]back") || (command == "back") || (command == "b"))
-		   		return context = NULL;
+		   		{ context = NULL; return "back"; }
 		   } else if(context == "analysis") { // to do: validate word
-		   	if((command == "back") || (command == "b"))
-		   		return context = NULL;
+		   	if((command == "[b]back") || (command == "back") || (command == "b"))
+		   	{ context = NULL; return "back"; }
 		   	
 		   	string words[];
 		   	StringSplit(context, '/', words);
@@ -188,15 +188,15 @@ class SystemCommands : public BaseObject
 		   		return context += "/" + command;
 		   } else if(StringFind(context,"manual") == 0) { // to do: validate words
 		   	if((command == "back") || (command == "b"))
-		   		return context = NULL;
+		    	{ context = NULL; return "back"; }
 		   		
 		   	string words[];
 		   	StringSplit(context, '/', words);
 		   	if(ArraySize(words) != 6) // manual/symbol/% of margin used/order type(buy/sell)/TP & SL type(pips, simple s/r, 2BB, Fibonacci s/r, MA s/r)/virtual limits
 		   		return context + "/" + command;
 		   } else if(StringFind(context,"update") == 0) { // to do: make all for "update" in this context
-		   	if((command == "back") || (command == "b"))
-		   		return context = NULL;
+		   	if((command == "[b]back") || (command == "back") || (command == "b"))
+		   	{ context = NULL; return "back"; }
 		   	
 		   	if((command == "TakeProfit") || (command == "take profit") || (command == "TP"))
 		   		return context += "/TP";
@@ -218,7 +218,7 @@ class SystemCommands : public BaseObject
 		   	else if((command == "new")) // new order
 		   		return context += "/new";
 		   	else if((command == "[b]back") || (command == "back") || (command == "b"))
-		   		return context = NULL;
+		   	{ context = NULL; return "back"; }
 		   }
 		   //else if(context == "") {
 		   //	if((command == "") || (command == ""))
@@ -230,6 +230,10 @@ class SystemCommands : public BaseObject
 		   //	else if((command == "[b]back") || (command == "back") || (command == "b"))
 		   //		return context = NULL;
 		   //}
+		   
+		   // default
+		   if((command == "[b]back") || (command == "back") || (command == "b"))
+		   	{ context = NULL; return "back"; }
 		   
 		   return NULL; // lucky if command is the whole context; not written one by one, but the whole the first time
 		}
@@ -261,7 +265,8 @@ class SystemCommands : public BaseObject
 		      (command == "probability") ||
 		      (command == "manual") ||
 		      (command == "update") ||
-		      (command == "call"))
+		      (command == "call") ||
+		      (command == "back"))
 		         return true;
 		   return false;
 		}
