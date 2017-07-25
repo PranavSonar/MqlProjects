@@ -147,15 +147,15 @@ class SystemCommands : public BaseObject
 		   	if((command == "[d]discovery") || (command == "discovery") || (command == "d"))
 		   		return UpdateContext("print/discovery", changeContext);
 		   	else if((command == "[s]system") || (command == "system") || (command == "s"))
-		   		return UpdateContext("print/system", changeContext);
+		   		return UpdateContext(context + "/system", changeContext);
 		   	else if((command == "[o]orders") || (command == "orders") || (command == "order") || (command == "o"))
-		   		return UpdateContext("print/orders", changeContext);
+		   		return UpdateContext(context + "/orders", changeContext);
 		   	else if((command == "[r]results") || (command == "results") || (command == "result") || (command == "r"))
-		   		return UpdateContext("print/results", changeContext);
+		   		return UpdateContext(context + "/results", changeContext);
 		   	else if((command == "[v]variables") || (command == "variables") || (command == "variable") || (command == "v"))
-		   		return UpdateContext("print/variables", changeContext);
+		   		return UpdateContext(context + "/variables", changeContext);
 		   	else if((command == "[c]config") || (command == "config") || (command == "c"))
-		   		return UpdateContext("print/config", changeContext);
+		   		return UpdateContext(context + "/config", changeContext);
 		   	else if((command == "[b]back") || (command == "back") || (command == "b"))
 		   	{ UpdateContext(NULL, changeContext); return "back"; }
 		   } else if(StringFind(context,"call") == 0) { // WS Proc call
@@ -179,18 +179,18 @@ class SystemCommands : public BaseObject
 		   	{ UpdateContext(NULL, changeContext); return "back"; }
 		   } else if(context == "config") {
 		   	if((command == "[c]change") || (command == "change") || (command == "c"))
-		   		return UpdateContext("config/change", changeContext);
+		   		return UpdateContext(context + "/change", changeContext);
 		   	else if((command == "[p]print") || (command == "print") || (command == "p"))
-		   		return UpdateContext("config/print", changeContext);
+		   		return UpdateContext(context + "/print", changeContext);
 		   	else if((command == "[b]back") || (command == "back") || (command == "b"))
 		   		{ UpdateContext(NULL, changeContext); return "back"; }
 		   } else if(context == "indicator") {
 		   	if((command == "[d]decision") || (command == "decision") || (command == "d"))
-		   		return UpdateContext("indicator/decision", changeContext);
+		   		return UpdateContext(context + "/decision", changeContext);
 		   	else if((command == "[s]show") || (command == "show") || (command == "s"))
-		   		return UpdateContext("indicator/show", changeContext);
+		   		return UpdateContext(context + "/show", changeContext);
 		   	else if((command == "[o]orders") || (command == "orders") || (command == "o"))
-		   		return UpdateContext("indicator/orders", changeContext);
+		   		return UpdateContext(context + "/orders", changeContext);
 		   	else if((command == "[b]back") || (command == "back") || (command == "b"))
 		   		{ UpdateContext(NULL, changeContext); return "back"; }
 		   } else if(context == "analysis") { // to do: validate word
@@ -269,7 +269,37 @@ class SystemCommands : public BaseObject
 		   	(command == "print/orders") ||
 		   	(command == "print/results") ||
 		   	(command == "print/variables") ||
-		   	(command == "print/config"))
+		   	(command == "print/config") ||
+		   	(command == "discovery/one") ||
+		   	(command == "discovery/current") ||
+		   	(command == "discovery/watchlist") ||
+		   	(command == "discovery/all") ||
+		   	(command == "light/one") ||
+		   	(command == "light/current") ||
+		   	(command == "light/watchlist") ||
+		   	(command == "light/all") ||
+		   	(command == "system/one") ||
+		   	(command == "system/current") ||
+		   	(command == "system/watchlist") ||
+		   	(command == "system/all") ||
+		   	(command == "EA/one") ||
+		   	(command == "EA/current") ||
+		   	(command == "EA/watchlist") ||
+		   	(command == "EA/all") ||
+		   	(command == "config/change") ||
+		   	(command == "config/print") ||
+		   	(command == "indicator/decision") ||
+		   	(command == "indicator/show") ||
+		   	(command == "indicator/orders") ||
+		   	(command == "update/TakeProfit") ||
+		   	(command == "update/StopLoss") ||
+		   	(command == "update/close") ||
+		   	(command == "update/trailing") ||
+		   	(command == "update/notification") ||
+		   	(command == "update/virtual") ||
+		   	(command == "probability/current") ||
+		   	(command == "probability/virtual") ||
+		   	(command == "probability/new"))
 		         return false;
 		   else if((command == "print") ||
 		      (command == "config") ||
