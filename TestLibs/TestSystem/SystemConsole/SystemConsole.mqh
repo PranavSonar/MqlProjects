@@ -16,6 +16,7 @@
 #include <Controls\CheckGroup.mqh>
 
 #include "SystemCommands.mqh"
+#include "SystemWrapper.mqh"
 
 //+------------------------------------------------------------------+
 //| defines                                                          |
@@ -75,6 +76,7 @@ protected:
    void              AddLine(string line);
    void              SetText(string text);
    void              UpdateControls(string command);
+   void              ExecuteCommand(string command);
   };
 //+------------------------------------------------------------------+
 //| Event Handling                                                   |
@@ -387,7 +389,17 @@ void SystemConsole::OnEndEditInputEdit(void)
    	
    	inputEdit.Text(NULL);
    	//EventChartCustom(ChartID(), CHARTEVENT_CLICK, inputEdit.Left(), inputEdit.Top(), NULL);
-   	inputEdit.OnMouseEvent(1, 1, MOUSE_LEFT);
+   	long x = (inputEdit.Left() + inputEdit.Right())/2;
+   	double y = (inputEdit.Top() + inputEdit.Bottom())/2;
+   	//inputEdit.OnMouseEvent(x, y, MOUSE_LEFT);
+   	//EventChartCustom(0, CHARTEVENT_OBJECT_CLICK, x, y, NULL);
+   	//EventChartCustom(0, CHARTEVENT_CLICK, x, y, NULL);
+   	//EventChartCustom(0, CHARTEVENT_OBJECT_ENDEDIT, x, y, NULL);
+   	EventChartCustom(0, CHARTEVENT_OBJECT_CHANGE, x, y, NULL);
+   	
+   	string sth = NULL;
+   	inputEdit.OnEvent(CHARTEVENT_OBJECT_ENDEDIT, x, y, sth);
+   	
    }
   }
   
@@ -443,4 +455,10 @@ void SystemConsole::UpdateControls(string command)
   		}
   		
   		AddLine("\"" + sCommands.GetContext() + "\" \"" + command + "\"");
+}
+
+void SystemConsole::ExecuteCommand(string command)
+{
+	if(command == "")
+		;
 }

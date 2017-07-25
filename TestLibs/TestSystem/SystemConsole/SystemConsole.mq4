@@ -8,61 +8,51 @@
 #property version   "1.00"
 #property strict
 
-//#property indicator_separate_window
-//#property indicator_buffers             0
-//#property indicator_minimum             0.0
-//#property indicator_maximum             0.0
 
 #include "SystemConsole.mqh"
 
-//+------------------------------------------------------------------+
-//| Global Variables                                                 |
-//+------------------------------------------------------------------+
 SystemConsole ExtDialog;
 
-//+------------------------------------------------------------------+
-//| Custom indicator initialization function                         |
-//+------------------------------------------------------------------+
+static SystemWrapper systemWrapper;
+
 int OnInit(void)
-  {
-//--- create application dialog
-   if(!ExtDialog.Create(0,"System Console",0,50,50,500,400))
-     return(INIT_FAILED);
-//--- run application
-   if(!ExtDialog.Run())
-     return(INIT_FAILED);
-//--- ok
-   return(INIT_SUCCEEDED);
-  }
-//+------------------------------------------------------------------+
-//| Custom indicator deinitialization function                       |
-//+------------------------------------------------------------------+
+{
+	if(!ExtDialog.Create(0,"System Console",0,50,50,500,400))
+		return(INIT_FAILED);
+	
+	if(!ExtDialog.Run())
+		return(INIT_FAILED);
+	
+	return systemWrapper.OnInitWrapper();
+}
+
 void OnDeinit(const int reason)
-  {
-//--- destroy application dialog
-   ExtDialog.Destroy(reason);
-  }
-//+------------------------------------------------------------------+
-//| Custom indicator iteration function                              |
-//+------------------------------------------------------------------+
-int OnCalculate(const int rates_total,
-                const int prev_calculated,
-                const int begin,
-                const double &price[])
-  {
-//---
-// do nothing
-//--- return value of prev_calculated for next call
-   return(rates_total);
-  }
-//+------------------------------------------------------------------+
-//| ChartEvent function                                              |
-//+------------------------------------------------------------------+
-void OnChartEvent(const int id,
-                  const long &lparam,
-                  const double &dparam,
-                  const string &sparam)
-  {
-   ExtDialog.ChartEvent(id,lparam,dparam,sparam);
-  }
-//+------------------------------------------------------------------+
+{
+	ExtDialog.Destroy(reason);
+	systemWrapper.OnDeinitWrapper(reason);
+}
+  
+//int OnCalculate(const int rates_total,
+//                const int prev_calculated,
+//                const int begin,
+//                const double &price[])
+//  {
+////---
+//// do nothing
+////--- return value of prev_calculated for next call
+//   return(rates_total);
+//  }
+
+void OnTick()
+{
+	systemWrapper.OnTickWrapper();
+}
+
+void OnChartEvent(
+	const int id,
+   const long &lparam,
+   const double &dparam,
+   const string &sparam)
+{
+	ExtDialog.ChartEvent(id,lparam,dparam,sparam);
+}
