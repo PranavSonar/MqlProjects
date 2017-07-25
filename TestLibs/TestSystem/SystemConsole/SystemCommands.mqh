@@ -238,22 +238,21 @@ class SystemCommands : public BaseObject
 		   	else if((command == "[b]back") || (command == "back") || (command == "b"))
 		   	{ UpdateContext(NULL, changeContext); return "back"; }
 		   }
-		   //else if(context == "") {
-		   //	if((command == "") || (command == ""))
-		   //		return UpdateContext("";
-		   //	else if((command == "") || (command == ""))
-		   //		return UpdateContext("";
-		   //	else if((command == "") || (command == ""))
-		   //		return UpdateContext("";
-		   //	else if((command == "[b]back") || (command == "back") || (command == "b"))
-		   //		return UpdateContext(NULL;
-		   //}
 		   
-		   // default
-		   //if((command == "[b]back") || (command == "back") || (command == "b"))
-		   //	{ UpdateContext(NULL, changeContext); return "back"; }
+		   int firstMatch = StringFind(command, "/");
+		   if(firstMatch >= 0)
+		   {
+		      string ctx = StringSubstr(command, 0, firstMatch);
+            Print("\"" + ctx + "\"");
+		      
+            UpdateContext(ctx, changeContext);
+            
+            string cmd = StringSubstr(command, firstMatch+1);
+            Print("\"" + cmd + "\"");
+            return cmd;
+		   }
 		   
-		   return NULL; // lucky if command is the whole context; not written one by one, but the whole the first time
+		   return NULL;
 		}
 		
 		bool NeedRefresh(string command)

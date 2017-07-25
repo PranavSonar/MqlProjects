@@ -429,10 +429,7 @@ void SystemConsole::UpdateControls(string command)
   		if(sCommands.NeedRefresh(command))
   		{
   		   optionsListView.Select(CONTROLS_INVALID_INDEX);
-  		   optionsListView.ItemsClear(); // this might fuck it up
-  		   //while(optionsListView.ItemDelete(0))
-  		   //   ;
-  		   //optionsListView.ItemDelete(0);
+  		   optionsListView.ItemsClear();
 			optionsListView.VScrolled(false);
 				   
          command = sCommands.GetSystemCommandToExecute(command, true);
