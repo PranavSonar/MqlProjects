@@ -19,19 +19,24 @@ class SystemCommands : public BaseObject
 	   
 	   string GetCommand() { return command; }
 	   void SetCommand(string cmd) {
-	      command = cmd;
-	      
-		   int firstMatch = StringFind(command, "/");
+		   int firstMatch = StringFind(cmd, "/");
+		   
 		   if(firstMatch >= 0)
 		   {
-		      string ctx = StringSubstr(command, 0, firstMatch);
+		      string ctx = StringSubstr(cmd, 0, firstMatch);
             Print("\"" + ctx + "\"");
-		      context = ctx;
             
-            cmd = StringSubstr(command, firstMatch+1);
+            command = ctx;
+		      GetSystemCommandToExecute(true);
+		      
+            cmd = StringSubstr(cmd, firstMatch+1);
             Print("\"" + cmd + "\"");
+            
             command = cmd;
-		   }   
+            command = GetSystemCommandToExecute(true);
+		   }
+		   else
+		      command = cmd;
 		}
 		
 	   

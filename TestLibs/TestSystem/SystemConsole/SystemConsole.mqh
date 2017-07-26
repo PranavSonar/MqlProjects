@@ -445,9 +445,7 @@ void SystemConsole::UpdateControls(string command)
   		   optionsListView.Select(CONTROLS_INVALID_INDEX);
   		   optionsListView.ItemsClear();
 			optionsListView.VScrolled(false);
-				   
-         command = sCommands.GetSystemCommandToExecute(true);
-         
+			
       	string commands [];
       	sCommands.GetSystemCommands(commands);
       	
