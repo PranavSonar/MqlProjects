@@ -32,16 +32,14 @@ void OnDeinit(const int reason)
 	systemWrapper.OnDeinitWrapper(reason);
 }
   
-//int OnCalculate(const int rates_total,
-//                const int prev_calculated,
-//                const int begin,
-//                const double &price[])
-//  {
-////---
-//// do nothing
-////--- return value of prev_calculated for next call
-//   return(rates_total);
-//  }
+int OnCalculate(
+   const int rates_total,
+   const int prev_calculated,
+   const int begin,
+   const double &price[])
+{
+   return(rates_total);
+}
 
 void OnTick()
 {

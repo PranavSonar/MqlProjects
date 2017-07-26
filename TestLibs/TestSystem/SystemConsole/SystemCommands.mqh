@@ -12,13 +12,37 @@
 class SystemCommands : public BaseObject
 {
    private:
-      string context;
+      string context, command;
       
 	public:
 	   SystemCommands(string ctx = NULL) { context = ctx; }
 	   
-	   string GetContext() { return context; }
+	   string GetCommand() { return command; }
+	   void SetCommand(string cmd) {
+	      command = cmd;
+	      
+		   int firstMatch = StringFind(command, "/");
+		   if(firstMatch >= 0)
+		   {
+		      string ctx = StringSubstr(command, 0, firstMatch);
+            Print("\"" + ctx + "\"");
+		      context = ctx;
+            
+            cmd = StringSubstr(command, firstMatch+1);
+            Print("\"" + cmd + "\"");
+            command = cmd;
+		   }   
+		}
+		
 	   
+	   string GetContext() { return context; }
+		string UpdateContext(string value, bool changeContext = false)
+		{
+		   if(changeContext)
+		      context = value;
+		   return value;
+		}
+		
 		void GetSystemCommands(string &commands[])
 		{
 			if(context == NULL)
@@ -100,14 +124,8 @@ class SystemCommands : public BaseObject
 			}
 		}
 		
-		string UpdateContext(string value, bool changeContext = false)
-		{
-		   if(changeContext)
-		      context = value;
-		   return value;
-		}
 		
-		string GetSystemCommandToExecute(string command, bool changeContext = false)
+		string GetSystemCommandToExecute(bool changeContext = false)
 		{
 		   if(context == NULL)
 		   {
@@ -239,25 +257,13 @@ class SystemCommands : public BaseObject
 		   	{ UpdateContext(NULL, changeContext); return "back"; }
 		   }
 		   
-		   int firstMatch = StringFind(command, "/");
-		   if(firstMatch >= 0)
-		   {
-		      string ctx = StringSubstr(command, 0, firstMatch);
-            Print("\"" + ctx + "\"");
-		      
-            UpdateContext(ctx, changeContext);
-            
-            string cmd = StringSubstr(command, firstMatch+1);
-            Print("\"" + cmd + "\"");
-            return cmd;
-		   }
-		   
 		   return NULL;
 		}
 		
-		bool NeedRefresh(string command)
+		bool NeedRefresh()
 		{
-		   command = GetSystemCommandToExecute(command);
+		   string oldContext = context;
+		   command = GetSystemCommandToExecute();
 		   if((command == "help") ||
 		      (command == "screenshot") ||
 		      (command == "exit") ||
@@ -298,7 +304,8 @@ class SystemCommands : public BaseObject
 		   	(command == "update/virtual") ||
 		   	(command == "probability/current") ||
 		   	(command == "probability/virtual") ||
-		   	(command == "probability/new"))
+		   	(command == "probability/new") ||
+		   	(context != oldContext))
 		         return false;
 		   else if((command == "print") ||
 		      (command == "config") ||

@@ -388,17 +388,17 @@ void SystemConsole::OnEndEditInputEdit(void)
    	UpdateControls(command);
    	
    	inputEdit.Text(NULL);
-   	//EventChartCustom(ChartID(), CHARTEVENT_CLICK, inputEdit.Left(), inputEdit.Top(), NULL);
-   	long x = (inputEdit.Left() + inputEdit.Right())/2;
-   	double y = (inputEdit.Top() + inputEdit.Bottom())/2;
-   	//inputEdit.OnMouseEvent(x, y, MOUSE_LEFT);
-   	//EventChartCustom(0, CHARTEVENT_OBJECT_CLICK, x, y, NULL);
-   	//EventChartCustom(0, CHARTEVENT_CLICK, x, y, NULL);
-   	//EventChartCustom(0, CHARTEVENT_OBJECT_ENDEDIT, x, y, NULL);
-   	EventChartCustom(0, CHARTEVENT_OBJECT_CHANGE, x, y, NULL);
-   	
-   	string sth = NULL;
-   	inputEdit.OnEvent(CHARTEVENT_OBJECT_ENDEDIT, x, y, sth);
+//   	//EventChartCustom(ChartID(), CHARTEVENT_CLICK, inputEdit.Left(), inputEdit.Top(), NULL);
+//   	long x = (inputEdit.Left() + inputEdit.Right())/2;
+//   	double y = (inputEdit.Top() + inputEdit.Bottom())/2;
+//   	//inputEdit.OnMouseEvent(x, y, MOUSE_LEFT);
+//   	//EventChartCustom(0, CHARTEVENT_OBJECT_CLICK, x, y, NULL);
+//   	//EventChartCustom(0, CHARTEVENT_CLICK, x, y, NULL);
+//   	//EventChartCustom(0, CHARTEVENT_OBJECT_ENDEDIT, x, y, NULL);
+//   	EventChartCustom(0, CHARTEVENT_OBJECT_CHANGE, x, y, NULL);
+//   	
+//   	string sth = NULL;
+//   	inputEdit.OnEvent(CHARTEVENT_OBJECT_ENDEDIT, x, y, sth);
    	
    }
   }
@@ -438,13 +438,15 @@ void SystemConsole::SetText(string text)
 
 void SystemConsole::UpdateControls(string command)
 {     
-  		if(sCommands.NeedRefresh(command))
+      sCommands.SetCommand(command);
+      
+  		if(sCommands.NeedRefresh())
   		{
   		   optionsListView.Select(CONTROLS_INVALID_INDEX);
   		   optionsListView.ItemsClear();
 			optionsListView.VScrolled(false);
 				   
-         command = sCommands.GetSystemCommandToExecute(command, true);
+         command = sCommands.GetSystemCommandToExecute(true);
          
       	string commands [];
       	sCommands.GetSystemCommands(commands);
