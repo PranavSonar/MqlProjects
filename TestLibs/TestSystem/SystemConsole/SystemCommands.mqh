@@ -29,16 +29,15 @@ class SystemCommands : public BaseObject
             command = ctx;
 		      GetSystemCommandToExecute(true);
 		      
-            cmd = StringSubstr(cmd, firstMatch+1);
-            Print("\"" + cmd + "\"");
+            string innerCmd = StringSubstr(cmd, firstMatch+1);
+            Print("\"" + innerCmd + "\"");
             
-            command = cmd;
+            command = innerCmd;
             command = GetSystemCommandToExecute(true);
 		   }
 		   else
 		      command = cmd;
 		}
-		
 	   
 	   string GetContext() { return context; }
 		string UpdateContext(string value, bool changeContext = false)
@@ -268,7 +267,7 @@ class SystemCommands : public BaseObject
 		bool NeedRefresh()
 		{
 		   string oldContext = context;
-		   command = GetSystemCommandToExecute();
+		   command = GetSystemCommandToExecute(true);
 		   if((command == "help") ||
 		      (command == "screenshot") ||
 		      (command == "exit") ||
