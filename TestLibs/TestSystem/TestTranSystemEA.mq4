@@ -16,8 +16,6 @@ extern bool UseKeyBoardChangeChart = false;
 extern bool UseIndicatorChangeChart = true;
 extern bool UseOnlyFirstDecisionAndConfirmItWithOtherDecisions = false;
 
-const string GlobalVariableNameConst = "GlobalVariableSymbol";
-
 static SimulateTranSystem system(DECISION_TYPE_ALL, LOT_MANAGEMENT_ALL, TRANSACTION_MANAGEMENT_ALL);
 bool chartIsChanging;
 
@@ -81,8 +79,8 @@ int OnInit()
 				{
 					Print(__FUNCTION__ + " Symbol should change from " + _Symbol + " to " + CurrentSymbol);
 					
-					if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableNameConst)))
-						GlobalVariableSet(GlobalVariableNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+					if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableSymbolNameConst)))
+						GlobalVariableSet(GlobalVariableSymbolNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
 					else
 						GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
 					
@@ -100,7 +98,7 @@ int OnInit()
 	
 	// Load current orders once, to all transaction types; resets and loads oldDecision
 	system.LoadCurrentOrdersToAllTransactionTypes();
-	GlobalContext.Config.UseOnlyFirstDecisionAndConfirmItWithOtherDecisions = UseOnlyFirstDecisionAndConfirmItWithOtherDecisions;
+	GlobalContext.Config.SetBoolValue("UseOnlyFirstDecisionAndConfirmItWithOtherDecisions", UseOnlyFirstDecisionAndConfirmItWithOtherDecisions);
 	system.RunTransactionSystemForCurrentSymbol(true);
 	
 	ChartRedraw();
@@ -116,7 +114,7 @@ void OnTick()
 	
 	// run EA (maybe it can trade even on symbols which are not current, which means refactor & fix)
 	
-	GlobalContext.Config.UseOnlyFirstDecisionAndConfirmItWithOtherDecisions = UseOnlyFirstDecisionAndConfirmItWithOtherDecisions;
+	GlobalContext.Config.SetBoolValue("UseOnlyFirstDecisionAndConfirmItWithOtherDecisions", UseOnlyFirstDecisionAndConfirmItWithOtherDecisions);
 	system.RunTransactionSystemForCurrentSymbol(true); // run EA
 	
 	Print("After tick calc.");
@@ -129,8 +127,8 @@ void OnTick()
 //		CurrentSymbol = nextChartTranData.TranSymbol;
 //		Print(__FUNCTION__ + " Symbol should change from " + _Symbol + " to " + CurrentSymbol);
 //		
-//		if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableNameConst)))
-//			GlobalVariableSet(GlobalVariableNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+//		if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableSymbolNameConst)))
+//			GlobalVariableSet(GlobalVariableSymbolNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
 //		else
 //			GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
 //		

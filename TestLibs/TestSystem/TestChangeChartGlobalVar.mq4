@@ -13,15 +13,10 @@
 
 #include <MyMql\Global\Global.mqh>
 
-const string GetGlobalVariableName()
-{
-	return "GlobalVariableSymbol" + IntegerToString(ChartID());
-}
-
 
 void CheckForChanging()
 {
-	string symbol = GlobalContext.Library.GetSymbolNameFromPosition((int)GlobalVariableGet(GetGlobalVariableName()));
+	string symbol = GlobalContext.Library.GetSymbolNameFromPosition((int)GlobalVariableGet(GlobalVariableSymbolNameConst));
 	
 	if((symbol != _Symbol) && (!StringIsNullOrEmpty(symbol)))
 	{
@@ -36,8 +31,8 @@ int OnInit()
 	if(FirstSymbol == NULL)
 		GlobalContext.Config.Initialize(false, true, false, true, __FILE__);
 	
-	if(!GlobalVariableCheck(GetGlobalVariableName()))
-		GlobalVariableSet(GetGlobalVariableName(), (double)GlobalContext.Library.GetSymbolPositionFromName(_Symbol));
+	if(!GlobalVariableCheck(GlobalVariableSymbolNameConst))
+		GlobalVariableSet(GlobalVariableSymbolNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(_Symbol));
 	
 	EventSetTimer(1);
 	
@@ -52,7 +47,7 @@ void OnTimer()
 }
 
 void OnDeinit(const int reason) {
-	GlobalVariableDel(GetGlobalVariableName());
+	GlobalVariableDel(GlobalVariableSymbolNameConst);
 	EventKillTimer();
 }
 

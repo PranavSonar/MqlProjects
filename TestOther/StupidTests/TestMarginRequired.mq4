@@ -14,7 +14,6 @@
 extern bool UseIndicatorChangeChart = true;
 extern bool UseKeyBoardChangeChart = false;
 
-const string GlobalVariableNameConst = "GlobalVariableSymbol";
 
 double ValidateLot(double lot)
 {
@@ -90,8 +89,8 @@ int OnInit()
 	CurrentSymbol = GlobalContext.Config.GetNextSymbol(_Symbol);
 	if(!StringIsNullOrEmpty(CurrentSymbol))
 	{
-   	if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableNameConst)))
-   		GlobalVariableSet(GlobalVariableNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+   	if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableSymbolNameConst)))
+   		GlobalVariableSet(GlobalVariableSymbolNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
    	else
    		GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
    	GlobalContext.ChartIsChanging = true;

@@ -47,7 +47,6 @@ extern bool UseOnlyFirstDecisionAndConfirmItWithOtherDecisions = false;
 
 
 static SimulateTranSystem system(DECISION_TYPE_ALL, LOT_MANAGEMENT_ALL, TRANSACTION_MANAGEMENT_ALL);
-const string GlobalVariableNameConst = "GlobalVariableSymbol";
 
 int OnInit()
 {
@@ -121,8 +120,8 @@ int OnInit()
 					{
 						Print(__FUNCTION__ + " Symbol should change from " + _Symbol + " to " + CurrentSymbol);
 						
-						if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableNameConst)))
-							GlobalVariableSet(GlobalVariableNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+						if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableSymbolNameConst)))
+							GlobalVariableSet(GlobalVariableSymbolNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
 						else
 							GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
 						
@@ -161,8 +160,8 @@ int OnInit()
 		if(!StringIsNullOrEmpty(CurrentSymbol) && (_Symbol != CurrentSymbol))
 		{
 			Sleep(10);
-			if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableNameConst)))
-				GlobalVariableSet(GlobalVariableNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+			if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableSymbolNameConst)))
+				GlobalVariableSet(GlobalVariableSymbolNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
 			else
 				GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
 			Sleep(10);
@@ -205,8 +204,8 @@ int OnInit()
 			
 			if(!OnlyCurrentSymbol)
 			{
-				if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableNameConst)))
-					GlobalVariableSet(GlobalVariableNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+				if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableSymbolNameConst)))
+					GlobalVariableSet(GlobalVariableSymbolNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
 				else
 					GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
 			}
@@ -228,8 +227,8 @@ int OnInit()
 	
 	if((!OnlyCurrentSymbol) && (!StringIsNullOrEmpty(CurrentSymbol)))
 	{
-		if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableNameConst)))
-			GlobalVariableSet(GlobalVariableNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+		if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableSymbolNameConst)))
+			GlobalVariableSet(GlobalVariableSymbolNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
 		else
 			GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
 	}
@@ -298,8 +297,8 @@ void OnDeinit(const int reason)
 	{
 		if((_Symbol != CurrentSymbol) && (!StringIsNullOrEmpty(CurrentSymbol)))
 		{
-			if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableNameConst)))
-				GlobalVariableSet(GlobalVariableNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+			if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableSymbolNameConst)))
+				GlobalVariableSet(GlobalVariableSymbolNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
 			else
 				GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
 		}
