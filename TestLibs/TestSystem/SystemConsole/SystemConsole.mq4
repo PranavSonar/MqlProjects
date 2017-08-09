@@ -13,7 +13,7 @@
 
 SystemConsole ExtDialog;
 
-static SystemWrapper systemWrapper;
+//static SystemWrapper systemWrapper;
 
 int OnInit(void)
 {
@@ -23,27 +23,30 @@ int OnInit(void)
 	if(!ExtDialog.Run())
 		return(INIT_FAILED);
 	
-	return systemWrapper.OnInitWrapper();
+	return INIT_SUCCEEDED;
+	//return systemWrapper.OnInitWrapper();
 }
 
-void OnDeinit(const int reason)
+void OnDeinit(const int reason)w
 {
 	ExtDialog.Destroy(reason);
-	systemWrapper.OnDeinitWrapper(reason);
+	//systemWrapper.OnDeinitWrapper(reason);
 }
   
-int OnCalculate(
-   const int rates_total,
-   const int prev_calculated,
-   const int begin,
-   const double &price[])
-{
+int OnCalculate(const int rates_total,
+                const int prev_calculated,
+                const int begin,
+                const double &price[])
+  {
+//---
+// do nothing
+//--- return value of prev_calculated for next call
    return(rates_total);
-}
+  }
 
 void OnTick()
 {
-	systemWrapper.OnTickWrapper();
+	//systemWrapper.OnTickWrapper();
 }
 
 void OnChartEvent(
