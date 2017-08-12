@@ -79,8 +79,8 @@ int OnInit()
 				{
 					Print(__FUNCTION__ + " Symbol should change from " + _Symbol + " to " + CurrentSymbol);
 					
-					if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableSymbolNameConst)))
-						GlobalVariableSet(GlobalVariableSymbolNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+					if((UseIndicatorChangeChart) && (GlobalVariableCheck(GetGlobalVariableSymbol())))
+						GlobalVariableSet(GetGlobalVariableSymbol(), (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
 					else
 						GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
 					
@@ -127,8 +127,8 @@ void OnTick()
 //		CurrentSymbol = nextChartTranData.TranSymbol;
 //		Print(__FUNCTION__ + " Symbol should change from " + _Symbol + " to " + CurrentSymbol);
 //		
-//		if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableSymbolNameConst)))
-//			GlobalVariableSet(GlobalVariableSymbolNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+//		if((UseIndicatorChangeChart) && (GlobalVariableCheck(GetGlobalVariableSymbol())))
+//			GlobalVariableSet(GetGlobalVariableSymbol(), (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
 //		else
 //			GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
 //		

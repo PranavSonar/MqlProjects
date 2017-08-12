@@ -13,13 +13,6 @@
 #include <stdlib.mqh>
 #include <stderror.mqh>
 
-
-
-const string GetGlobalVariableName()
-{
-	return "GlobalVariableSymbol" + IntegerToString(ChartID());
-}
-
 static SimulateTranSystem system(DECISION_TYPE_ALL, LOT_MANAGEMENT_ALL, TRANSACTION_MANAGEMENT_ALL);
 
 class SystemWrapper
@@ -153,8 +146,8 @@ class SystemWrapper
 							{
 								Print(__FUNCTION__ + " Symbol should change from " + _Symbol + " to " + CurrentSymbol);
 								
-								if((GlobalContext.Config.GetBoolValue("UseIndicatorChangeChart")) && (GlobalVariableCheck(GetGlobalVariableName())))
-									GlobalVariableSet(GetGlobalVariableName(), (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+								if((GlobalContext.Config.GetBoolValue("UseIndicatorChangeChart")) && (GlobalVariableCheck(GetGlobalVariableSymbol())))
+									GlobalVariableSet(GetGlobalVariableSymbol(), (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
 								else
 									GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, GlobalContext.Config.GetBoolValue("UseKeyBoardChangeChart"));
 								
@@ -193,8 +186,8 @@ class SystemWrapper
 				if(!StringIsNullOrEmpty(CurrentSymbol) && (_Symbol != CurrentSymbol))
 				{
 					Sleep(10);
-					if((GlobalContext.Config.GetBoolValue("UseIndicatorChangeChart")) && (GlobalVariableCheck(GetGlobalVariableName())))
-						GlobalVariableSet(GetGlobalVariableName(), (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+					if((GlobalContext.Config.GetBoolValue("UseIndicatorChangeChart")) && (GlobalVariableCheck(GetGlobalVariableSymbol())))
+						GlobalVariableSet(GetGlobalVariableSymbol(), (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
 					else
 						GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, GlobalContext.Config.GetBoolValue("UseKeyBoardChangeChart"));
 					Sleep(10);
@@ -237,8 +230,8 @@ class SystemWrapper
 					
 					if(!GlobalContext.Config.GetBoolValue("OnlyCurrentSymbol"))
 					{
-						if((GlobalContext.Config.GetBoolValue("UseIndicatorChangeChart")) && (GlobalVariableCheck(GetGlobalVariableName())))
-							GlobalVariableSet(GetGlobalVariableName(), (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+						if((GlobalContext.Config.GetBoolValue("UseIndicatorChangeChart")) && (GlobalVariableCheck(GetGlobalVariableSymbol())))
+							GlobalVariableSet(GetGlobalVariableSymbol(), (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
 						else
 							GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, GlobalContext.Config.GetBoolValue("UseKeyBoardChangeChart"));
 					}
@@ -260,8 +253,8 @@ class SystemWrapper
 			
 			if((!GlobalContext.Config.GetBoolValue("OnlyCurrentSymbol")) && (!StringIsNullOrEmpty(CurrentSymbol)))
 			{
-				if((GlobalContext.Config.GetBoolValue("UseIndicatorChangeChart")) && (GlobalVariableCheck(GetGlobalVariableName())))
-					GlobalVariableSet(GetGlobalVariableName(), (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+				if((GlobalContext.Config.GetBoolValue("UseIndicatorChangeChart")) && (GlobalVariableCheck(GetGlobalVariableSymbol())))
+					GlobalVariableSet(GetGlobalVariableSymbol(), (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
 				else
 					GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, GlobalContext.Config.GetBoolValue("UseKeyBoardChangeChart"));
 			}
@@ -329,8 +322,8 @@ class SystemWrapper
 			{
 				if((_Symbol != CurrentSymbol) && (!StringIsNullOrEmpty(CurrentSymbol)))
 				{
-					if((GlobalContext.Config.GetBoolValue("UseIndicatorChangeChart")) && (GlobalVariableCheck(GetGlobalVariableName())))
-						GlobalVariableSet(GetGlobalVariableName(), (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+					if((GlobalContext.Config.GetBoolValue("UseIndicatorChangeChart")) && (GlobalVariableCheck(GetGlobalVariableSymbol())))
+						GlobalVariableSet(GetGlobalVariableSymbol(), (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
 					else
 						GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, GlobalContext.Config.GetBoolValue("UseKeyBoardChangeChart"));
 				}

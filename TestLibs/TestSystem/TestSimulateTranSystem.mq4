@@ -33,8 +33,8 @@ int OnInit() // start()
 	if(!StringIsNullOrEmpty(CurrentSymbol) && (_Symbol != CurrentSymbol))
 	{
 		Sleep(20);
-		if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableSymbolNameConst)))
-			GlobalVariableSet(GlobalVariableSymbolNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+		if((UseIndicatorChangeChart) && (GlobalVariableCheck(GetGlobalVariableSymbol())))
+			GlobalVariableSet(GetGlobalVariableSymbol(), (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
 		else
 			GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
 		Sleep(20);
@@ -62,8 +62,8 @@ int OnInit() // start()
 			system.SetupTransactionSystem();
 			GlobalContext.Config.InitCurrentSymbol(currentSymbol);
 			
-			if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableSymbolNameConst)))
-				GlobalVariableSet(GlobalVariableSymbolNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+			if((UseIndicatorChangeChart) && (GlobalVariableCheck(GetGlobalVariableSymbol())))
+				GlobalVariableSet(GetGlobalVariableSymbol(), (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
 			else
 				GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
 
@@ -80,8 +80,8 @@ int OnInit() // start()
 	
 	if(!StringIsNullOrEmpty(CurrentSymbol))
 	{
-		if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableSymbolNameConst)))
-			GlobalVariableSet(GlobalVariableSymbolNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+		if((UseIndicatorChangeChart) && (GlobalVariableCheck(GetGlobalVariableSymbol())))
+			GlobalVariableSet(GetGlobalVariableSymbol(), (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
 		else
 			symbolChanged = GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
 	}
@@ -113,8 +113,8 @@ void OnDeinit(const int reason)
 	
 	if((_Symbol != CurrentSymbol) && (!StringIsNullOrEmpty(CurrentSymbol)))
 	{
-		if((UseIndicatorChangeChart) && (GlobalVariableCheck(GlobalVariableSymbolNameConst)))
-			GlobalVariableSet(GlobalVariableSymbolNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+		if((UseIndicatorChangeChart) && (GlobalVariableCheck(GetGlobalVariableSymbol())))
+			GlobalVariableSet(GetGlobalVariableSymbol(), (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
 		else
 			GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, UseKeyBoardChangeChart);
 	}

@@ -16,13 +16,24 @@
 
 void CheckForChanging()
 {
-	string symbol = GlobalContext.Library.GetSymbolNameFromPosition((int)GlobalVariableGet(GlobalVariableSymbolNameConst));
+	string symbol = GlobalContext.Library.GetSymbolNameFromPosition((int)GlobalVariableGet(GetGlobalVariableSymbol()));
+	ENUM_TIMEFRAMES period = IntegerToTimeFrame((int)GlobalVariableGet(GlobalVariablePeriod));
+	bool needChange = false;
 	
 	if((symbol != _Symbol) && (!StringIsNullOrEmpty(symbol)))
 	{
 		Print(__FUNCTION__ + " line " + IntegerToString(__LINE__) + ": Changing chart from " + _Symbol + " to " + symbol); 
-		GlobalContext.Config.ChangeSymbol(symbol, PERIOD_CURRENT);
+		needChange = true;
 	}
+	
+	if(IntegerToTimeFrame(Period()) != period)
+	{
+		Print(__FUNCTION__ + " line " + IntegerToString(__LINE__) + ": Changing chart from " + EnumToString(IntegerToTimeFrame(_Period)) + " to " + EnumToString(period));
+		needChange = true;
+	}
+	
+	if(needChange)
+		GlobalContext.Config.ChangeSymbol(symbol, period);
 }
 
 int OnInit()
@@ -31,8 +42,8 @@ int OnInit()
 	if(FirstSymbol == NULL)
 		GlobalContext.Config.Initialize(false, true, false, true, __FILE__);
 	
-	if(!GlobalVariableCheck(GlobalVariableSymbolNameConst))
-		GlobalVariableSet(GlobalVariableSymbolNameConst, (double)GlobalContext.Library.GetSymbolPositionFromName(_Symbol));
+	if(!GlobalVariableCheck(GetGlobalVariableSymbol()))
+		GlobalVariableSet(GetGlobalVariableSymbol(), (double)GlobalContext.Library.GetSymbolPositionFromName(_Symbol));
 	
 	EventSetTimer(1);
 	
@@ -47,7 +58,7 @@ void OnTimer()
 }
 
 void OnDeinit(const int reason) {
-	GlobalVariableDel(GlobalVariableSymbolNameConst);
+	GlobalVariableDel(GetGlobalVariableSymbol());
 	EventKillTimer();
 }
 
