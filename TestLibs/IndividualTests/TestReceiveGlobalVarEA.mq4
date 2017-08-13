@@ -11,9 +11,11 @@
 #include <MyMql\Global\Global.mqh>
 
 GlobalVariableCommunication comm(false, true);
+string lastRec;
 
 int OnInit()
 {
+	comm.SendText("Fuck you");
 	return(INIT_SUCCEEDED);
 }
 
@@ -23,8 +25,11 @@ void OnTimer()
 	comm.SendAndReceive();
 	string rec = comm.GetReceivedText();
 
-	if(rec != "")
+	if((rec != "") && (lastRec != rec))
+	{
 		Print(rec);
+		lastRec = rec;
+	}
 }
 
 

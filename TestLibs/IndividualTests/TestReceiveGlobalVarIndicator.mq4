@@ -13,9 +13,11 @@
 
 
 GlobalVariableCommunication comm(true, true);
+string lastRec;
 
 int OnInit()
 {
+	comm.SendText("Same to you too");
 	return(INIT_SUCCEEDED);
 }
 
@@ -25,8 +27,11 @@ void OnTimer()
 	comm.SendAndReceive();
 	string rec = comm.GetReceivedText();
 
-	if(rec != "")
+	if((rec != "") && (lastRec != rec))
+	{
 		Print(rec);
+		lastRec = rec;
+	}
 }
 
 
