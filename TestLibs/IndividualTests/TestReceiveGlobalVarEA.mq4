@@ -11,7 +11,6 @@
 #include <MyMql\Global\Global.mqh>
 
 GlobalVariableCommunication comm(false, true);
-string lastRec;
 
 int OnInit()
 {
@@ -22,13 +21,12 @@ int OnInit()
 //void OnTick() {}
 void OnTimer()
 {
-	comm.SendAndReceive();
-	string rec = comm.GetReceivedText();
-
-	if((rec != "") && (lastRec != rec))
+	string s = comm.OnTimerGetWord();
+	if(!StringIsNullOrEmpty(s))
 	{
-		Print(rec);
-		lastRec = rec;
+		Print(s);
+		comm.RemoveFirstWord();
+		comm.RemoveTimers();
 	}
 }
 

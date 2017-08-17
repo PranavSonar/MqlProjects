@@ -44,6 +44,11 @@ int OnCalculate(const int rates_total,
    return(rates_total);
   }
 
+void OnTimer()
+{
+	//systemWrapper.OnTimerWrapper();
+}
+
 void OnTick()
 {
 	//systemWrapper.OnTickWrapper();

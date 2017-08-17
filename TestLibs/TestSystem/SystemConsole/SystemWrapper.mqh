@@ -8,12 +8,14 @@
 #property version   "1.45"
 #property strict
 
+#include "SystemCommands.mqh"
 #include <MyMql\System\SimulateTranSystem.mqh>
 #include <MyMql\Global\Global.mqh>
 #include <stdlib.mqh>
 #include <stderror.mqh>
 
 static SimulateTranSystem system(DECISION_TYPE_ALL, LOT_MANAGEMENT_ALL, TRANSACTION_MANAGEMENT_ALL);
+static GlobalVariableCommunication comm(false, false);
 
 class SystemWrapper
 {
@@ -81,6 +83,7 @@ class SystemWrapper
 			ResetLastError();
 			RefreshRates();
 			ChartRedraw();
+			comm.Initialize(false, true); // init timers too
 			
 			if(GlobalContext.Config.GetBoolValue("UseEA"))
 			{
@@ -305,7 +308,17 @@ class SystemWrapper
 				system.RunTransactionSystemForCurrentSymbol(true);
 			}
 		}
-	
+		
+		void OnTimerWrapper()
+		{
+			string s = comm.OnTimerGetWord();
+			if(!StringIsNullOrEmpty(s))
+			{
+				Print(s); // to do: execute received command
+				comm.RemoveFirstWord();
+			}
+		}
+		
 		void OnDeinitWrapper(const int reason)
 		{
 			// Bulk debug anyway
@@ -317,6 +330,9 @@ class SystemWrapper
 				system.CleanTranData();
 				system.RemoveUnusedDecisionsTransactionsAndLots();
 			}
+			
+			comm.CleanBuffers();
+			comm.RemoveTimers();
 			
 			if(!GlobalContext.Config.GetBoolValue("OnlyCurrentSymbol"))
 			{
