@@ -8,51 +8,52 @@
 #property version   "1.00"
 #property strict
 
+#property indicator_chart_window
+//#property indicator_separate_window
+
 
 #include "SystemConsole.mqh"
+#include <MyMql\Global\Global.mqh>
 
 SystemConsole ExtDialog;
 
-//static SystemWrapper systemWrapper;
+static GlobalVariableCommunication comm(false, false);
+
 
 int OnInit(void)
 {
-	if(!ExtDialog.Create(0,"System Console",0,50,50,500,400))
+	if(!ExtDialog.Create(0, "System Console", 0, 50, 50, 500, 400))
 		return(INIT_FAILED);
 	
 	if(!ExtDialog.Run())
 		return(INIT_FAILED);
 	
 	return INIT_SUCCEEDED;
-	//return systemWrapper.OnInitWrapper();
 }
 
-void OnDeinit(const int reason)w
+void OnDeinit(const int reason)
 {
 	ExtDialog.Destroy(reason);
-	//systemWrapper.OnDeinitWrapper(reason);
 }
   
 int OnCalculate(const int rates_total,
                 const int prev_calculated,
                 const int begin,
                 const double &price[])
-  {
-//---
-// do nothing
-//--- return value of prev_calculated for next call
+{
    return(rates_total);
-  }
+}
 
 void OnTimer()
 {
-	//systemWrapper.OnTimerWrapper();
+	string word = comm.OnTimerGetWord();
+	if(!StringIsNullOrEmpty(word))
+	{
+	   ExtDialog.ExecuteCommand(word);
+	   comm.RemoveFirstWord();
+	}
 }
 
-void OnTick()
-{
-	//systemWrapper.OnTickWrapper();
-}
 
 void OnChartEvent(
 	const int id,

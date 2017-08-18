@@ -16,7 +16,6 @@
 #include <Controls\CheckGroup.mqh>
 
 #include "SystemCommands.mqh"
-#include "SystemWrapper.mqh"
 
 //+------------------------------------------------------------------+
 //| defines                                                          |
@@ -57,6 +56,7 @@ public:
    //--- chart event handler
    virtual bool      OnEvent(const int id,const long &lparam,const double &dparam,const string &sparam);
 
+   void              ExecuteCommand(string command);
 protected:
    //--- create dependent controls
    bool              CreateOutputEdit(void);
@@ -76,7 +76,6 @@ protected:
    void              AddLine(string line);
    void              SetText(string text);
    void              UpdateControls(string command);
-   void              ExecuteCommand(string command);
   };
 //+------------------------------------------------------------------+
 //| Event Handling                                                   |
@@ -438,6 +437,7 @@ void SystemConsole::SetText(string text)
 
 void SystemConsole::UpdateControls(string command)
 {     
+      ExecuteCommand(command);
       sCommands.SetCommand(command);
       
   		if(sCommands.NeedRefresh())
@@ -454,11 +454,30 @@ void SystemConsole::UpdateControls(string command)
                return;
   		}
   		
-  		AddLine("\"" + sCommands.GetContext() + "\" \"" + command + "\"");
+  		//AddLine("\"" + sCommands.GetContext() + "\" \"" + command + "\"");
 }
 
 void SystemConsole::ExecuteCommand(string command)
 {
-	if(command == "")
-		;
+	if((command == "[h]help") || (command == "h") || (command == "help"))
+	{
+      AddLine("[h]help");
+      AddLine("[p]print");
+      AddLine("[o]config");
+      AddLine("[d]discovery");
+      AddLine("[l]light system");
+      AddLine("[s]system");
+      AddLine("[a]EA");
+      AddLine("[i]indicator");
+      AddLine("[n]analysis indicator");
+      AddLine("[o]orders view");
+      AddLine("[%]probability of order");
+      AddLine("[m]manual order");
+      AddLine("[u]update order");
+      AddLine("[c]call WS proc");
+      AddLine("[r]screenshot");
+      AddLine("[x]exit/[q]quit");
+  	}
+  	else // to do: execute commands (indicator part)
+  	   Print(command);
 }

@@ -311,12 +311,18 @@ class SystemWrapper
 		
 		void OnTimerWrapper()
 		{
-			string s = comm.OnTimerGetWord();
-			if(!StringIsNullOrEmpty(s))
+			string word = comm.OnTimerGetWord();
+			if(!StringIsNullOrEmpty(word))
 			{
-				Print(s); // to do: execute received command
+				ExecuteCommand(word);
 				comm.RemoveFirstWord();
 			}
+		}
+		
+		void ExecuteCommand(string command)
+		{
+		   Print(command);
+		   //to do: execute commands (EA / system part)
 		}
 		
 		void OnDeinitWrapper(const int reason)
