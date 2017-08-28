@@ -71,7 +71,7 @@ int OnInit()
 		system.PrintFirstChartTranData();
 		system.SetupTransactionSystem();
 		
-		GlobalContext.Config.UseOnlyFirstDecisionAndConfirmItWithOtherDecisions = UseOnlyFirstDecisionAndConfirmItWithOtherDecisions;
+   	GlobalContext.Config.SetBoolValue("UseOnlyFirstDecisionAndConfirmItWithOtherDecisions", UseOnlyFirstDecisionAndConfirmItWithOtherDecisions);
 		system.RunTransactionSystemForCurrentSymbol(true);
 		//if((system.chartTranData[0].LastDecisionBarShift < 3) && (system.chartTranData[0].LastDecisionBarShift != -1))
 	}
@@ -90,10 +90,14 @@ int OnInit()
 	return(INIT_SUCCEEDED);
 }
 
+void OnStart()
+{
+}
+
 void OnTick()
 {
 	// Run Expert Advisor
-	GlobalContext.Config.UseOnlyFirstDecisionAndConfirmItWithOtherDecisions = UseOnlyFirstDecisionAndConfirmItWithOtherDecisions;
+	GlobalContext.Config.SetBoolValue("UseOnlyFirstDecisionAndConfirmItWithOtherDecisions", UseOnlyFirstDecisionAndConfirmItWithOtherDecisions);
 	system.RunTransactionSystemForCurrentSymbol(true);
 	
 	//Print("After tick calc.");

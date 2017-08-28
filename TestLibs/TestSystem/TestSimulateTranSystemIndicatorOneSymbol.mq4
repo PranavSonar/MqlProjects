@@ -63,7 +63,7 @@ int OnInit()
 	
 	// Setup & simulation run
 	system.SetupTransactionSystem();
-	GlobalContext.Config.UseOnlyFirstDecisionAndConfirmItWithOtherDecisions = false;
+	GlobalContext.Config.SetBoolValue("UseOnlyFirstDecisionAndConfirmItWithOtherDecisions",false);
 	system.TestTransactionSystemForCurrentSymbol(true, false);
 
 	// EndTradingSession
@@ -81,4 +81,18 @@ void OnDeinit(const int reason)
 	system.FreeArrays(); // system.Clean();
 	system.CleanTranData();
 	system.RemoveUnusedDecisionsTransactionsAndLots();
+}
+
+int OnCalculate(const int rates_total,
+                const int prev_calculated,
+                const datetime& time[],
+                const double& open[],
+                const double& high[],
+                const double& low[],
+                const double& close[],
+                const long& tick_volume[],
+                const long& volume[],
+                const int& spread[])
+{
+   return(rates_total);
 }

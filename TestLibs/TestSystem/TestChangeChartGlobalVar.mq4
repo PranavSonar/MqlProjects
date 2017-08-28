@@ -17,7 +17,7 @@
 void CheckForChanging()
 {
 	string symbol = GlobalContext.Library.GetSymbolNameFromPosition((int)GlobalVariableGet(GetGlobalVariableSymbol()));
-	ENUM_TIMEFRAMES period = IntegerToTimeFrame((int)GlobalVariableGet(GlobalVariablePeriod));
+	ENUM_TIMEFRAMES period = IntegerToTimeFrame((int)GlobalVariableGet(GetGlobalVariablePeriod()));
 	bool needChange = false;
 	
 	if((symbol != _Symbol) && (!StringIsNullOrEmpty(symbol)))

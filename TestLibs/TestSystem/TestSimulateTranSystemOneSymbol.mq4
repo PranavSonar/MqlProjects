@@ -32,7 +32,7 @@ int OnInit()
 	
 	// Setup & simulation run
 	system.SetupTransactionSystem();
-	GlobalContext.Config.UseOnlyFirstDecisionAndConfirmItWithOtherDecisions = false;
+	GlobalContext.Config.SetBoolValue("UseOnlyFirstDecisionAndConfirmItWithOtherDecisions", false);
 	system.TestTransactionSystemForCurrentSymbol(true, false);
 
 	// EndTradingSession
