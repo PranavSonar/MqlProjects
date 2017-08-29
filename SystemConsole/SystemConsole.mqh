@@ -459,6 +459,8 @@ void SystemConsole::UpdateControls(string command)
 
 void SystemConsole::ExecuteCommand(string command)
 {
+	Print(__FUNCTION__ + " " + command);
+	
 	if((command == "[h]help") || (command == "h") || (command == "help"))
 	{
       AddLine("[h]help");
@@ -478,6 +480,17 @@ void SystemConsole::ExecuteCommand(string command)
       AddLine("[r]screenshot");
       AddLine("[x]exit/[q]quit");
   	}
+  	//else if((command == "[b]back") || (command == "back") || (command == "b"))
+  	//	sCommands.UpdateContext(NULL, true);
+  	else if((command == "[x]exit/[q]quit") || (command == "[x]exit") || (command == "[q]quit") || (command == "x") || (command == "q") || (command == "exit") || (command == "quit"))
+  	{
+  		//CChart c;
+  		//c.IndicatorDelete(0, "SystemConsole");
+  		
+  		//ExpertRemove();
+  		Print(__FUNCTION__ + " - Tried to exit");
+  	}
   	else // to do: execute commands (indicator part)
-  	   Print(command);
+  	   ;
+  	
 }

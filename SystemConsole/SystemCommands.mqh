@@ -19,6 +19,8 @@ class SystemCommands : public BaseObject
 	   
 	   string GetCommand() { return command; }
 	   void SetCommand(string cmd) {
+	   	string oldCommand = command, oldContext = context;
+	   	
 		   int firstMatch = StringFind(cmd, "/");
 		   
 		   if(firstMatch >= 0)
@@ -29,25 +31,33 @@ class SystemCommands : public BaseObject
 		      GetSystemCommandToExecute(true);
 		      
             string innerCmd = StringSubstr(cmd, firstMatch+1);
-            Print("ctx: \"" + ctx + "\" innerCmd: \"" + innerCmd + "\"");
+            Print(__FUNCTION__ + " 1. cmd: \"" + cmd + "\" ctx: \"" + ctx + "\" innerCmd: \"" + innerCmd + "\" [oldCommand: \"" + oldCommand + "\", oldContext: \"" + oldContext + "\"]");
             
             command = innerCmd;
             command = GetSystemCommandToExecute(true);
 		   }
 		   else
+		   {
+		   	Print(__FUNCTION__ + " 2. cmd: \"" + cmd + "\" [oldCommand: \"" + oldCommand + "\", oldContext: \"" + oldContext + "\"]");
 		      command = cmd;
+		   }
 		}
 	   
 	   string GetContext() { return context; }
 		string UpdateContext(string value, bool changeContext = false)
 		{
 		   if(changeContext)
+		   {
+		   	Print(__FUNCTION__ + " context change \"" + context + "\" -> \"" + value + "\"");
 		      context = value;
+		   }
 		   return value;
 		}
 		
 		void GetSystemCommands(string &commands[])
 		{
+			Print(__FUNCTION__ + " " + context);
+			
 			if(context == NULL)
 			{
 				ArrayResize(commands, 16);
@@ -130,6 +140,8 @@ class SystemCommands : public BaseObject
 		
 		string GetSystemCommandToExecute(bool changeContext = false)
 		{
+			Print(__FUNCTION__ + " [changeContext: " + BoolToString(changeContext) + "][context: \"" + context + "\", command: \"" + command + "\"]");
+			
 		   if(context == NULL)
 		   {
 		      if((command == "[h]help") || (command == "h") || (command == "help"))
@@ -265,8 +277,13 @@ class SystemCommands : public BaseObject
 		
 		bool NeedRefresh()
 		{
-		   string oldContext = context;
-		   command = GetSystemCommandToExecute(true);
+		   bool ret = false;
+		   command = GetSystemCommandToExecute(false);
+		   bool changeContext = StringIsNullOrEmpty(context) || (command == "back");
+		   
+		   if(changeContext)
+		   	command = GetSystemCommandToExecute(changeContext);
+		   
 		   if((command == "help") ||
 		      (command == "screenshot") ||
 		      (command == "exit") ||
@@ -307,9 +324,8 @@ class SystemCommands : public BaseObject
 		   	(command == "update/virtual") ||
 		   	(command == "probability/current") ||
 		   	(command == "probability/virtual") ||
-		   	(command == "probability/new") ||
-		   	(context != oldContext))
-		         return false;
+		   	(command == "probability/new"))
+		         ret = false;
 		   else if((command == "print") ||
 		      (command == "config") ||
 		      (command == "discovery") ||
@@ -325,7 +341,10 @@ class SystemCommands : public BaseObject
 		      (command == "call") ||
 		      (command == "back") ||
 		      (command == NULL))
-		         return true;
-		   return false;
+		         ret = true;
+		  	
+			Print(__FUNCTION__ + " <@return> [changeContext: " + BoolToString(changeContext) + "][context: \"" + context + "\", command: \"" + command + "\"] return: " + BoolToString(ret));
+		   
+		   return ret;
 		}
 };
