@@ -24,13 +24,12 @@ class SystemCommands : public BaseObject
 		   if(firstMatch >= 0)
 		   {
 		      string ctx = StringSubstr(cmd, 0, firstMatch);
-            Print("\"" + ctx + "\"");
-            
+		      
             command = ctx;
 		      GetSystemCommandToExecute(true);
 		      
             string innerCmd = StringSubstr(cmd, firstMatch+1);
-            Print("\"" + innerCmd + "\"");
+            Print("ctx: \"" + ctx + "\" innerCmd: \"" + innerCmd + "\"");
             
             command = innerCmd;
             command = GetSystemCommandToExecute(true);
@@ -163,7 +162,7 @@ class SystemCommands : public BaseObject
    		      return UpdateContext("call", changeContext);
    		   else if((command == "[r]screenshot") || (command == "r") || (command == "screenshot"))
    		      return UpdateContext("screenshot", changeContext);
-   		   else if((command == "[x]exit/[q]quit") || (command == "x") || (command == "q") || (command == "exit") || (command == "quit"))
+   		   else if((command == "[x]exit/[q]quit") || (command == "[x]exit") || (command == "[q]quit") || (command == "x") || (command == "q") || (command == "exit") || (command == "quit"))
    		      return UpdateContext("exit", changeContext);
 		   } else if(context == "print") {
 		   	if((command == "[d]discovery") || (command == "discovery") || (command == "d"))
