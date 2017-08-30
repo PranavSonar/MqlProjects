@@ -33,6 +33,8 @@
 //--- for the indication area
 #define EDIT_HEIGHT                         (20)      // size by Y coordinate
 
+#define LABEL_HEIGHT                        (15)      // size by Y coordinate
+
 //+------------------------------------------------------------------+
 //| Class SystemConsole                                              |
 //| Usage: main dialog of the SimplePanel application                |
@@ -131,7 +133,7 @@ bool SystemConsole::CreateOutputEdit(void)
    int x2=ClientAreaWidth()-(CONTROLS_GAP_X+BUTTON_WIDTH+CONTROLS_GAP_X+BUTTON_WIDTH+INDENT_RIGHT);
    int y2=y1+EDIT_HEIGHT;
    int yMax=ClientAreaHeight()-(CONTROLS_GAP_Y+EDIT_HEIGHT+INDENT_BOTTOM);
-   int nr = yMax/EDIT_HEIGHT;
+   int nr = yMax/LABEL_HEIGHT;
    ArrayResize(outputEdit,nr);
    
 //--- create
@@ -143,11 +145,12 @@ bool SystemConsole::CreateOutputEdit(void)
 	   //   return(false);
 	   if(!Add(outputEdit[i]))
 	      return(false);
-	      
+	   outputEdit[i].FontSize(8);
+	   outputEdit[i].Font("Courier New");
    	outputEdit[i].Alignment(WND_ALIGN_WIDTH,INDENT_LEFT,0,INDENT_RIGHT+BUTTON_WIDTH+CONTROLS_GAP_X,0);
    	
    	y1=y2;
-   	y2=y1+EDIT_HEIGHT;
+   	y2=y1+LABEL_HEIGHT;
 	}
 	
 //--- succeed
@@ -387,6 +390,19 @@ void SystemConsole::OnEndEditInputEdit(void)
    	UpdateControls(command);
    	
    	inputEdit.Text(NULL);
+   	
+   	//Print(__FUNCTION__ + "SetFocus & SetActiveWindow");
+	   //int hWnd = WindowHandle(_Symbol, 0);
+	   //SetFocus(hWnd);
+	   //SetActiveWindow(hWnd);
+	   
+      //for(int i=0;i<inputEdit.ControlsTotal();i++)
+      //{
+      //   CWnd* ctrl = inputEdit.Control(i);
+      //   ctrl.Id();
+      //}
+	   
+	   
 //   	//EventChartCustom(ChartID(), CHARTEVENT_CLICK, inputEdit.Left(), inputEdit.Top(), NULL);
 //   	long x = (inputEdit.Left() + inputEdit.Right())/2;
 //   	double y = (inputEdit.Top() + inputEdit.Bottom())/2;
@@ -463,22 +479,23 @@ void SystemConsole::ExecuteCommand(string command)
 	
 	if((command == "[h]help") || (command == "h") || (command == "help"))
 	{
-      AddLine("[h]help");
-      AddLine("[p]print");
-      AddLine("[o]config");
-      AddLine("[d]discovery");
-      AddLine("[l]light system");
-      AddLine("[s]system");
-      AddLine("[a]EA");
-      AddLine("[i]indicator");
-      AddLine("[n]analysis indicator");
-      AddLine("[o]orders view");
-      AddLine("[%]probability of order");
-      AddLine("[m]manual order");
-      AddLine("[u]update order");
-      AddLine("[c]call WS proc");
-      AddLine("[r]screenshot");
-      AddLine("[x]exit/[q]quit");
+	   AddLine("Commands:");
+      AddLine(" [h]help   - print this");
+      AddLine(" [p]print  - print values");
+      AddLine(" [o]config - get/set config");
+      AddLine(" [d]discovery - discover");
+      AddLine(" [l]light system");
+      AddLine(" [s]system - run system");
+      AddLine(" [a]EA     - Expert Advisor");
+      AddLine(" [i]indicator - show ind.");
+      AddLine(" [n]analysis indicator");
+      AddLine(" [o]orders view");
+      AddLine(" [%]probability of order");
+      AddLine(" [m]manual order");
+      AddLine(" [u]update order");
+      AddLine(" [c]call WS proc");
+      AddLine(" [r]screenshot");
+      AddLine(" [x]exit/[q]quit");
   	}
   	//else if((command == "[b]back") || (command == "back") || (command == "b"))
   	//	sCommands.UpdateContext(NULL, true);
@@ -489,6 +506,18 @@ void SystemConsole::ExecuteCommand(string command)
   		
   		//ExpertRemove();
   		Print(__FUNCTION__ + " - Tried to exit");
+  	}
+  	else if((command == "[r]screenshot") || (command == "r") || (command == "screenshot"))
+  	{
+  	   long chartId = ChartID();
+  	   string timeMinutesStr = TimeToString(TimeCurrent(),TIME_SECONDS);
+  	   StringReplace(timeMinutesStr, ":", ".");
+  	   string fileName = "ScreenShot_" + ChartSymbol(chartId) + "_" + TimeFrameToString(ChartPeriod(chartId)) + "_" + TimeToString(TimeCurrent(), TIME_DATE) + "_" + timeMinutesStr + ".jpg";
+  	   int width = (int)ChartGetInteger(chartId, CHART_WIDTH_IN_PIXELS);
+  	   int height = (int)ChartGetInteger(chartId, CHART_HEIGHT_IN_PIXELS);
+  	   
+  	   //WindowScreenShot("Window_" + fileName, width, height);
+  	   ChartScreenShot(ChartID(), "Chart_" + fileName, width, height);
   	}
    else // to do: execute commands (indicator part)
   	   ;
