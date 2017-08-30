@@ -459,7 +459,7 @@ void SystemConsole::UpdateControls(string command)
 
 void SystemConsole::ExecuteCommand(string command)
 {
-	Print(__FUNCTION__ + " " + command);
+	Print(__FUNCTION__ + " command: " + command);
 	
 	if((command == "[h]help") || (command == "h") || (command == "help"))
 	{
@@ -490,7 +490,7 @@ void SystemConsole::ExecuteCommand(string command)
   		//ExpertRemove();
   		Print(__FUNCTION__ + " - Tried to exit");
   	}
-  	else // to do: execute commands (indicator part)
+   else // to do: execute commands (indicator part)
   	   ;
-  	
+   
 }

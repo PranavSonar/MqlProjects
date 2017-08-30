@@ -19,26 +19,26 @@ class SystemCommands : public BaseObject
 	   
 	   string GetCommand() { return command; }
 	   void SetCommand(string cmd) {
-	   	string oldCommand = command, oldContext = context;
-	   	
+	      string oldCommand = command, oldContext = context;
+	      
 		   int firstMatch = StringFind(cmd, "/");
 		   
 		   if(firstMatch >= 0)
 		   {
-		      string ctx = StringSubstr(cmd, 0, firstMatch);
+            string ctx = StringSubstr(cmd, 0, firstMatch);
 		      
             command = ctx;
 		      GetSystemCommandToExecute(true);
 		      
             string innerCmd = StringSubstr(cmd, firstMatch+1);
-            Print(__FUNCTION__ + " 1. cmd: \"" + cmd + "\" ctx: \"" + ctx + "\" innerCmd: \"" + innerCmd + "\" [oldCommand: \"" + oldCommand + "\", oldContext: \"" + oldContext + "\"]");
+            Print(__FUNCTION__ + " 1. [many words] ctx: \"" + ctx + "\" innerCmd: \"" + innerCmd + "\" [oldCommand: \"" + oldCommand + "\", oldContext: \"" + oldContext + "\"] ");
             
             command = innerCmd;
             command = GetSystemCommandToExecute(true);
 		   }
 		   else
 		   {
-		   	Print(__FUNCTION__ + " 2. cmd: \"" + cmd + "\" [oldCommand: \"" + oldCommand + "\", oldContext: \"" + oldContext + "\"]");
+            Print(__FUNCTION__ + " 2. [one word] cmd: \"" + cmd + "\" [oldCommand: \"" + oldCommand + "\", oldContext: \"" + oldContext + "\"] ");
 		      command = cmd;
 		   }
 		}
@@ -48,9 +48,10 @@ class SystemCommands : public BaseObject
 		{
 		   if(changeContext)
 		   {
-		   	Print(__FUNCTION__ + " context change \"" + context + "\" -> \"" + value + "\"");
+		      Print(__FUNCTION__ + " context change \"" + context + "\" -> \"" + value + "\"");
 		      context = value;
 		   }
+		   
 		   return value;
 		}
 		

@@ -130,7 +130,7 @@ class SystemWrapper
 						
 						if(element.GetChildByElementName("USP_ReadResult_Result") == NULL)//GlobalContext.DatabaseLog.Result == "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<string xmlns=\"http://tempuri.org/\" />")
 						{
-							Print("MaxOrderNo" + IntegerToString(orderNo));
+							Print(__FUNCTION__ + " MaxOrderNo: " + IntegerToString(orderNo));
 							break;
 						}
 						
@@ -321,7 +321,7 @@ class SystemWrapper
 		
 		void ExecuteCommand(string command)
 		{
-		   Print(command);
+		   Print(__FUNCTION__ + " command: " + command);
 		   //to do: execute commands (EA / system part)
 		}
 		
