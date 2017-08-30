@@ -146,7 +146,7 @@ class SystemCommands : public BaseObject
 		   if(context == NULL)
 		   {
 		      if((command == "[h]help") || (command == "h") || (command == "help"))
-   		      return "help";
+   		      return UpdateContext("help", false);
    		   else if((command == "[p]print") || (command == "p") || (command == "print"))
    		      return UpdateContext("print", changeContext);
    		   else if((command == "[o]config") || (command == "o") || (command == "config"))
@@ -174,9 +174,9 @@ class SystemCommands : public BaseObject
    		   else if((command == "[c]call WS proc") || (command == "c") || (command == "call WS proc") || (command == "call"))
    		      return UpdateContext("call", changeContext);
    		   else if((command == "[r]screenshot") || (command == "r") || (command == "screenshot"))
-   		      return UpdateContext("screenshot", changeContext);
+   		      return UpdateContext("screenshot", false);
    		   else if((command == "[x]exit/[q]quit") || (command == "[x]exit") || (command == "[q]quit") || (command == "x") || (command == "q") || (command == "exit") || (command == "quit"))
-   		      return UpdateContext("exit", changeContext);
+   		      return UpdateContext("exit", false);
 		   } else if(context == "print") {
 		   	if((command == "[d]discovery") || (command == "discovery") || (command == "d"))
 		   		return UpdateContext("print/discovery", changeContext);
