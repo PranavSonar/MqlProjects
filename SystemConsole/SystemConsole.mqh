@@ -17,6 +17,10 @@
 
 #include "SystemCommands.mqh"
 
+
+#include <MyMql\Global\Global.mqh>
+static GlobalVariableCommunication comm(false, false);
+
 //+------------------------------------------------------------------+
 //| defines                                                          |
 //+------------------------------------------------------------------+
@@ -483,11 +487,12 @@ void SystemConsole::ExecuteCommand(string command)
       AddLine(" [h]help   - print this");
       AddLine(" [p]print  - print values");
       AddLine(" [o]config - get/set config");
-      AddLine(" [d]discovery - discover");
-      AddLine(" [l]light system");
-      AddLine(" [s]system - run system");
-      AddLine(" [a]EA     - Expert Advisor");
-      AddLine(" [i]indicator - show ind.");
+      AddLine("  Discovery/System/EA:");
+      AddLine("   [d]discovery");
+      AddLine("   [l]light system");
+      AddLine("   [s]system - run simulation");
+      AddLine("   [a]EA     - Expert Advisor");
+      AddLine(" [i]indicator");
       AddLine(" [n]analysis indicator");
       AddLine(" [o]orders view");
       AddLine(" [%]probability of order");
@@ -497,14 +502,14 @@ void SystemConsole::ExecuteCommand(string command)
       AddLine(" [r]screenshot");
       AddLine(" [x]exit/[q]quit");
   	}
-  	//else if((command == "[b]back") || (command == "back") || (command == "b"))
-  	//	sCommands.UpdateContext(NULL, true);
   	else if((command == "[x]exit/[q]quit") || (command == "[x]exit") || (command == "[q]quit") || (command == "x") || (command == "q") || (command == "exit") || (command == "quit"))
   	{
   		//CChart c;
   		//c.IndicatorDelete(0, "SystemConsole");
   		
   		//ExpertRemove();
+  		ChartIndicatorDelete(ChartID(), 0, "SystemConsole");
+  		
   		Print(__FUNCTION__ + " - Tried to exit");
   	}
   	else if((command == "[r]screenshot") || (command == "r") || (command == "screenshot"))
@@ -519,6 +524,8 @@ void SystemConsole::ExecuteCommand(string command)
   	   //WindowScreenShot("Window_" + fileName, width, height);
   	   ChartScreenShot(ChartID(), "Chart_" + fileName, width, height);
   	}
+  	//else if((command == "[b]back") || (command == "back") || (command == "b"))
+  	//	sCommands.UpdateContext(NULL, true);
    else // to do: execute commands (indicator part)
   	   ;
    

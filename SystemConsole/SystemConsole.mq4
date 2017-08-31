@@ -13,11 +13,8 @@
 
 
 #include "SystemConsole.mqh"
-#include <MyMql\Global\Global.mqh>
 
 SystemConsole ExtDialog;
-
-static GlobalVariableCommunication comm(false, false);
 
 
 int OnInit(void)
