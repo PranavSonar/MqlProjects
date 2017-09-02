@@ -321,8 +321,158 @@ class SystemWrapper
 		
 		void ExecuteCommand(string command)
 		{
-		   Print(__FUNCTION__ + " command: " + command);
-		   //to do: execute commands (EA / system part)
+		  	Print(__FUNCTION__ + " command: " + command);
+		  	
+		   string words[];
+		   StringSplit(command, '/', words);
+		   int lenWords = ArraySize(words); 
+		   if(lenWords < 2)
+		   {
+		   	Print(__FUNCTION__ + " Exiting. lenWords: " + IntegerToString(lenWords));
+		   	return;
+		   }
+		   
+		   string context = words[0];
+		   command = words[1];
+		   
+		   if(context == "print") {
+		   	if((command == "[d]discovery") || (command == "discovery") || (command == "d"))
+		   		;
+		   	else if((command == "[s]system") || (command == "system") || (command == "s"))
+		   		;
+		   	else if((command == "[o]orders") || (command == "orders") || (command == "order") || (command == "o"))
+		   		;
+		   	else if((command == "[r]results") || (command == "results") || (command == "result") || (command == "r"))
+		   		;
+		   	else if((command == "[v]variables") || (command == "variables") || (command == "variable") || (command == "v"))
+		   		;
+		   	else if((command == "[c]config") || (command == "config") || (command == "c"))
+		   		;
+		   	else if((command == "[b]back") || (command == "back") || (command == "b"))
+		   		return;
+		   } else if(StringFind(context,"call") == 0) { // WS Proc call
+		   	if((command == "[b]back") || (command == "back") || (command == "b")) // to do: validate words (procedure name, params)
+			   	return;
+			   
+		   	//StringSplit(context, '/', words);
+		   	//if(ArraySize(words) != 3) // call/procedure name/parameters
+		   	//	return context + "/" + command;
+		   } else if((context == "discovery") || (context == "light") || (context == "system") || (context == "EA")) {
+		   	if(context == "discovery")
+		   	{
+					GlobalContext.Config.SetBoolValue("UseDiscoverySystem", true);
+					GlobalContext.Config.SetBoolValue("UseLightSystem", false);
+					GlobalContext.Config.SetBoolValue("UseFullSystem", false);
+					GlobalContext.Config.SetBoolValue("UseEA", false);
+				}
+		   	else if(context == "light")
+		   	{
+		   		GlobalContext.Config.SetBoolValue("UseDiscoverySystem", false);
+					GlobalContext.Config.SetBoolValue("UseLightSystem", true);
+					GlobalContext.Config.SetBoolValue("UseFullSystem", false);
+					GlobalContext.Config.SetBoolValue("UseEA", false);
+				}
+		   	else if(context == "system")
+		   	{
+		   		GlobalContext.Config.SetBoolValue("UseDiscoverySystem", false);
+					GlobalContext.Config.SetBoolValue("UseLightSystem", false);
+					GlobalContext.Config.SetBoolValue("UseFullSystem", true);
+					GlobalContext.Config.SetBoolValue("UseEA", false);
+		   	}
+		   	else if(context == "EA")
+		   	{
+		   		GlobalContext.Config.SetBoolValue("UseDiscoverySystem", false);
+					GlobalContext.Config.SetBoolValue("UseLightSystem", false);
+					GlobalContext.Config.SetBoolValue("UseFullSystem", false);
+					GlobalContext.Config.SetBoolValue("UseEA", true);
+					
+					// might need further config (in other place make the config?)
+		   	}
+		   	
+		   	if((command == "[1]one symbol") || (command == "one symbol") || (command == "one") || (command == "1"))
+		   	{
+		   		// to do: change chart to that symbol; what symbol??
+		   		// read config in other place??
+					GlobalContext.Config.SetBoolValue("OnlyCurrentSymbol", true);
+		   	}
+		   	else if((command == "[c]current symbol") || (command == "current symbol") || (command == "current") || (command == "c"))
+		   	{
+		   		GlobalContext.Config.SetBoolValue("OnlyCurrentSymbol", true);
+		   	}
+		   	else if((command == "[w]watchlist symbols") || (command == "watchlist symbols") || (command == "watchlist") || (command == "watch") || (command == "w"))
+		   	{
+		   		// to do: check that OnlyCurrentSymbol=false is enough
+		   		GlobalContext.Config.SetBoolValue("OnlyCurrentSymbol", false);
+		   		GlobalContext.Config.SetBoolValue("OnlyWatchListSymbols", true);
+		   	}
+		   	else if((command == "[a]all symbols") ||(command == "all symbols") || (command == "all") || (command == "a"))
+		   	{
+		   		// to do: check that OnlyCurrentSymbol=false is enough
+		   		GlobalContext.Config.SetBoolValue("OnlyCurrentSymbol", false);
+		   		GlobalContext.Config.SetBoolValue("OnlyWatchListSymbols", false);
+		   	}
+		   	else if((command == "[b]back") || (command == "back") || (command == "b"))
+		   		return;
+		   } else if(context == "config") {
+		   	if((command == "[c]change") || (command == "change") || (command == "c"))
+		   		;
+		   	else if((command == "[p]print") || (command == "print") || (command == "p"))
+		   		;
+		   	else if((command == "[b]back") || (command == "back") || (command == "b"))
+		   		return;
+		   } else if(context == "indicator") {
+		   	if((command == "[d]decision") || (command == "decision") || (command == "d"))
+		   		;
+		   	else if((command == "[s]show") || (command == "show") || (command == "s"))
+		   		;
+		   	else if((command == "[o]orders") || (command == "orders") || (command == "o"))
+		   		;
+		   	else if((command == "[b]back") || (command == "back") || (command == "b"))
+		   		return;
+		   } else if(context == "analysis") { // to do: validate word
+		   	if((command == "[b]back") || (command == "back") || (command == "b"))
+		   		return;
+		   	
+		   	//string words[];
+		   	//StringSplit(context, '/', words);
+		   	//if(ArraySize(words) != 2) // analysis/indicator
+		   	//	return UpdateContext(context + "/" + command, changeContext);
+		   } else if(context == "orders") { // to do: complete orders; it was way bigger than this
+		   	if((command == "[b]back") || (command == "back") || (command == "b"))
+		   		return;
+		   } else if(StringFind(context,"manual") == 0) { // to do: validate words
+		   	if((command == "[b]back") || (command == "back") || (command == "b"))
+		   		return;
+		   		
+		   	//string words[];
+		   	//StringSplit(context, '/', words);
+		   	//if(ArraySize(words) != 6) // manual/symbol/% of margin used/order type(buy/sell)/TP & SL type(pips, simple s/r, 2BB, Fibonacci s/r, MA s/r)/virtual limits
+		   	//	return context + "/" + command;
+		   } else if(StringFind(context,"update") == 0) { // to do: make all for "update" in this context
+		   	if((command == "TakeProfit") || (command == "take profit") || (command == "TP"))
+		   		;
+		   	else if((command == "StopLoss") || (command == "stop loss") || (command == "SL"))
+		   		;
+		   	else if((command == "close"))
+		   		;
+		   	else if((command == "trailing stop") || (command == "trailing"))
+		   		;
+		   	else if((command == "notification") || (command == "notif"))
+		   		;
+		   	else if((command == "virtual") || (command == "virt"))
+		   		;
+		   	else if((command == "[b]back") || (command == "back") || (command == "b"))
+		   		return;
+		   } else if(context == "probability") {
+		   	if((command == "current") || (command == "opened")) // opened order
+		   		;
+		   	else if((command == "virtual") || (command == "virt")) // virtual order
+		   		;
+		   	else if((command == "new")) // new order
+		   		;
+		   	else if((command == "[b]back") || (command == "back") || (command == "b"))
+		   		return;
+		   }
 		}
 		
 		void OnDeinitWrapper(const int reason)

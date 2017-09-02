@@ -479,7 +479,10 @@ void SystemConsole::UpdateControls(string command)
 
 void SystemConsole::ExecuteCommand(string command)
 {
-	Print(__FUNCTION__ + " command: " + command);
+	sCommands.SetCommand(command);
+	string newCommand = sCommands.GetSystemCommandToExecute(), context = sCommands.GetContext();
+	
+	Print(__FUNCTION__ + " command: \"" + command + "\" newCommand: \"" + newCommand + "\" context: \"" + context + "\"");
 	
 	if((command == "[h]help") || (command == "h") || (command == "help"))
 	{
@@ -504,11 +507,10 @@ void SystemConsole::ExecuteCommand(string command)
   	}
   	else if((command == "[x]exit/[q]quit") || (command == "[x]exit") || (command == "[q]quit") || (command == "x") || (command == "q") || (command == "exit") || (command == "quit"))
   	{
-  		//CChart c;
-  		//c.IndicatorDelete(0, "SystemConsole");
-  		
-  		//ExpertRemove();
-  		ChartIndicatorDelete(ChartID(), 0, "SystemConsole");
+  		if(GlobalContext.Config.IsIndicator())
+  			ChartIndicatorDelete(ChartID(), 0, "SystemConsole");
+  		else
+  			ExpertRemove();
   		
   		Print(__FUNCTION__ + " - Tried to exit");
   	}
@@ -521,12 +523,17 @@ void SystemConsole::ExecuteCommand(string command)
   	   int width = (int)ChartGetInteger(chartId, CHART_WIDTH_IN_PIXELS);
   	   int height = (int)ChartGetInteger(chartId, CHART_HEIGHT_IN_PIXELS);
   	   
+  	   ChartScreenShot(chartId, "Chart_" + fileName, width, height);
   	   //WindowScreenShot("Window_" + fileName, width, height);
-  	   ChartScreenShot(ChartID(), "Chart_" + fileName, width, height);
   	}
-  	//else if((command == "[b]back") || (command == "back") || (command == "b"))
-  	//	sCommands.UpdateContext(NULL, true);
-   else // to do: execute commands (indicator part)
-  	   ;
-   
+  	else if((command == "[b]back") || (command == "back") || (command == "b"))
+  	{
+  		//sCommands.UpdateContext(NULL, true);
+  	}
+   else if(!StringIsNullOrEmpty(context))
+  	{
+  		comm.SendText(newCommand);
+  		
+  		Print(__FUNCTION__ + " Sending to SystemProcessor the command: \"" + newCommand + "\"; context: \"" + context + "\" command: \"" + command + "\"");
+  	}
 }
