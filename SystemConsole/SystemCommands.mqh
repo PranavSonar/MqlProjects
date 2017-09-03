@@ -8,6 +8,7 @@
 #property strict
 
 #include <MyMql/Base/BaseObject.mqh>
+#include <MyMql\Global\Global.mqh>
 
 class SystemCommands : public BaseObject
 {
@@ -95,8 +96,11 @@ class SystemCommands : public BaseObject
 				commands[3] = "[a]all symbols";
 				commands[4] = "[b]back";
 			} else if(StringFind(context,"call") == 0) {
-				ArrayResize(commands, 1); // to do: choose between procedures, for 1st word (after call
+				ArrayResize(commands, 1);
 				commands[0] = "[b]back";
+				
+				GlobalContext.DatabaseLog.PrintWebServiceUrls();
+				GlobalContext.DatabaseLog.FillCommandsArray(commands); // to do: get the parameters (parameter names here - values in other proc.), when context is call/procedure
 			} else if(context == "config") {
 				ArrayResize(commands, 3);
 				commands[0] = "[c]change";

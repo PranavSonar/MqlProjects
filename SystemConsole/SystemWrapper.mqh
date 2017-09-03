@@ -10,7 +10,6 @@
 
 #include "SystemCommands.mqh"
 #include <MyMql\System\SimulateTranSystem.mqh>
-#include <MyMql\Global\Global.mqh>
 #include <stdlib.mqh>
 #include <stderror.mqh>
 
@@ -128,7 +127,7 @@ class SystemWrapper
 						(element.GetTagType() == TagType_CleanTag))
 							break;
 						
-						if(element.GetChildByElementName("USP_ReadResult_Result") == NULL)//GlobalContext.DatabaseLog.Result == "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<string xmlns=\"http://tempuri.org/\" />")
+						if(element.GetChildByElementName("USP_ReadResult_Result") == NULL) //GlobalContext.DatabaseLog.Result == "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<string xmlns=\"http://tempuri.org/\" />")
 						{
 							Print(__FUNCTION__ + " MaxOrderNo: " + IntegerToString(orderNo));
 							break;
@@ -337,17 +336,29 @@ class SystemWrapper
 		   
 		   if(context == "print") {
 		   	if((command == "[d]discovery") || (command == "discovery") || (command == "d"))
-		   		;
+		   	{
+		   		
+		   	}
 		   	else if((command == "[s]system") || (command == "system") || (command == "s"))
-		   		;
+		   	{
+		   		
+		   	}
 		   	else if((command == "[o]orders") || (command == "orders") || (command == "order") || (command == "o"))
-		   		;
+		   	{
+		   		
+		   	}
 		   	else if((command == "[r]results") || (command == "results") || (command == "result") || (command == "r"))
-		   		;
+		   	{
+		   		
+		   	}
 		   	else if((command == "[v]variables") || (command == "variables") || (command == "variable") || (command == "v"))
-		   		;
+		   	{
+		   		
+		   	}
 		   	else if((command == "[c]config") || (command == "config") || (command == "c"))
-		   		;
+		   	{
+		   		
+		   	}
 		   	else if((command == "[b]back") || (command == "back") || (command == "b"))
 		   		return;
 		   } else if(StringFind(context,"call") == 0) { // WS Proc call
