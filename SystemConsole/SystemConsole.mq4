@@ -48,6 +48,8 @@ void OnTimer()
 	{
 	   ExtDialog.ExecuteCommand(word);
 	   comm.RemoveFirstWord();
+	   
+	   Print(__FUNCTION__ + " " + word);
 	}
 }
 

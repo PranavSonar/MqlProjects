@@ -32,14 +32,14 @@ class SystemCommands : public BaseObject
 		      GetSystemCommandToExecute(true);
 		      
             string innerCmd = StringSubstr(cmd, firstMatch+1);
-            Print(__FUNCTION__ + " 1. [many words] ctx: \"" + ctx + "\" innerCmd: \"" + innerCmd + "\" [oldCommand: \"" + oldCommand + "\", oldContext: \"" + oldContext + "\"] ");
+            PrintIfTrue(false, __FUNCTION__ + " 1. [many words] ctx: \"" + ctx + "\" innerCmd: \"" + innerCmd + "\" [oldCommand: \"" + oldCommand + "\", oldContext: \"" + oldContext + "\"] ");
             
             command = innerCmd;
             command = GetSystemCommandToExecute(true);
 		   }
 		   else
 		   {
-            Print(__FUNCTION__ + " 2. [one word] cmd: \"" + cmd + "\" [oldCommand: \"" + oldCommand + "\", oldContext: \"" + oldContext + "\"] ");
+            PrintIfTrue(false, __FUNCTION__ + " 2. [one word] cmd: \"" + cmd + "\" [oldCommand: \"" + oldCommand + "\", oldContext: \"" + oldContext + "\"] ");
 		      command = cmd;
 		   }
 		}
@@ -49,7 +49,7 @@ class SystemCommands : public BaseObject
 		{
 		   if(changeContext)
 		   {
-		      Print(__FUNCTION__ + " context change \"" + context + "\" -> \"" + value + "\"");
+		      PrintIfTrue(false, __FUNCTION__ + " context change \"" + context + "\" -> \"" + value + "\"");
 		      context = value;
 		   }
 		   
@@ -58,7 +58,7 @@ class SystemCommands : public BaseObject
 		
 		void GetSystemCommands(string &commands[])
 		{
-			Print(__FUNCTION__ + " " + context);
+			PrintIfTrue(false, __FUNCTION__ + " " + context);
 			
 			if(context == NULL)
 			{
@@ -145,7 +145,7 @@ class SystemCommands : public BaseObject
 		
 		string GetSystemCommandToExecute(bool changeContext = false)
 		{
-			Print(__FUNCTION__ + " [changeContext: " + BoolToString(changeContext) + "][context: \"" + context + "\", command: \"" + command + "\"]");
+			PrintIfTrue(false, __FUNCTION__ + " [changeContext: " + BoolToString(changeContext) + "][context: \"" + context + "\", command: \"" + command + "\"]");
 			
 		   if(context == NULL)
 		   {
@@ -348,7 +348,7 @@ class SystemCommands : public BaseObject
 		      (command == NULL))
 		         ret = true;
 		  	
-			Print(__FUNCTION__ + " <@return> [changeContext: " + BoolToString(changeContext) + "][context: \"" + context + "\", command: \"" + command + "\"] return: " + BoolToString(ret));
+			PrintIfTrue(false, __FUNCTION__ + " <@return> [changeContext: " + BoolToString(changeContext) + "][context: \"" + context + "\", command: \"" + command + "\"] return: " + BoolToString(ret));
 		   
 		   return ret;
 		}

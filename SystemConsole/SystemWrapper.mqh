@@ -369,6 +369,8 @@ class SystemWrapper
 		   	//if(ArraySize(words) != 3) // call/procedure name/parameters
 		   	//	return context + "/" + command;
 		   } else if((context == "discovery") || (context == "light") || (context == "system") || (context == "EA")) {
+		   	Print(__FUNCTION__ + " context: \"" + context + "\" command: \"" + command + "\"");
+		   	
 		   	if(context == "discovery")
 		   	{
 					GlobalContext.Config.SetBoolValue("UseDiscoverySystem", true);
@@ -396,7 +398,6 @@ class SystemWrapper
 					GlobalContext.Config.SetBoolValue("UseLightSystem", false);
 					GlobalContext.Config.SetBoolValue("UseFullSystem", false);
 					GlobalContext.Config.SetBoolValue("UseEA", true);
-					
 					// might need further config (in other place make the config?)
 		   	}
 		   	
@@ -424,6 +425,8 @@ class SystemWrapper
 		   	}
 		   	else if((command == "[b]back") || (command == "back") || (command == "b"))
 		   		return;
+		   		
+				system.RunTransactionSystemForCurrentSymbol();
 		   } else if(context == "config") {
 		   	if((command == "[c]change") || (command == "change") || (command == "c"))
 		   		;
