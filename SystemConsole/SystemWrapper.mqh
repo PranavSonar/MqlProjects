@@ -425,8 +425,8 @@ class SystemWrapper
 		   	}
 		   	else if((command == "[b]back") || (command == "back") || (command == "b"))
 		   		return;
-		   		
-				system.RunTransactionSystemForCurrentSymbol();
+		      
+				//system.RunTransactionSystemForCurrentSymbol(true); // this is done @init
 		   } else if(context == "config") {
 		   	if((command == "[c]change") || (command == "change") || (command == "c"))
 		   		;
