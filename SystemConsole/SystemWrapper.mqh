@@ -43,6 +43,7 @@ class SystemWrapper
 			string transactionManagementEA = typename(BaseTransactionManagement),
 			bool isInverseDecisionEA = false,
 			bool onlyCurrentSymbol = true,
+			bool allowChangingSymbol = true,
 			bool useKeyBoardChangeChart = false,
 			bool useIndicatorChangeChart = true,
 			bool useOnlyFirstDecisionAndConfirmItWithOtherDecisions = false
@@ -70,6 +71,7 @@ class SystemWrapper
 			
 			// Generic - used both for System & EA
 			GlobalContext.Config.SetBoolValue("OnlyCurrentSymbol", onlyCurrentSymbol);
+			GlobalContext.Config.SetBoolValue("AllowChangingSymbol", allowChangingSymbol);
 			
 			GlobalContext.Config.SetBoolValue("UseKeyBoardChangeChart", useKeyBoardChangeChart);
 			GlobalContext.Config.SetBoolValue("UseIndicatorChangeChart", useIndicatorChangeChart);
@@ -89,9 +91,8 @@ class SystemWrapper
 			   CurrentSymbol = GlobalContext.Config.GetValue("ReturnToSymbol");
 			   GlobalContext.Config.DeleteValue("ReturnToSymbol");
 			   
-				ChangeSymbol();
-				
-				return INIT_SUCCEEDED;
+				if(ChangeSymbol())
+					return INIT_SUCCEEDED;
 		   }
 			
 			if(GlobalContext.Config.GetBoolValue("UseEA"))
@@ -219,7 +220,7 @@ class SystemWrapper
 						system.SetupTransactionSystem();
 					GlobalContext.Config.InitCurrentSymbol(currentSymbol);
 					
-					if(!ChangeSymbol())
+					if(ChangeSymbol())
 						return (INIT_SUCCEEDED);
 				}
 				else
@@ -253,7 +254,7 @@ class SystemWrapper
 				
 				if(GlobalContext.Config.GetBoolValue("UseDiscoverySystem"))
 				{
-					//system.SystemDiscoveryPrintData();
+					system.SystemDiscoveryPrintData();
 					//Print("--=-=-=-=-==================================================================================");
 					system.SystemDiscoveryDeleteWorseThanAverage();
 					Print("--=-=-=-=-==================================================================================");
@@ -271,7 +272,7 @@ class SystemWrapper
 		
 		bool ChangeSymbol()
 		{
-		   if(!StringIsNullOrEmpty(CurrentSymbol) && (_Symbol != CurrentSymbol) && (!GlobalContext.Config.GetBoolValue("OnlyCurrentSymbol")))
+		   if(!StringIsNullOrEmpty(CurrentSymbol) && (_Symbol != CurrentSymbol) && (GlobalContext.Config.GetBoolValue("AllowChangingSymbol")))
 			{
 				Print(__FUNCTION__ + " Symbol should change from " + _Symbol + " to " + CurrentSymbol);
 				
@@ -419,8 +420,10 @@ class SystemWrapper
 		      
 		      // Go back and forth; the second init (on the same symbol as now) will run system, light system or discovery
 		      GlobalContext.Config.SetValue("ReturnToSymbol", _Symbol);
-		      GlobalContext.Config.InitCurrentSymbol(GlobalContext.Config.GetNextSymbol(CurrentSymbol));
+		      GlobalContext.Config.InitCurrentSymbol(GlobalContext.Config.GetNextSymbol(_Symbol));
 		      ChangeSymbol();
+		      return;
+		      
 				//system.RunTransactionSystemForCurrentSymbol(true); // this is done @init
 		   } else if(context == "config") {
 		   	if((command == "[c]change") || (command == "change") || (command == "c"))
