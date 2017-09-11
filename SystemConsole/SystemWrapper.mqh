@@ -84,6 +84,16 @@ class SystemWrapper
 			ChartRedraw();
 			comm.Initialize(false, true); // init timers too
 			
+			if(GlobalContext.Config.HasValue("ReturnToSymbol"))
+			{
+			   CurrentSymbol = GlobalContext.Config.GetValue("ReturnToSymbol");
+			   GlobalContext.Config.DeleteValue("ReturnToSymbol");
+			   
+				ChangeSymbol();
+				
+				return INIT_SUCCEEDED;
+		   }
+			
 			if(GlobalContext.Config.GetBoolValue("UseEA"))
 			{
 				GlobalContext.Config.AllowTrades();
@@ -144,18 +154,8 @@ class SystemWrapper
 							system.SetupTransactionSystem();
 							CurrentSymbol = symbol;
 							
-							if(CurrentSymbol != _Symbol)
-							{
-								Print(__FUNCTION__ + " Symbol should change from " + _Symbol + " to " + CurrentSymbol);
-								
-								if((GlobalContext.Config.GetBoolValue("UseIndicatorChangeChart")) && (GlobalVariableCheck(GetGlobalVariableSymbol())))
-									GlobalVariableSet(GetGlobalVariableSymbol(), (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
-								else
-									GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, GlobalContext.Config.GetBoolValue("UseKeyBoardChangeChart"));
-								
-								GlobalContext.ChartIsChanging = true;
-							}
-							return 0;
+							ChangeSymbol();
+							return INIT_SUCCEEDED;
 						}
 						
 						orderNo++;
@@ -183,19 +183,8 @@ class SystemWrapper
 				}
 			}
 			
-			if(!GlobalContext.Config.GetBoolValue("OnlyCurrentSymbol"))
-			{
-				if(!StringIsNullOrEmpty(CurrentSymbol) && (_Symbol != CurrentSymbol))
-				{
-					Sleep(10);
-					if((GlobalContext.Config.GetBoolValue("UseIndicatorChangeChart")) && (GlobalVariableCheck(GetGlobalVariableSymbol())))
-						GlobalVariableSet(GetGlobalVariableSymbol(), (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
-					else
-						GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, GlobalContext.Config.GetBoolValue("UseKeyBoardChangeChart"));
-					Sleep(10);
-					return INIT_SUCCEEDED;
-				}
-			}
+			if(ChangeSymbol())
+				return INIT_SUCCEEDED;
 			
 			if(FirstSymbol == NULL)
 			{
@@ -230,15 +219,7 @@ class SystemWrapper
 						system.SetupTransactionSystem();
 					GlobalContext.Config.InitCurrentSymbol(currentSymbol);
 					
-					if(!GlobalContext.Config.GetBoolValue("OnlyCurrentSymbol"))
-					{
-						if((GlobalContext.Config.GetBoolValue("UseIndicatorChangeChart")) && (GlobalVariableCheck(GetGlobalVariableSymbol())))
-							GlobalVariableSet(GetGlobalVariableSymbol(), (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
-						else
-							GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, GlobalContext.Config.GetBoolValue("UseKeyBoardChangeChart"));
-					}
-					
-					if(!GlobalContext.Config.GetBoolValue("OnlyCurrentSymbol"))
+					if(!ChangeSymbol())
 						return (INIT_SUCCEEDED);
 				}
 				else
@@ -253,14 +234,7 @@ class SystemWrapper
 			if(!GlobalContext.Config.GetBoolValue("OnlyCurrentSymbol"))
 				GlobalContext.Config.InitCurrentSymbol(GlobalContext.Config.GetNextSymbol(CurrentSymbol));
 			
-			if((!GlobalContext.Config.GetBoolValue("OnlyCurrentSymbol")) && (!StringIsNullOrEmpty(CurrentSymbol)))
-			{
-				if((GlobalContext.Config.GetBoolValue("UseIndicatorChangeChart")) && (GlobalVariableCheck(GetGlobalVariableSymbol())))
-					GlobalVariableSet(GetGlobalVariableSymbol(), (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
-				else
-					GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, GlobalContext.Config.GetBoolValue("UseKeyBoardChangeChart"));
-			}
-			else
+			if(!ChangeSymbol())
 			{
 				if(GlobalContext.Config.GetBoolValue("UseFullSystem"))
 				{
@@ -294,7 +268,24 @@ class SystemWrapper
 			//EventSetTimer(4);
 			return (INIT_SUCCEEDED);
 		}
-	
+		
+		bool ChangeSymbol()
+		{
+		   if(!StringIsNullOrEmpty(CurrentSymbol) && (_Symbol != CurrentSymbol) && (!GlobalContext.Config.GetBoolValue("OnlyCurrentSymbol")))
+			{
+				Print(__FUNCTION__ + " Symbol should change from " + _Symbol + " to " + CurrentSymbol);
+				
+				if((GlobalContext.Config.GetBoolValue("UseIndicatorChangeChart")) && (GlobalVariableCheck(GetGlobalVariableSymbol())))
+					GlobalVariableSet(GetGlobalVariableSymbol(), (double)GlobalContext.Library.GetSymbolPositionFromName(CurrentSymbol));
+				else
+					GlobalContext.Config.ChangeSymbol(CurrentSymbol, PERIOD_CURRENT, GlobalContext.Config.GetBoolValue("UseKeyBoardChangeChart"));
+				Sleep(10);
+				
+				return GlobalContext.ChartIsChanging = true;
+			}
+			return false;
+		}
+		
 		void OnTickWrapper()
 		{
 			if(GlobalContext.Config.GetBoolValue("UseEA"))
@@ -426,6 +417,10 @@ class SystemWrapper
 		   	else if((command == "[b]back") || (command == "back") || (command == "b"))
 		   		return;
 		      
+		      // Go back and forth; the second init (on the same symbol as now) will run system, light system or discovery
+		      GlobalContext.Config.SetValue("ReturnToSymbol", _Symbol);
+		      GlobalContext.Config.InitCurrentSymbol(GlobalContext.Config.GetNextSymbol(CurrentSymbol));
+		      ChangeSymbol();
 				//system.RunTransactionSystemForCurrentSymbol(true); // this is done @init
 		   } else if(context == "config") {
 		   	if((command == "[c]change") || (command == "change") || (command == "c"))
