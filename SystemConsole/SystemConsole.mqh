@@ -223,9 +223,23 @@ bool SystemConsole::CreateConfigCheckGroup(void)
       return(false);
    configCheckGroup.Alignment(WND_ALIGN_HEIGHT,0,y1,0,INDENT_BOTTOM);
 //--- fill out with strings
-   for(int i=0;i<10;i++)
-      if(!configCheckGroup.AddItem("Item "+IntegerToString(i),1<<i))
+
+//   for(int i=0;i<10;i++)
+//      if(!configCheckGroup.AddItem("Item "+IntegerToString(i),1<<i))
+//         return(false);
+//         
+   string configString[];
+   bool configValue[];
+   GlobalContext.Config.FillWithBoolValues(configString, configValue);
+   
+   for(int i=0;i<ArraySize(configValue);i++)
+   {
+      if(!configCheckGroup.AddItem(configString[i],1<<i))
          return(false);
+      if(configValue[i])
+         configCheckGroup.Check(i,1<<1);
+   }
+   
 //--- succeed
    return(true);
   }
@@ -375,7 +389,8 @@ void SystemConsole::OnChangeConfigCheckGroup(void)
   {
   	if(configCheckGroup.IsEnabled())
   	{
-  		AddLine(__FUNCTION__+" : Value="+IntegerToString(configCheckGroup.Value()));
+  		AddLine(__FUNCTION__);
+  		AddLine("Value="+IntegerToString(configCheckGroup.Value()));
    	//outputEdit.Text(__FUNCTION__+" : Value="+IntegerToString(configCheckGroup.Value()));
    }
   }
