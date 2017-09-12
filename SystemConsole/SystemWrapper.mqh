@@ -227,6 +227,9 @@ class SystemWrapper
 					return (INIT_SUCCEEDED);
 			}
 			
+			if(system.IsSetupInvalid())
+            system.SetupTransactionSystem();
+         
 			if(GlobalContext.Config.GetBoolValue("UseDiscoverySystem"))
 				system.SystemDiscovery();
 			else
