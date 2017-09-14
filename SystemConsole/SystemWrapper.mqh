@@ -175,7 +175,7 @@ class SystemWrapper
 					system.PrintFirstChartTranData();
 					system.SetupTransactionSystem();
 					
-					system.RunTransactionSystemForCurrentSymbol(true);
+					system.RunTransactionSystemForCurrentSymbol(true, true);
 				}
 				else
 				{
@@ -230,10 +230,12 @@ class SystemWrapper
 			if(system.IsSetupInvalid())
             system.SetupTransactionSystem();
          
+         system.InitializeFromFirstChartTranData(true);
+         
 			if(GlobalContext.Config.GetBoolValue("UseDiscoverySystem"))
 				system.SystemDiscovery();
 			else
-				system.TestTransactionSystemForCurrentSymbol(true, true, GlobalContext.Config.GetBoolValue("UseLightSystem"), GlobalContext.Config.GetBoolValue("KeepAllObjects"));
+				system.TestTransactionSystemForCurrentSymbol(true, true, GlobalContext.Config.GetBoolValue("UseLightSystem"), GlobalContext.Config.GetBoolValue("KeepAllObjects"), true);
 			
 			if(!GlobalContext.Config.GetBoolValue("OnlyCurrentSymbol"))
 				GlobalContext.Config.InitCurrentSymbol(GlobalContext.Config.GetNextSymbol(CurrentSymbol));
