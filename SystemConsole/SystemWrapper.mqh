@@ -81,9 +81,15 @@ class SystemWrapper
 		
 		int OnInitWrapper()
 		{
+			bool useLightSystem = GlobalContext.Config.GetBoolValue("UseLightSystem");
+			bool useDiscoverySystem = GlobalContext.Config.GetBoolValue("UseDiscoverySystem");
+			bool useFullSystem = GlobalContext.Config.GetBoolValue("UseFullSystem");
+			bool onlyCurrentSymbol = GlobalContext.Config.GetBoolValue("OnlyCurrentSymbol");
+			
 			ResetLastError();
 			RefreshRates();
 			ChartRedraw();
+			
 			comm.Initialize(false, true); // init timers too
 			
 			if(GlobalContext.Config.HasValue("ReturnToSymbol"))
@@ -194,7 +200,7 @@ class SystemWrapper
 				
 				string lastSymbol = NULL, currentSymbol = NULL;
 				
-				if(GlobalContext.Config.GetBoolValue("OnlyCurrentSymbol"))
+				if(onlyCurrentSymbol)
 					currentSymbol = lastSymbol = _Symbol;
 				else
 				{
@@ -204,19 +210,19 @@ class SystemWrapper
 				
 				if(StringIsNullOrEmpty(lastSymbol) || (StringIsNullOrEmpty(currentSymbol) && GlobalContext.Config.GetBoolValue("StartSimulationAgain")))
 				{
-					if(GlobalContext.Config.GetBoolValue("UseFullSystem"))
+					if(useFullSystem)
 					{
 						GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile());
 						GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession");
 						Print(GlobalContext.Config.GetConfigFile());
 					}
 					
-					if(GlobalContext.Config.GetBoolValue("UseLightSystem") || GlobalContext.Config.GetBoolValue("UseFullSystem"))
+					if(useLightSystem || useFullSystem)
 						system.SetupTransactionSystem();
 				}
 				else if(!StringIsNullOrEmpty(currentSymbol))
 				{
-					if(GlobalContext.Config.GetBoolValue("UseLightSystem") || GlobalContext.Config.GetBoolValue("UseFullSystem"))
+					if(useLightSystem || useFullSystem)
 						system.SetupTransactionSystem();
 					GlobalContext.Config.InitCurrentSymbol(currentSymbol);
 					
@@ -232,32 +238,32 @@ class SystemWrapper
          
          system.InitializeFromFirstChartTranData(true);
          
-			if(GlobalContext.Config.GetBoolValue("UseDiscoverySystem"))
+			if(useDiscoverySystem)
 				system.SystemDiscovery();
 			else
-				system.TestTransactionSystemForCurrentSymbol(true, true, GlobalContext.Config.GetBoolValue("UseLightSystem"), GlobalContext.Config.GetBoolValue("KeepAllObjects"), true);
+				system.TestTransactionSystemForCurrentSymbol(true, true, useLightSystem, GlobalContext.Config.GetBoolValue("KeepAllObjects"), true);
 			
-			if(!GlobalContext.Config.GetBoolValue("OnlyCurrentSymbol"))
+			if(!onlyCurrentSymbol)
 				GlobalContext.Config.InitCurrentSymbol(GlobalContext.Config.GetNextSymbol(CurrentSymbol));
 			
 			if(!ChangeSymbol())
 			{
-				if(GlobalContext.Config.GetBoolValue("UseFullSystem"))
+				if(useFullSystem)
 				{
 					GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile());
 					GlobalContext.DatabaseLog.CallWebServiceProcedure("EndTradingSession");
 				}
 				
-				if(GlobalContext.Config.GetBoolValue("UseDiscoverySystem"))
+				if(useDiscoverySystem)
 					Print("Discovery finished! Job done!");
-				else if(GlobalContext.Config.GetBoolValue("UseLightSystem") || GlobalContext.Config.GetBoolValue("UseFullSystem"))
+				else if(useLightSystem || useFullSystem)
 					Print("Simulation finished! Job done!");
 				
 				GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile());
 				GlobalContext.DatabaseLog.CallWebServiceProcedure("GetResults");
 				Print("GetResults execution finished (or at least the WS call)! Job done!");
 				
-				if(GlobalContext.Config.GetBoolValue("UseDiscoverySystem"))
+				if(useDiscoverySystem)
 				{
 					system.SystemDiscoveryPrintData();
 					//Print("--=-=-=-=-==================================================================================");
@@ -265,7 +271,7 @@ class SystemWrapper
 					Print("--=-=-=-=-==================================================================================");
 					system.SystemDiscoveryPrintData();
 				}
-				else if(GlobalContext.Config.GetBoolValue("UseLightSystem") || GlobalContext.Config.GetBoolValue("UseFullSystem"))
+				else if(useLightSystem || useFullSystem)
 					system.FreeArrays();
 				
 				//Print("Closing [ExpertRemove]!"); ExpertRemove();
