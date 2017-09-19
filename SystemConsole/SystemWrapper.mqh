@@ -85,6 +85,7 @@ class SystemWrapper
 			bool useDiscoverySystem = GlobalContext.Config.GetBoolValue("UseDiscoverySystem");
 			bool useFullSystem = GlobalContext.Config.GetBoolValue("UseFullSystem");
 			bool onlyCurrentSymbol = GlobalContext.Config.GetBoolValue("OnlyCurrentSymbol");
+			bool useEA = GlobalContext.Config.GetBoolValue("UseEA");
 			
 			ResetLastError();
 			RefreshRates();
@@ -97,11 +98,13 @@ class SystemWrapper
 			   CurrentSymbol = GlobalContext.Config.GetValue("ReturnToSymbol");
 			   GlobalContext.Config.DeleteValue("ReturnToSymbol");
 			   
+			   FirstSymbol = NULL;
+			   
 				if(ChangeSymbol())
 					return INIT_SUCCEEDED;
 		   }
 			
-			if(GlobalContext.Config.GetBoolValue("UseEA"))
+			if(useEA)
 			{
 				GlobalContext.Config.AllowTrades();
 			
@@ -181,6 +184,7 @@ class SystemWrapper
 					system.PrintFirstChartTranData();
 					system.SetupTransactionSystem();
 					
+					Print("Margin OK. Executing RunTransactionSystemForCurrentSymbol.");
 					system.RunTransactionSystemForCurrentSymbol(true, true);
 				}
 				else
