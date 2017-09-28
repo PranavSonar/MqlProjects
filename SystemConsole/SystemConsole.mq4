@@ -32,13 +32,14 @@ void OnDeinit(const int reason)
 {
 	ExtDialog.Destroy(reason);
 }
-  
-int OnCalculate(const int rates_total,
-                const int prev_calculated,
-                const int begin,
-                const double &price[])
+
+int OnCalculate(
+	const int rates_total,
+	const int prev_calculated,
+	const int begin,
+	const double &price[])
 {
-   return(rates_total);
+	return(rates_total);
 }
 
 void OnTimer()
@@ -46,19 +47,19 @@ void OnTimer()
 	string word = comm.OnTimerGetWord();
 	if(!StringIsNullOrEmpty(word))
 	{
-	   ExtDialog.ExecuteCommand(word);
-	   comm.RemoveFirstWord();
-	   
-	   Print(__FUNCTION__ + " " + word);
+		ExtDialog.ExecuteCommand(word);
+		comm.RemoveFirstWord();
+
+		Print(__FUNCTION__ + " " + word);
 	}
 }
 
 
 void OnChartEvent(
 	const int id,
-   const long &lparam,
-   const double &dparam,
-   const string &sparam)
+	const long &lparam,
+	const double &dparam,
+	const string &sparam)
 {
 	ExtDialog.ChartEvent(id,lparam,dparam,sparam);
 }

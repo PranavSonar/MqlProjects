@@ -126,6 +126,7 @@ bool SystemConsole::Create(const long chart,const string name,const int subwin,c
 //--- succeed
    return(true);
   }
+
 //+------------------------------------------------------------------+
 //| Create the display field                                         |
 //+------------------------------------------------------------------+
