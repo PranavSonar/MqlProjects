@@ -131,17 +131,20 @@ int SystemWrapper::OnInitWrapper()
 	
 	if(GlobalContext.Config.HasValue("ReturnToSymbol"))
 	{
-	   CurrentSymbol = GlobalContext.Config.GetValue("ReturnToSymbol");
-	   GlobalContext.Config.DeleteValue("ReturnToSymbol");
-	   
-	   FirstSymbol = NULL;
-	   
+		Print("ReturnToSymbol");
+		CurrentSymbol = GlobalContext.Config.GetValue("ReturnToSymbol");
+		GlobalContext.Config.DeleteValue("ReturnToSymbol");
+
+		FirstSymbol = NULL;
+
 		if(ChangeSymbol())
 			return INIT_SUCCEEDED;
-   }
-	
+	}
+
 	if(useEA)
 	{
+		Print("UseEA");
+
 		GlobalContext.Config.AllowTrades();
 	
 		bool isTradeAllowedOnEA = GlobalContext.Config.IsTradeAllowedOnEA(_Symbol);
@@ -156,16 +159,20 @@ int SystemWrapper::OnInitWrapper()
 		
 		if(GlobalContext.Config.GetBoolValue("UseManualDecisionEA"))
 		{
+			Print("UseEA > UseManualDecisionEA");
+
 			system.AddChartTransactionData(
-			   _Symbol,
-			   PERIOD_CURRENT,
-			   GlobalContext.Config.GetValue("DecisionEA"),
-			   GlobalContext.Config.GetValue("LotManagementEA"),
-			   GlobalContext.Config.GetValue("TransactionManagementEA"),
-			   GlobalContext.Config.GetBoolValue("IsInverseDecisionEA"));
+			_Symbol,
+			PERIOD_CURRENT,
+			GlobalContext.Config.GetValue("DecisionEA"),
+			GlobalContext.Config.GetValue("LotManagementEA"),
+			GlobalContext.Config.GetValue("TransactionManagementEA"),
+			GlobalContext.Config.GetBoolValue("IsInverseDecisionEA"));
 		}
 		else // Use Automatic Decision EA - needs Database simulation data + run GetResults, WS call, etc
 		{
+			Print("UseEA > ReadResult");
+
 			XmlElement *element = new XmlElement();
 			
 			bool isTransactionAllowedOnChartTransactionData = false;
@@ -192,7 +199,8 @@ int SystemWrapper::OnInitWrapper()
 				string symbol = element.GetChildTagDataByParentElementName("Symbol");
 				int maxOrderNo = (int) StringToInteger(element.GetChildTagDataByParentElementName("MaxOrderNo"));
 				BaseLotManagement lots;
-		      if(lots.IsMarginOk(symbol, MarketInfo(_Symbol, MODE_MINLOT), 0.4f, true) && GlobalContext.Config.IsTradeAllowedOnEA(symbol))
+
+				if(lots.IsMarginOk(symbol, MarketInfo(_Symbol, MODE_MINLOT), 0.4f, true) && GlobalContext.Config.IsTradeAllowedOnEA(symbol))
 				{
 					system.CleanTranData();
 					system.AddChartTransactionData(element);
@@ -208,6 +216,7 @@ int SystemWrapper::OnInitWrapper()
 				if((orderNo > maxOrderNo) && (maxOrderNo != 0))
 					break;
 			}
+
 			delete element;
 		}
 		
@@ -248,22 +257,19 @@ int SystemWrapper::OnInitWrapper()
 			currentSymbol = GlobalContext.Config.GetNextSymbol(lastSymbol);
 		}
 		
+		if(useLightSystem || useFullSystem)
+			system.SetupTransactionSystem();
+
 		if(StringIsNullOrEmpty(lastSymbol) || (StringIsNullOrEmpty(currentSymbol) && GlobalContext.Config.GetBoolValue("StartSimulationAgain")))
 		{
 			if(useFullSystem)
 			{
 				GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile());
 				GlobalContext.DatabaseLog.CallWebServiceProcedure("NewTradingSession");
-				Print(GlobalContext.Config.GetConfigFile());
 			}
-			
-			if(useLightSystem || useFullSystem)
-				system.SetupTransactionSystem();
 		}
 		else if(!StringIsNullOrEmpty(currentSymbol))
 		{
-			if(useLightSystem || useFullSystem)
-				system.SetupTransactionSystem();
 			GlobalContext.Config.InitCurrentSymbol(currentSymbol);
 			
 			if(ChangeSymbol())
@@ -274,7 +280,7 @@ int SystemWrapper::OnInitWrapper()
 	}
 	
 	if(system.IsSetupInvalid())
-    system.SetupTransactionSystem();
+		system.SetupTransactionSystem();
 
 	system.InitializeFromFirstChartTranData(true);
  
