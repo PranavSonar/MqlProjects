@@ -283,10 +283,16 @@ int SystemWrapper::OnInitWrapper()
 		system.SetupTransactionSystem();
 
 	system.InitializeFromFirstChartTranData(true);
- 
+ 	
+ 	PrintIfTrue(useLightSystem || useDiscoverySystem || useFullSystem,
+ 		"System run for " + 
+ 		(useLightSystem?"light system":"") +
+ 		(useDiscoverySystem?"discovery system":"") +
+ 		(useFullSystem?"full system":""));
+
 	if(useDiscoverySystem)
 		system.SystemDiscovery();
-	else
+	else if(useLightSystem || useFullSystem)
 		system.TestTransactionSystemForCurrentSymbol(true, true, useLightSystem, GlobalContext.Config.GetBoolValue("KeepAllObjects"), true);
 	
 	if(!onlyCurrentSymbol)
@@ -307,7 +313,7 @@ int SystemWrapper::OnInitWrapper()
 		
 		GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile());
 		GlobalContext.DatabaseLog.CallWebServiceProcedure("GetResults");
-		Print("GetResults execution finished (or at least the WS call)! Job done!");
+		Print("GetResults WS call execution finished! Job done!");
 		
 		if(useDiscoverySystem)
 		{
