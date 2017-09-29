@@ -308,20 +308,26 @@ int SystemWrapper::OnInitWrapper()
 		
 		if(useDiscoverySystem)
 			Print("Discovery finished! Job done!");
-		else if(useLightSystem || useFullSystem)
-			Print("Simulation finished! Job done!");
-		
-		GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile());
-		GlobalContext.DatabaseLog.CallWebServiceProcedure("GetResults");
-		Print("GetResults WS call execution finished! Job done!");
+		else if(useLightSystem)
+			Print("Light system simulation finished! Job done!");
+		else if(useFullSystem)
+			Print("Full system simulation finished! Job done!");
+
+		if(useDiscoverySystem || useLightSystem || useFullSystem)
+		{
+			GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile());
+			GlobalContext.DatabaseLog.CallWebServiceProcedure("GetResults");
+			Print("GetResults WS call execution finished! Job done!");
+		}
 		
 		if(useDiscoverySystem)
 		{
 			system.SystemDiscoveryPrintData();
+			//system.SystemDiscoveryDeleteWorseThanAverage();
+			system.SystemDiscoveryPrintBetterThanAverage();
+			system.SystemDiscoveryPrintWorseThanAverage();
 			//Print("--=-=-=-=-==================================================================================");
-			system.SystemDiscoveryDeleteWorseThanAverage();
-			Print("--=-=-=-=-==================================================================================");
-			system.SystemDiscoveryPrintData();
+			//system.SystemDiscoveryPrintData();
 		}
 		else if(useLightSystem || useFullSystem)
 			system.FreeArrays();
