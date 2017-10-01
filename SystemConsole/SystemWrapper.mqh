@@ -318,6 +318,7 @@ int SystemWrapper::OnInitWrapper()
 			GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile());
 			GlobalContext.DatabaseLog.CallWebServiceProcedure("GetResults");
 			Print("GetResults WS call execution finished! Job done!");
+
 		}
 		
 		if(useDiscoverySystem)
@@ -332,6 +333,12 @@ int SystemWrapper::OnInitWrapper()
 		else if(useLightSystem || useFullSystem)
 			system.FreeArrays();
 		
+		if(useDiscoverySystem || useLightSystem || useFullSystem)
+		{
+			GlobalContext.Config.SetBoolValue("UseLightSystem", false);
+			GlobalContext.Config.SetBoolValue("UseDiscoverySystem", false);
+			GlobalContext.Config.SetBoolValue("UseFullSystem", false);
+		}
 		//Print("Closing [ExpertRemove]!"); ExpertRemove();
 	}
 	
