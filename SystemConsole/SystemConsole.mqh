@@ -52,6 +52,8 @@ private:
    CListView         optionsListView;                     // the list object
    CCheckGroup       configCheckGroup;                   // the check box group object
 	
+  string configString[];
+  bool configValue[];
 	SystemCommands sCommands;
 	
 public:
@@ -152,7 +154,7 @@ bool SystemConsole::CreateOutputEdit(void)
 	      return(false);
 	   outputEdit[i].FontSize(8);
 	   outputEdit[i].Font("Courier New");
-   	outputEdit[i].Alignment(WND_ALIGN_WIDTH,INDENT_LEFT,0,INDENT_RIGHT+BUTTON_WIDTH+CONTROLS_GAP_X,0);
+     outputEdit[i].Alignment(WND_ALIGN_WIDTH,INDENT_LEFT,0,INDENT_RIGHT+BUTTON_WIDTH+CONTROLS_GAP_X,0);
    	
    	y1=y2;
    	y2=y1+LABEL_HEIGHT;
@@ -229,8 +231,6 @@ bool SystemConsole::CreateConfigCheckGroup(void)
 //      if(!configCheckGroup.AddItem("Item "+IntegerToString(i),1<<i))
 //         return(false);
 //         
-   string configString[];
-   bool configValue[];
    GlobalContext.Config.FillWithBoolValues(configString, configValue);
    
    for(int i=0;i<ArraySize(configValue);i++)
@@ -238,7 +238,7 @@ bool SystemConsole::CreateConfigCheckGroup(void)
       if(!configCheckGroup.AddItem(configString[i],1<<i))
          return(false);
       if(configValue[i])
-         configCheckGroup.Check(i,1<<1);
+         configCheckGroup.Check(i,1<<i);
    }
    
 //--- succeed
@@ -390,8 +390,22 @@ void SystemConsole::OnChangeConfigCheckGroup(void)
   {
   	if(configCheckGroup.IsEnabled())
   	{
-  		AddLine(__FUNCTION__);
-  		AddLine("Value="+IntegerToString(configCheckGroup.Value()));
+  		//AddLine(__FUNCTION__);
+  		//AddLine("Value="+IntegerToString(configCheckGroup.Value()));
+      long checkGroupValue = configCheckGroup.Value();
+      bool cond = true;
+
+      for(int i=0;i<ArraySize(configValue);i++)
+      {
+        bool currentValue = checkGroupValue & (1 << i); 
+        if(currentValue != configValue[i])
+        {
+          configValue[i] = currentValue;
+          GlobalContext.Config.SetBoolValue(configString[i], configValue[i]);
+        }
+
+        PrintIfTrue(cond, configString[i] + "=" + BoolToString(configValue[i]));
+      }
    	//outputEdit.Text(__FUNCTION__+" : Value="+IntegerToString(configCheckGroup.Value()));
    }
   }

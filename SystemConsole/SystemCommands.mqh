@@ -4,7 +4,7 @@
 //|                                             https) ||//www.mql5.com |
 //+------------------------------------------------------------------+
 #property copyright "Copyright 2017, MetaQuotes Software Corp."
-#property link      "https) ||//www.mql5.com"
+#property link      "https//www.mql5.com"
 #property strict
 
 #include <MyMql/Base/BaseObject.mqh>
@@ -23,10 +23,10 @@ class SystemCommands : public BaseObject
 
 		string GetContext() { return context; }
 		string UpdateContext(string value, bool changeContext = false);
-		
+
 		void GetSystemCommands(string &commands[]);
 		string GetSystemCommandToExecute(bool changeContext = false);
-		
+
 		bool NeedRefresh();
 };
 
@@ -69,7 +69,7 @@ string SystemCommands::UpdateContext(string value, bool changeContext = false)
 void SystemCommands::GetSystemCommands(string &commands[])
 {
 	PrintIfTrue(false, __FUNCTION__ + " " + context);
-	
+
 	if(context == NULL)
 	{
 		ArrayResize(commands, 16);
@@ -108,7 +108,7 @@ void SystemCommands::GetSystemCommands(string &commands[])
 	} else if(StringFind(context,"call") == 0) {
 		ArrayResize(commands, 1);
 		commands[0] = "[b]back";
-		
+
 		GlobalContext.DatabaseLog.PrintWebServiceUrls();
 		GlobalContext.DatabaseLog.FillCommandsArray(commands); // to do: get the parameters (parameter names here - values in other proc.), when context is call/procedure
 	} else if(context == "config") {
@@ -153,7 +153,7 @@ void SystemCommands::GetSystemCommands(string &commands[])
 }
 
 
-		
+
 string SystemCommands::GetSystemCommandToExecute(bool changeContext = false)
 {
 	PrintIfTrue(false, __FUNCTION__ + " [changeContext: " + BoolToString(changeContext) + "][context: \"" + context + "\", command: \"" + command + "\"]");
@@ -209,7 +209,7 @@ string SystemCommands::GetSystemCommandToExecute(bool changeContext = false)
 			{ UpdateContext(NULL, changeContext); return "back"; }
 	} else if(StringFind(context,"call") == 0) { // WS Proc call
 		if((command == "[b]back") || (command == "back") || (command == "b")) // to do: validate words (procedure name, params)
-			{ UpdateContext(NULL, changeContext); return "back"; } 
+			{ UpdateContext(NULL, changeContext); return "back"; }
 
 		string words[];
 		StringSplit(context, '/', words);
