@@ -129,7 +129,7 @@ int SystemWrapper::OnInitWrapper()
 
 	comm.Initialize(false, true); // init timers too
 
-	if (GlobalContext.Config.HasValue("ReturnToSymbol"))
+	if (GlobalContext.Config.Exists("ReturnToSymbol"))
 	{
 		Print("ReturnToSymbol");
 		CurrentSymbol = GlobalContext.Config.GetValue("ReturnToSymbol");
@@ -318,7 +318,6 @@ int SystemWrapper::OnInitWrapper()
 			GlobalContext.DatabaseLog.ParametersSet(GlobalContext.Config.GetConfigFile());
 			GlobalContext.DatabaseLog.CallWebServiceProcedure("GetResults");
 			Print("GetResults WS call execution finished! Job done!");
-
 		}
 
 		if (useDiscoverySystem)
