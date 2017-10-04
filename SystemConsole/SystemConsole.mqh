@@ -1,8 +1,9 @@
-//+------------------------------------------------------------------+
-//|                                                SystemConsole.mqh |
-//|                   Copyright 2009-2015, MetaQuotes Software Corp. |
-//|                                              http://www.mql5.com |
-//+------------------------------------------------------------------+
+#property library
+#property copyright "Copyright 2017, Chirita Alexandru"
+#property link      ""
+#property version   "1.458"
+#property strict
+
 #include <MyMql\Base\BeforeObject.mqh>
 
 #include <Controls\Dialog.mqh>

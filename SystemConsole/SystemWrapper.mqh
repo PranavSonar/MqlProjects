@@ -1,12 +1,9 @@
-//+------------------------------------------------------------------+
-//|                                                SystemWrapper.mqh |
-//|                                Copyright 2016, Chirita Alexandru |
-//|                                             https://www.mql5.com |
-//+------------------------------------------------------------------+
+#property library
 #property copyright "Copyright 2017, Chirita Alexandru"
-#property link      "https://www.mql5.com"
-#property version   "1.45"
+#property link      ""
+#property version   "1.458"
 #property strict
+
 
 #include "SystemCommands.mqh"
 #include <MyMql\System\SimulateTranSystem.mqh>
