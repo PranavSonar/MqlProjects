@@ -236,13 +236,19 @@ bool SystemConsole::CreateConfigCheckGroup(void)
 //
 	GlobalContext.Config.FillWithBoolValues(configString, configValue);
 
+	Print("Before adding items to check group");
+	int len1 = ArraySize(configString), len2 = ArraySize(configValue);
+	Print("ArraySize(configString)=" + IntegerToString(len1) + " ArraySize(configValue)=" + IntegerToString(len2));
+
 	for (int i = 0; i < ArraySize(configValue); i++)
 	{
+		Print("Adding item " + configString[i] + " with value " + IntegerToString(1 << i) + " at index " + IntegerToString(i));
 		if (!configCheckGroup.AddItem(configString[i], 1 << i))
 			return (false);
 		if (configValue[i])
 			configCheckGroup.Check(i, 1 << i);
 	}
+	Print("Finished creating check group");
 
 //--- succeed
 	return (true);
@@ -406,9 +412,8 @@ void SystemConsole::OnChangeConfigCheckGroup(void)
 			{
 				configValue[i] = currentValue;
 				GlobalContext.Config.SetBoolValue(configString[i], configValue[i]);
+				PrintIfTrue(cond, configString[i] + "=" + BoolToString(configValue[i]));
 			}
-
-			PrintIfTrue(cond, configString[i] + "=" + BoolToString(configValue[i]));
 		}
 		//outputEdit.Text(__FUNCTION__+" : Value="+IntegerToString(configCheckGroup.Value()));
 	}
