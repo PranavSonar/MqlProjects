@@ -15,6 +15,7 @@ SystemConsole ExtDialog;
 
 int OnInit(void)
 {
+	GlobalContext.Config.SetBoolValue("Debug", true);
 	if (!ExtDialog.Create(0, "System Console", 0, 50, 50, 500, 400))
 		return (INIT_FAILED);
 

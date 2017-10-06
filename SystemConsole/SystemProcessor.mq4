@@ -10,6 +10,7 @@ static SystemWrapper systemWrapper;
 
 int OnInit(void)
 {
+	GlobalContext.Config.SetBoolValue("Debug", true);
 	//ChartIndicatorDelete(ChartID(), ChartWindowFind(), "SystemConsole");
 	//ChartIndicatorAdd(ChartID(), ChartWindowFind(), 0 /* handle for "SystemConsole" */); // works only in MT5, damn it
 	return systemWrapper.OnInitWrapper();
