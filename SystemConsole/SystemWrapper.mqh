@@ -239,7 +239,7 @@ int SystemWrapper::OnInitWrapper()
 	if (ChangeSymbol())
 		return INIT_SUCCEEDED;
 
-	if (FirstSymbol == NULL)
+	if (FirstSymbol == NULL || GlobalContext.Config.GetBoolValue("FirstSymbolIsNull"))
 	{
 		GlobalContext.Config.Initialize(true, true, false, true, __FILE__);
 		GlobalContext.DatabaseLog.Initialize(true);
@@ -520,6 +520,7 @@ void SystemWrapper::ExecuteCommand(string command)
 		// Go back and forth; the second init (on the same symbol as now) will run system, light system or discovery
 		GlobalContext.Config.SetValue("ReturnToSymbol", _Symbol);
 		GlobalContext.Config.InitCurrentSymbol(GlobalContext.Config.GetNextSymbol(_Symbol));
+		GlobalContext.Config.SetBoolValue("FirstSymbolIsNull", true);
 		ChangeSymbol();
 		return;
 
