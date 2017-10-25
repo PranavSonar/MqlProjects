@@ -14,9 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include <mc_helpers.mqh>
-#include <mc_funcs.mqh>
-#include <mc_returns.mqh>
+#include "mc_helpers.mqh"
+#include "mc_funcs.mqh"
+#include "mc_returns.mqh"
 
 
 #import "MQL4CSharp.dll"
