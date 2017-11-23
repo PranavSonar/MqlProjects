@@ -14,7 +14,6 @@
 #include <MyMql\Global\Global.mqh>
 
 
-
 void CheckForChanging()
 {
 	string symbol = GlobalContext.Library.GetSymbolNameFromPosition((int)GlobalVariableGet(GetGlobalVariableSymbol()));
