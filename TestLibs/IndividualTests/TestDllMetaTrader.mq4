@@ -41,10 +41,11 @@ string FileReadLine(string fileName, int lineNumber);
 
 int OnInit()
 {
-	Print(FileReadLine("Config.txt", -1));
-	Print(FileReadLine("Config.txt", 0));
-	Print(FileReadLine("Config.txt", 1));
-	Print(FileReadLine("Config.txt", 2));
+	string fileName = "Config.txt";
+	Print(FileReadLine(fileName, -1));
+	Print(FileReadLine(fileName, 0));
+	Print(FileReadLine(fileName, 1));
+	Print(FileReadLine(fileName, 2));
 	return (INIT_SUCCEEDED);
 }
 
